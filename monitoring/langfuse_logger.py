@@ -2,6 +2,7 @@
 Langfuse self-hosted integration — single observability platform for this project.
 Provides a LangChain CallbackHandler + helper for session scoring.
 
+Targets Langfuse v4.x (langfuse.langchain.CallbackHandler).
 LangSmith is architecturally excluded (cloud-only; PII risk for banking data).
 See docs/engineering_justification.md for rationale.
 """
@@ -11,7 +12,7 @@ from typing import Optional
 
 try:
     from langfuse import Langfuse
-    from langfuse.callback import CallbackHandler as _CallbackHandler
+    from langfuse.langchain import CallbackHandler as _CallbackHandler
     _LANGFUSE_AVAILABLE = True
 except ImportError:
     _LANGFUSE_AVAILABLE = False
@@ -24,9 +25,20 @@ from deployment.config import (
 )
 
 
-def _client():
-    if not _LANGFUSE_AVAILABLE:
+def _ensure_env() -> None:
+    """Ensure Langfuse env vars are set so the v4 callback can auto-read them."""
+    if LANGFUSE_PUBLIC_KEY:
+        os.environ.setdefault("LANGFUSE_PUBLIC_KEY", LANGFUSE_PUBLIC_KEY)
+    if LANGFUSE_SECRET_KEY:
+        os.environ.setdefault("LANGFUSE_SECRET_KEY", LANGFUSE_SECRET_KEY)
+    if LANGFUSE_HOST:
+        os.environ.setdefault("LANGFUSE_HOST", LANGFUSE_HOST)
+
+
+def _client() -> Optional[Langfuse]:
+    if not _LANGFUSE_AVAILABLE or not LANGFUSE_PUBLIC_KEY:
         return None
+    _ensure_env()
     return Langfuse(
         public_key=LANGFUSE_PUBLIC_KEY,
         secret_key=LANGFUSE_SECRET_KEY,
@@ -42,18 +54,18 @@ def get_langfuse_callback(
     """
     Return a LangChain CallbackHandler, or None if Langfuse is not available /
     not configured (safe to use in Phase 2 where Langfuse isn't running yet).
+
+    In Langfuse v4 the callback reads credentials from env vars automatically.
+    session_id is forwarded as trace_id so all turns in a session are grouped.
     """
     if not _LANGFUSE_AVAILABLE or not LANGFUSE_PUBLIC_KEY:
         return None
+    _ensure_env()
     try:
-        return _CallbackHandler(
-            public_key=LANGFUSE_PUBLIC_KEY,
-            secret_key=LANGFUSE_SECRET_KEY,
-            host=LANGFUSE_HOST,
-            session_id=session_id,
-            user_id=user_id,
-            tags=tags or [],
-        )
+        # Langfuse v4 trace_id must be 32 lowercase hex chars (UUID without dashes)
+        hex_id = session_id.replace("-", "").lower() if session_id else None
+        trace_ctx = {"trace_id": hex_id} if hex_id else None
+        return _CallbackHandler(trace_context=trace_ctx)
     except Exception:
         return None
 
@@ -67,7 +79,15 @@ def score_session(
     """Post a numeric score to a Langfuse trace (used for RLHF feedback and RAG eval)."""
     client = _client()
     if client:
-        client.score(trace_id=trace_id, name=score_name, value=value, comment=comment)
+        try:
+            client.create_score(
+                trace_id=trace_id,
+                name=score_name,
+                value=value,
+                comment=comment,
+            )
+        except Exception:
+            pass
 
 
 def flush() -> None:
