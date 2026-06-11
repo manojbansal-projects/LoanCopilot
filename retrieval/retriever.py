@@ -1,6 +1,6 @@
 """Top-level retrieval interface used by tools and the agent."""
 from __future__ import annotations
-from langchain.schema import Document
+from langchain_core.documents import Document
 from retrieval.chroma_store import load_store
 from deployment.config import RAG_TOP_K
 

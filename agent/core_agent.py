@@ -519,7 +519,28 @@ class LoanCopilotAgent:
         """Phase 3–4: direct ChatOpenAI call with sliding-window conversation memory."""
         from langchain_core.messages import SystemMessage, HumanMessage
 
-        messages = [SystemMessage(content=self._system_prompt)]
+        system = self._system_prompt
+
+        # Phase 4+: inject retrieved policy chunks as ground-truth context
+        if self.phase >= 4:
+            try:
+                from retrieval.retriever import retrieve
+                docs = retrieve(user_input, k=3)
+                if docs:
+                    context_block = "\n\n".join(
+                        f"[Source: {d.metadata.get('source', 'policy')}]\n{d.page_content}"
+                        for d in docs
+                    )
+                    system = (
+                        self._system_prompt
+                        + "\n\n--- RETRIEVED POLICY CONTEXT (treat as ground truth) ---\n"
+                        + context_block
+                        + "\n--- END CONTEXT ---"
+                    )
+            except Exception:
+                pass  # ChromaDB not built yet; silently fall back to no-RAG
+
+        messages = [SystemMessage(content=system)]
         if self.memory:
             messages.extend(self.memory.chat_memory.messages)
         messages.append(HumanMessage(content=user_input))

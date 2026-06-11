@@ -1,6 +1,6 @@
 """Load raw policy documents from knowledge/raw/."""
 from pathlib import Path
-from langchain.schema import Document
+from langchain_core.documents import Document
 from deployment.config import KNOWLEDGE_BASE_PATH
 
 PRODUCT_MAP = {

@@ -1,6 +1,6 @@
 """Text chunking with configurable size and overlap."""
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.schema import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
 from deployment.config import RAG_CHUNK_SIZE, RAG_CHUNK_OVERLAP
 
 
