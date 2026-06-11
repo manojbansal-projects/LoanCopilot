@@ -519,30 +519,30 @@ class LoanCopilotAgent:
         """Phase 3–4: direct ChatOpenAI call with sliding-window conversation memory."""
         from langchain_core.messages import SystemMessage, HumanMessage
 
-        system = self._system_prompt
+        messages = [SystemMessage(content=self._system_prompt)]
+        if self.memory:
+            messages.extend(self.memory.chat_memory.messages)
 
-        # Phase 4+: inject retrieved policy chunks as ground-truth context
+        # Phase 4+: inject retrieved policy chunks as a grounding message
+        # immediately before the user turn so the LLM prioritises it.
         if self.phase >= 4:
             try:
                 from retrieval.retriever import retrieve
-                docs = retrieve(user_input, k=3)
+                docs = retrieve(user_input)
                 if docs:
                     context_block = "\n\n".join(
                         f"[Source: {d.metadata.get('source', 'policy')}]\n{d.page_content}"
                         for d in docs
                     )
-                    system = (
-                        self._system_prompt
-                        + "\n\n--- RETRIEVED POLICY CONTEXT (treat as ground truth) ---\n"
-                        + context_block
-                        + "\n--- END CONTEXT ---"
-                    )
+                    messages.append(HumanMessage(content=(
+                        "POLICY CONTEXT FOR YOUR NEXT RESPONSE — treat these excerpts as "
+                        "ground truth. Use specific figures (rates, limits, fees) from this "
+                        "context in your answer. Do not say 'not specified' if a figure "
+                        "appears below.\n\n" + context_block
+                    )))
             except Exception:
                 pass  # ChromaDB not built yet; silently fall back to no-RAG
 
-        messages = [SystemMessage(content=system)]
-        if self.memory:
-            messages.extend(self.memory.chat_memory.messages)
         messages.append(HumanMessage(content=user_input))
 
         try:

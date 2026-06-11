@@ -24,7 +24,7 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
 # ── RAG ───────────────────────────────────────────────────────────────────────
 RAG_CHUNK_SIZE = int(os.getenv("RAG_CHUNK_SIZE", "500"))
 RAG_CHUNK_OVERLAP = int(os.getenv("RAG_CHUNK_OVERLAP", "100"))
-RAG_TOP_K = int(os.getenv("RAG_TOP_K", "3"))
+RAG_TOP_K = int(os.getenv("RAG_TOP_K", "5"))
 CHROMA_COLLECTION_NAME = "loan_policies"
 
 # ── Agent ─────────────────────────────────────────────────────────────────────

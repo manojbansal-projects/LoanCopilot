@@ -79,7 +79,7 @@ python scripts/run_rlhf_pipeline.py
 - `OPENAI_API_KEY` required for Phase 3+
 - Policy docs in `knowledge/raw/` are synthetic — not official bank policy
 - All log writes must go through `safety/pii_filter.mask()` first
-- Never quote specific interest rates in agent responses (policy: say "current rates" and direct to branch)
+- Always give an INDICATIVE RATE RANGE (e.g. "8.50%–9.25% p.a.") from policy documents, never a single promised rate. Always add a disclaimer that the actual rate is confirmed at sanction. Do not give a flat "contact branch" non-answer when a range is available.
 - Escalation ceiling breach → always invoke `generate_escalation_summary` tool
 
 ## Escalation Ceilings (defined in `deployment/config.py`)
