@@ -1,0 +1,64 @@
+{
+  "last_updated": "2026-06-10",
+  "note": "Synthetic policy data for educational demo. Not official bank policy.",
+  "products": {
+    "home_loan": {
+      "display_name": "Home Loan",
+      "min_amount": 500000,
+      "max_amount": 50000000,
+      "advisory_ceiling": 15000000,
+      "max_tenure_months": 360,
+      "rate_band_percent": [8.5, 9.5],
+      "min_age": 21,
+      "max_age": 65,
+      "min_credit_score": 700,
+      "foir_limit": 0.5,
+      "foir_limit_high_income": 0.55,
+      "high_income_threshold": 100000,
+      "ltv_max_percent": 80,
+      "collateral": "property"
+    },
+    "personal_loan": {
+      "display_name": "Personal Loan",
+      "min_amount": 50000,
+      "max_amount": 4000000,
+      "advisory_ceiling": 4000000,
+      "max_tenure_months": 60,
+      "rate_band_percent": [9.99, 24.0],
+      "min_age": 21,
+      "max_age": 60,
+      "min_credit_score": 720,
+      "foir_limit": 0.5,
+      "foir_limit_high_income": 0.55,
+      "high_income_threshold": 100000,
+      "collateral": "none"
+    },
+    "msme_loan": {
+      "display_name": "MSME Loan",
+      "min_amount": 50000,
+      "max_amount": 100000000,
+      "advisory_ceiling": 20000000,
+      "max_tenure_months": 180,
+      "rate_band_percent": [9.0, 16.0],
+      "min_age": 25,
+      "max_age": 65,
+      "min_credit_score": 700,
+      "min_business_vintage_years": 2,
+      "collateral": "business_assets_or_property"
+    },
+    "car_loan": {
+      "display_name": "New Car Loan",
+      "min_amount": 300000,
+      "max_amount": 2000000,
+      "advisory_ceiling": 2000000,
+      "max_tenure_months": 84,
+      "rate_band_percent": [8.75, 10.5],
+      "min_age": 21,
+      "max_age": 65,
+      "min_credit_score": 700,
+      "foir_limit": 0.5,
+      "ltv_max_percent": 85,
+      "collateral": "vehicle"
+    }
+  }
+}

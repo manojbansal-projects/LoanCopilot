@@ -1,0 +1,200 @@
+RETAIL LENDING POLICY — HOME LOAN
+Internal Reference Document | Loan Origination Knowledge Base
+Last Updated: June 2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PRODUCT OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A Home Loan enables eligible borrowers to purchase a residential property, construct a house on a plot they own, or undertake major renovation of an existing residential property. It is a secured, long-tenure product where the underlying property serves as collateral through a registered mortgage.
+
+Eligible purposes:
+- Purchase of a new flat, apartment, or independent house from a builder or resale seller
+- Construction of a house on a self-owned plot
+- Purchase of a plot and simultaneous construction
+- Home extension or major renovation (subject to sub-limits)
+
+Not eligible under this product:
+- Commercial property purchase
+- Purchase of agricultural land
+- Loan against an already owned property (see Loan Against Property — separate product)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. INTEREST RATES (INDICATIVE — FLOATING)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Home loan interest rates are floating and linked to the bank's External Benchmark Lending Rate (EBLR), which is tied to RBI's repo rate. Rates reset quarterly.
+
+Indicative rate range (as of June 2026):
+- Salaried applicants (CIBIL 750+): 8.50% – 9.25% p.a.
+- Salaried applicants (CIBIL 650–749): 9.25% – 9.75% p.a.
+- Self-employed professionals (CIBIL 750+): 8.75% – 9.50% p.a.
+- Self-employed non-professionals (CIBIL 700+): 9.50% – 10.25% p.a.
+
+Special concessions:
+- Women borrowers (sole or primary applicant): 0.05% reduction on applicable rate
+- Existing salary account holders: 0.10% reduction (subject to approval)
+- Green-rated buildings (BEE 4-star and above): 0.05% reduction
+
+Note: Final rate is determined after credit appraisal and is not guaranteed at inquiry stage. The above figures are indicative ranges published for customer guidance.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. LOAN AMOUNT AND LTV (LOAN-TO-VALUE) RATIO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The maximum loan amount is governed by two limits — LTV ratio and income-based eligibility — and the lower of the two applies.
+
+LTV limits (as per RBI guidelines):
+- Property value up to ₹30 lakh: maximum LTV 90% (borrower brings 10% margin)
+- Property value ₹30 lakh to ₹75 lakh: maximum LTV 80%
+- Property value above ₹75 lakh: maximum LTV 75%
+
+Income-based eligibility:
+- Maximum eligible EMI: up to 50% of net monthly income (FOIR cap)
+- As a thumb rule, a borrower earning ₹50,000 net/month is eligible for approximately ₹33–36 lakh over a 20-year tenure at prevailing rates
+
+Minimum loan amount: ₹5 lakh
+Maximum loan amount: ₹5 crore (higher amounts subject to special approval and enhanced documentation)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. TENURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Minimum tenure: 5 years
+Maximum tenure: 30 years (subject to age constraint below)
+
+Age-tenure linkage:
+- The loan must be fully repaid by the time the borrower turns 70 (salaried) or 75 (self-employed/business)
+- Example: A 45-year-old salaried borrower can avail maximum 25-year tenure
+- Example: A 35-year-old self-employed borrower can avail maximum 30-year tenure
+
+Longer tenure lowers the monthly EMI but increases total interest outgo. The copilot should illustrate this tradeoff when discussing tenure options with applicants.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. ELIGIBILITY CRITERIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5.1 Age
+- Minimum age: 21 years at loan origination
+- Maximum age at loan maturity: 70 years (salaried), 75 years (self-employed)
+
+5.2 Income — Salaried Applicants
+- Minimum net monthly income: ₹25,000 (metro cities); ₹20,000 (Tier 2/3 cities)
+- Employment type: Permanent employee of Government, PSU, listed company, or reputed private organisation
+- Minimum work experience: 2 years total; 6 months in current job
+- Acceptable income components: Basic salary, HRA, fixed allowances. Variable pay counted at 50% if declared in Form 16.
+
+5.3 Income — Self-Employed Applicants
+- Minimum annual net profit (after tax): ₹3 lakh (professionals); ₹4 lakh (non-professionals)
+- Business vintage: Minimum 3 years in same line of business
+- ITR filing: Minimum 2 years of filed and assessed ITRs required
+- Acceptable income: Net profit from ITR + proportionate depreciation add-back (at 50%)
+
+5.4 Credit Score (CIBIL / Equifax)
+- Minimum acceptable score: 650
+- Preferred score for best rates: 750 and above
+- No active defaults, write-offs, or settlements in the last 3 years
+- NTC (New to Credit) applicants evaluated on income strength and employment stability
+
+5.5 Fixed Obligation to Income Ratio (FOIR)
+- FOIR = (All existing loan EMIs + proposed new EMI) / Net Monthly Income
+- Maximum FOIR allowed: 50% for incomes up to ₹75,000/month; 55% for incomes above ₹75,000/month
+- All existing EMIs (car loan, personal loan, credit card minimum dues) are included in FOIR calculation
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. REQUIRED DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6.1 Identity and Address Proof (any one each)
+- Aadhaar Card (mandatory for KYC)
+- PAN Card (mandatory for all applicants)
+- Passport / Voter ID / Driving Licence (address proof)
+- Utility bill not older than 3 months (address proof)
+
+6.2 Income Documents — Salaried
+- Latest 3 months' salary slips
+- Form 16 for last 2 financial years
+- 6 months' bank statement (salary account)
+- Appointment letter or employment confirmation letter
+
+6.3 Income Documents — Self-Employed
+- ITR with computation of income for last 2 financial years (CA-certified)
+- Audited balance sheet and profit & loss statement for last 2 years
+- 12 months' bank statement (business + personal account)
+- Business registration certificate (GST certificate / Shop Act / Partnership Deed / MOA-AOA)
+
+6.4 Property Documents
+- Agreement to Sale / Allotment Letter from builder
+- Property title deed (in case of resale property)
+- Approved building plan and layout plan
+- Property tax receipts (for resale property)
+- NOC from builder / society / housing board
+- Encumbrance Certificate (for South India registrations)
+- Sale Deed executed in favour of seller (resale)
+
+6.5 Additional Documents (case-specific)
+- Co-applicant KYC and income documents (if loan is joint)
+- Existing property documents (if offering additional collateral)
+- Bank statements of NRI income account (if NRI co-applicant)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. PROCESSING FEES AND CHARGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Processing fee: 0.25% to 0.50% of sanctioned loan amount (minimum ₹3,000; maximum ₹20,000) + applicable GST
+Legal and technical charges: ₹5,000 – ₹15,000 (varies by property location and value)
+Stamp duty on mortgage: As per respective state government regulations
+Prepayment charges: Nil for floating rate loans (as per RBI directive); fixed rate loans may carry 2% on outstanding principal if prepaid from own funds
+Late payment penalty: 2% per month on overdue EMI amount
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. TYPICAL APPLICATION JOURNEY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Step 1 — Inquiry and pre-qualification: Customer provides income, purpose, and property details. Copilot provides indicative eligibility and EMI range.
+Step 2 — Application submission: Customer submits completed application form with all mandatory documents.
+Step 3 — Credit appraisal: Bank verifies income documents, pulls CIBIL report, and calculates FOIR.
+Step 4 — Property legal and technical check: Bank-empanelled advocate verifies title; bank-empanelled valuer assesses market value.
+Step 5 — Sanction letter: If approved, sanction letter issued with loan amount, rate, tenure, and conditions.
+Step 6 — Disbursement: After property registration and mortgage creation, funds disbursed to builder/seller account. Construction loans disbursed in tranches.
+
+Typical turnaround time: 7–15 working days from complete document submission to sanction.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. COMMON REASONS FOR REJECTION OR REDUCTION IN LOAN AMOUNT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- CIBIL score below 650 or recent loan default/settlement
+- FOIR exceeding 50–55% of net income
+- Property in a non-approved location or disputed title
+- Insufficient income documentation or income below minimum threshold
+- Business vintage less than 3 years (self-employed)
+- Property valuation lower than purchase consideration (bank funds basis valuation, not purchase price)
+- Incomplete property documents or missing NOC from builder
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10. INDICATIVE EMI REFERENCE TABLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EMI per ₹1 lakh of loan (approximate):
+
+Tenure    | @ 8.50% p.a. | @ 9.00% p.a. | @ 9.50% p.a.
+----------|--------------|--------------|--------------
+10 years  |  ₹1,240      |  ₹1,267      |  ₹1,294
+15 years  |    ₹985      |  ₹1,015      |  ₹1,045
+20 years  |    ₹868      |    ₹900      |    ₹932
+25 years  |    ₹801      |    ₹836      |    ₹873
+30 years  |    ₹769      |    ₹805      |    ₹841
+
+Example: A ₹50 lakh home loan at 9.00% for 20 years → EMI ≈ ₹50 × ₹900 = ₹45,000/month.
+
+DISCLAIMER: These figures are indicative and for illustration only. Actual EMI will depend on final sanctioned amount, interest rate, and disbursement schedule. This does not constitute a loan offer or approval.

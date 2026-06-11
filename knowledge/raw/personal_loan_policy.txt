@@ -1,0 +1,197 @@
+RETAIL LENDING POLICY — PERSONAL LOAN
+Internal Reference Document | Loan Origination Knowledge Base
+Last Updated: June 2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PRODUCT OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A Personal Loan is an unsecured, multi-purpose loan extended to eligible individuals based solely on their creditworthiness and repayment capacity. No collateral or security is required.
+
+Common eligible purposes:
+- Medical emergencies and hospitalisation
+- Higher education fees (domestic)
+- Wedding and related expenses
+- Home renovation or furnishing (smaller amounts)
+- Debt consolidation (repaying higher-cost obligations)
+- Travel or personal consumption
+
+Important: The bank does not verify the end-use of a personal loan. However, the applicant must declare the purpose at the time of application. Loans taken for speculative investments (stock market margin, cryptocurrency) or illegal activities will be declined.
+
+Not eligible:
+- Business working capital or expansion (see MSME Loan)
+- Down payment for a home or vehicle purchase (bank policy restriction)
+- Agricultural purposes
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. INTEREST RATES (INDICATIVE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Personal loan rates are typically fixed for the loan tenure and are risk-priced based on the applicant's credit profile.
+
+Indicative rate range (as of June 2026):
+- Pre-approved / existing salary account customers: 10.50% – 12.00% p.a.
+- Salaried government / PSU employees (CIBIL 750+): 11.00% – 13.00% p.a.
+- Salaried private sector employees (CIBIL 750+): 11.50% – 14.00% p.a.
+- Salaried private sector (CIBIL 700–749): 14.00% – 18.00% p.a.
+- Self-employed professionals (CA, doctor, architect): 12.00% – 16.00% p.a.
+- Self-employed non-professionals: 15.00% – 24.00% p.a.
+
+Key fact: Personal loan rates are significantly higher than secured loans (home, car) because the bank has no collateral to recover against default. Applicants should compare the effective cost before choosing this product.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. LOAN AMOUNT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Minimum loan amount: ₹50,000
+Maximum loan amount: ₹40 lakh (standard); up to ₹75 lakh for high-income and pre-approved customers subject to bank's internal policy
+
+Maximum amount is determined by:
+1. 24 times net monthly income (as a thumb rule)
+2. FOIR constraint — new EMI + existing EMIs must not exceed 50–55% of net monthly income
+3. Credit score and repayment history
+
+Example: An applicant with ₹60,000 net monthly income, no existing EMIs, and CIBIL 760 may be eligible for up to ₹14.4 lakh (24 × ₹60,000) if FOIR permits.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. TENURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Minimum tenure: 12 months
+Maximum tenure: 60 months (5 years)
+
+Some banks extend up to 72 months (6 years) for loan amounts above ₹15 lakh and for applicants with CIBIL 750+.
+
+Tenure selection tradeoff:
+- Shorter tenure = Higher EMI, less total interest paid
+- Longer tenure = Lower EMI, more total interest paid
+- For a ₹5 lakh loan at 13% p.a.:
+  - 2-year tenure → EMI ≈ ₹23,800; total interest ≈ ₹71,200
+  - 5-year tenure → EMI ≈ ₹11,400; total interest ≈ ₹1,84,000
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. ELIGIBILITY CRITERIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5.1 Age
+- Minimum: 21 years
+- Maximum: 60 years (salaried); 65 years (self-employed)
+- Loan must be repaid before the borrower turns 60/65
+
+5.2 Income — Salaried Applicants
+- Minimum net monthly salary: ₹25,000 (metro cities: Mumbai, Delhi, Bengaluru, Chennai, Hyderabad, Pune)
+- Minimum net monthly salary: ₹20,000 (other cities and Tier 2 towns)
+- Employment type: Permanent employee (confirmed, not probationary)
+- Minimum work experience: 2 years total; at least 1 year in current organisation
+- Employer category: Government, PSU, listed companies, and MNC preferred; private unlisted companies evaluated on employer profile
+
+5.3 Income — Self-Employed Applicants
+- Minimum net annual income: ₹3 lakh (professionals); ₹5 lakh (non-professionals)
+- Business/practice vintage: Minimum 2 years
+- Filing requirement: At least 2 years of ITR filed and assessed
+- Professionals: Doctors, CAs, architects, engineers with professional degree and own practice accepted
+
+5.4 Credit Score
+- Minimum CIBIL / credit bureau score: 700
+- Preferred for best rates: 750 and above
+- No active NPA (Non-Performing Asset) or write-off in credit bureau report
+- Loan settlement within last 5 years: treated as negative flag, rate loaded or application declined
+- Number of inquiries: More than 6 hard inquiries in 6 months treated as negative indicator
+
+5.5 FOIR (Fixed Obligation to Income Ratio)
+- Maximum 50% of net monthly income (salaried)
+- Maximum 55% for incomes above ₹1 lakh/month
+- Includes: all running EMIs, credit card minimum due (5% of outstanding balance is counted)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. REQUIRED DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6.1 KYC Documents (Mandatory for all applicants)
+- Aadhaar Card (mandatory — used for KYC and eSign)
+- PAN Card (mandatory)
+
+6.2 Address Proof (any one)
+- Aadhaar Card (if address is current)
+- Passport
+- Utility bill (electricity/gas/water) — not older than 3 months
+- Bank statement with current address — not older than 3 months
+
+6.3 Income Documents — Salaried
+- Latest 3 months' salary slips (must show net take-home, gross, and deductions)
+- Last 6 months' bank statement (salary credit account)
+- Form 16 for the most recent financial year
+- Current employer ID card or offer letter (if with employer less than 1 year)
+
+6.4 Income Documents — Self-Employed
+- ITR with income computation for last 2 financial years (CA-certified copy)
+- Profit & Loss account and balance sheet for last 2 years
+- Last 12 months' bank statement (business + savings account)
+- Business registration proof (GST certificate / Shop Act / Professional registration certificate)
+
+6.5 Optional (may be requested during credit appraisal)
+- Details of existing running loans (sanction letter / latest statement)
+- Proof of any additional income (rental income agreement, investment proof)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. PROCESSING FEES AND CHARGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Processing fee: 1.00% to 2.50% of sanctioned loan amount + GST (minimum ₹1,000; maximum ₹25,000)
+Prepayment / foreclosure charges:
+  - Within 6 months of disbursement: Not permitted
+  - 7–12 months: 4% of outstanding principal + GST
+  - 13–24 months: 3% of outstanding principal + GST
+  - After 24 months: 2% of outstanding principal + GST
+  - Pre-approved loans may carry nil prepayment charges — confirm at sanction stage
+
+Late payment penalty: 2% to 3% per month on overdue EMI amount
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. APPLICATION AND DISBURSEMENT TIMELINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Pre-approved customers (existing bank customers): Same-day to 24-hour disbursal possible (subject to KYC completion)
+New-to-bank salaried applicants: 2–5 working days from complete document submission
+Self-employed applicants: 5–10 working days (income verification takes longer)
+
+Disbursal: Funds credited directly to applicant's bank account (NACH mandate registered for EMI auto-debit)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. COMMON REASONS FOR REJECTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Net salary below ₹20,000/month or income below minimum threshold
+- CIBIL score below 700 or active default/NPA/write-off
+- Employment less than 1 year in current organisation (probationary period not completed)
+- High FOIR — existing EMIs + proposed EMI exceed 50% of net income
+- Too many recent loan inquiries (credit hungry behaviour)
+- Employer not in bank's approved employer list (for unlisted companies)
+- Incomplete documentation — missing ITR or salary slips
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10. INDICATIVE EMI REFERENCE TABLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EMI per ₹1 lakh of personal loan (approximate, fixed rate):
+
+Tenure  | @ 11.00% p.a. | @ 13.00% p.a. | @ 16.00% p.a.
+--------|---------------|---------------|---------------
+1 year  |    ₹8,838     |    ₹8,932     |    ₹9,073
+2 years |    ₹4,661     |    ₹4,758     |    ₹4,908
+3 years |    ₹3,274     |    ₹3,369     |    ₹3,519
+4 years |    ₹2,585     |    ₹2,682     |    ₹2,835
+5 years |    ₹2,174     |    ₹2,275     |    ₹2,432
+
+Example: ₹5 lakh loan at 13% for 3 years → EMI ≈ ₹16,845/month; total repayment ≈ ₹6,06,420.
+
+DISCLAIMER: These figures are indicative and for illustration only. Actual EMI will depend on the final sanctioned rate and loan amount. This does not constitute a loan offer or approval.

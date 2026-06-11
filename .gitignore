@@ -1,0 +1,53 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Vector store (generated artefacts — rebuild with scripts/ingest_documents.py)
+knowledge/chromadb/
+knowledge/processed/
+
+# Logs
+logs/*.log
+!logs/.gitkeep
+
+# Data (generated / sensitive)
+data/rlhf/
+data/evaluation/results/
+!data/rlhf/.gitkeep
+!data/evaluation/test_cases.json
+
+# macOS
+.DS_Store
+
+# Microsoft Office temp/lock files
+~$*
+.AppleDouble
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Streamlit
+.streamlit/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

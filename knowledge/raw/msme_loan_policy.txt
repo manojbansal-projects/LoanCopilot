@@ -1,0 +1,225 @@
+RETAIL LENDING POLICY — MSME LOAN
+Internal Reference Document | Loan Origination Knowledge Base
+Last Updated: June 2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PRODUCT OVERVIEW AND MSME DEFINITION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MSME Loans are credit facilities extended to Micro, Small, and Medium Enterprises as defined under the MSME Development Act 2006 (amended 2020) and the revised RBI classification:
+
+Classification (as per revised definition effective July 2020):
+
+Enterprise Type | Investment in Plant & Machinery / Equipment | Annual Turnover
+----------------|----------------------------------------------|----------------
+Micro           | Up to ₹1 crore                              | Up to ₹5 crore
+Small           | Up to ₹10 crore                             | Up to ₹50 crore
+Medium          | Up to ₹50 crore                             | Up to ₹250 crore
+
+Eligible business types:
+- Manufacturing enterprises (producing goods)
+- Service enterprises (professional services, IT, healthcare, hospitality)
+- Trading enterprises (wholesale/retail, import-export)
+
+Eligible loan purposes:
+- Working capital: inventory purchase, raw material procurement, trade payables
+- Term loan: machinery purchase, equipment upgrade, technology investment
+- Business expansion: additional premises, capacity addition
+- Receivables financing: invoice discounting for B2B businesses
+
+Not covered under MSME Loan:
+- Startup businesses with less than 1 year of operations (see Startup credit products)
+- Agricultural activity / farm mechanisation (separate Agri loan products apply)
+- Personal expenses of the proprietor — must not be co-mingled
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. UDYAM REGISTRATION — MANDATORY REQUIREMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+All MSME borrowers must have a valid Udyam Registration Certificate (URC) issued by the Ministry of MSME via the Udyam Registration Portal (udyamregistration.gov.in).
+
+Registration is free, fully online, and based on PAN and Aadhaar. It replaces the older Udyog Aadhaar (UAM) registration.
+
+Udyam Registration is required for:
+- Classification under the MSME definition (determines applicable product and scheme)
+- Access to government-backed schemes (CGTMSE, ECLGS)
+- Priority Sector Lending (PSL) benefits
+- Subsidised interest rate schemes announced by Central/State governments
+
+Applications without a valid Udyam Registration Certificate will be processed as general business loans, not MSME loans, and will not attract CGTMSE coverage or PSL benefits.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. INTEREST RATES (INDICATIVE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MSME loan rates are linked to the bank's EBLR (External Benchmark Lending Rate), which is repo-rate linked, and reset quarterly.
+
+Indicative rate range (as of June 2026):
+
+Loan Category                            | Interest Rate
+-----------------------------------------|----------------
+Mudra Loans (up to ₹10 lakh)             | 8.50% – 10.50%
+Micro enterprise (CGTMSE covered)        | 9.00% – 11.00%
+Small enterprise (secured)               | 9.50% – 12.00%
+Medium enterprise (secured)              | 10.00% – 13.00%
+Unsecured MSME (small ticket)            | 12.00% – 16.00%
+ECLGS (Emergency Credit Line)            | Capped at 9.25% (scheme-specific)
+
+Government-backed schemes:
+- CGTMSE (Credit Guarantee Fund Trust for Micro & Small Enterprises): Collateral-free loans up to ₹1 crore with credit guarantee cover. Interest rate loading of 0.25–1.5% for guarantee premium.
+- PM SVANidhi: Micro-credit for street vendors up to ₹50,000 at subsidised rates.
+- MUDRA Yojana (Shishu / Kishore / Tarun): ₹50,000 to ₹10 lakh without collateral for micro enterprises.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. LOAN AMOUNT AND TENURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Loan amount ranges:
+- MUDRA / Micro: ₹50,000 to ₹10 lakh
+- Small enterprise term loan: ₹10 lakh to ₹2 crore
+- Medium enterprise term loan: ₹2 crore to ₹10 crore
+- Working capital (CC/OD limit): Based on assessed annual turnover (typically 20–25% of annual turnover)
+
+Tenure:
+- Working capital (cash credit / overdraft): Reviewed annually; renewed subject to satisfactory conduct
+- Equipment / machinery term loans: 3 to 7 years
+- Infrastructure / premises loans: 5 to 15 years
+- Emergency Credit Line (ECLGS): Up to 5 years including moratorium
+
+Collateral requirement:
+- Loans up to ₹1 crore: Collateral-free under CGTMSE scheme (guarantee premium charged to borrower)
+- Loans ₹1 crore to ₹5 crore: Partial collateral or enhanced documentation required
+- Loans above ₹5 crore: Full collateral (property mortgage, fixed deposits, plant hypothecation)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. ELIGIBILITY CRITERIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5.1 Business Vintage
+- Minimum: 3 years of continuous operations in the same line of business
+- Startups (less than 3 years): Evaluated separately under Startup credit — not under standard MSME loan
+
+5.2 Turnover and Income
+- Minimum annual turnover: ₹10 lakh (for small ticket loans); higher thresholds for larger loans
+- ITR requirement: Minimum 2 years of filed and assessed Income Tax Returns (proprietorship / partnership / company)
+- Profitability: Business must show net profit in at least 1 of the last 2 years
+- For self-employed professionals: Net annual income (after tax) of at least ₹3 lakh
+
+5.3 Age of Applicant / Proprietor
+- Minimum: 21 years
+- Maximum: 65 years at loan maturity
+
+5.4 Credit Score
+- Minimum CIBIL score (individual): 700 (proprietors and partners); 750 preferred
+- CIBIL MSME Rank (CMR): CMR 1–6 preferred; CMR 7 or above requires additional justification
+- No existing NPA or write-off on business or personal credit bureau report
+- No overdues more than 90 days in the last 12 months
+
+5.5 GST Compliance
+- GST registration mandatory for businesses with turnover above the applicable threshold (₹20 lakh for services, ₹40 lakh for goods)
+- GST returns (GSTR-1, GSTR-3B) for the last 12 months reviewed for turnover verification
+- Mismatch between ITR income and GST-declared turnover is a red flag and requires explanation
+
+5.6 FOIR (for term loans with fixed EMI)
+- Maximum FOIR: 65% of net business income (more lenient than personal loans given irregular cash flows)
+- For working capital (CC/OD): Evaluated on DSCR (Debt Service Coverage Ratio) — minimum DSCR of 1.25 required
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. REQUIRED DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6.1 KYC — Business Entity
+- Udyam Registration Certificate (mandatory)
+- GST Registration Certificate (if applicable)
+- Business registration document:
+  • Sole Proprietorship: Shop & Establishment Act certificate, or Trade Licence
+  • Partnership: Registered Partnership Deed
+  • LLP: LLP Agreement and Certificate of Incorporation
+  • Pvt Ltd / Public Ltd: Certificate of Incorporation, MOA & AOA
+
+6.2 KYC — Individual (Proprietor / Partners / Directors)
+- Aadhaar Card (mandatory)
+- PAN Card (mandatory)
+- Address proof (Aadhaar / Passport / Utility bill)
+- Photograph
+
+6.3 Financial Documents
+- ITR with computation of income for last 2 financial years (CA-certified)
+- Audited balance sheet and P&L account for last 2 years (for loans above ₹10 lakh)
+- For smaller loans: Self-certified balance sheet acceptable (subject to credit policy)
+- Bank statement: Last 12 months — all business accounts (primary operating account mandatory)
+- GST returns: GSTR-3B for last 12 months
+
+6.4 Business Proof and Purpose Documents
+- For machinery/equipment loan: Quotation from supplier (on letterhead), equipment details
+- For premises: Agreement to lease or sale deed / property documents
+- For working capital: Latest stock statement, trade receivables list, supplier invoice samples
+- For CGTMSE cover: Self-declaration of MSME status (Udyam registration sufficient)
+
+6.5 Existing Loan Details (if any)
+- Sanction letters and latest repayment statements for all existing business and personal loans
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. PROCESSING FEES AND CHARGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Processing fee: 0.50% to 1.00% of sanctioned loan amount + GST (minimum ₹2,500; waived for MUDRA loans under Shishu category)
+CGTMSE annual guarantee fee: 0.37% to 1.35% of guaranteed amount (paid annually; can be built into loan or paid separately)
+Documentation and legal charges: ₹3,000 to ₹15,000 (depending on loan complexity)
+Prepayment:
+  - Floating rate: No prepayment penalty (RBI guideline)
+  - Fixed rate term loans: 2% on prepaid principal
+Renewal fee for CC/OD limits: 0.25% to 0.50% of limit + GST (charged annually at renewal)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. TYPICAL APPRAISAL AND APPROVAL PROCESS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Step 1 — Pre-qualification: Copilot collects business profile (type, vintage, turnover, purpose). Indicative loan band communicated.
+Step 2 — Document collection: Full document list shared. Applicant submits all required documents.
+Step 3 — Credit appraisal: Credit team analyses financials, verifies GST/ITR consistency, runs bureau check.
+Step 4 — Field investigation: For loans above ₹50 lakh, bank may conduct site visit to business premises.
+Step 5 — Sanction: Credit committee approves. Sanction letter issued with facility details, covenants, and conditions.
+Step 6 — Documentation and disbursement: Legal documentation executed. For CC/OD, limit activated. For term loans, funds released to vendor or business account.
+
+Turnaround time:
+- Mudra / micro loans (up to ₹10 lakh): 3–7 working days (59-minute in-principle available on government PSB portal)
+- Small enterprise (₹10 lakh to ₹2 crore): 7–15 working days
+- Medium enterprise: 15–30 working days (field investigation required)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. COMMON REJECTION REASONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Business vintage less than 3 years
+- Missing or outdated Udyam Registration Certificate
+- ITR not filed for 2 consecutive years or income not matching bank turnover
+- CIBIL score below 700 (individual or business)
+- Significant mismatch between GST-declared turnover and ITR income (triggers fraud suspicion)
+- Business showing losses in both assessment years
+- Existing NPA on business or personal credit
+- Incomplete documentation — missing bank statements or financials
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10. KEY GOVERNMENT SCHEMES — QUICK REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Scheme      | Loan Limit   | Collateral | Key Benefit
+------------|--------------|------------|--------------------------------------------
+MUDRA-Shishu| Up to ₹50,000| None       | Zero processing fee; micro entrepreneurs
+MUDRA-Kishore| ₹50K–₹5L   | None       | Low interest; Udyam registration required
+MUDRA-Tarun | ₹5L–₹10L   | None       | Covers growth-stage micro businesses
+CGTMSE      | Up to ₹5 cr | None       | Credit guarantee; lender bears lower risk
+ECLGS       | Varies       | None       | Emergency credit post-COVID; floating cap
+PMEGP       | Up to ₹50L  | None       | 15–35% subsidy on project cost; manufacturing
+
+DISCLAIMER: Scheme eligibility and terms are subject to government notifications. Always verify current scheme status with the bank or MSME ministry portal before advising applicants. This document is indicative.

@@ -1,0 +1,118 @@
+GENERAL FAQ — LOAN ORIGINATION KNOWLEDGE BASE
+Internal Reference Document | Loan Origination Copilot
+Last Updated: June 2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION A: ELIGIBILITY AND PRE-QUALIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q: What is the minimum CIBIL score required to get a loan?
+A: The minimum acceptable CIBIL score varies by product. As a general rule: Home Loan requires 650+; Personal Loan requires 700+; Car Loan requires 700+; MSME Loan requires 700+. Scores of 750 and above attract the best interest rates across all products. A score below the minimum does not mean you can never get a loan — you may improve your score by paying existing dues on time and reducing credit card utilisation, then re-apply.
+
+Q: I don't have a CIBIL score because I have never taken a loan. Can I still apply?
+A: Yes. Applicants with no credit history are called NTC (New to Credit). Banks evaluate NTC applicants on income strength, employer profile, and stability. Secured products (Home Loan, Car Loan) are easier to avail for NTC applicants than unsecured ones (Personal Loan). Some banks specifically offer NTC personal loans with slightly higher rates.
+
+Q: What is FOIR and how does it affect my eligibility?
+A: FOIR stands for Fixed Obligation to Income Ratio. It is the percentage of your net monthly income that goes towards repaying all your current loans and credit card dues, plus the EMI of the new loan you are applying for. Most banks cap this at 50%. For example, if you earn ₹60,000 net per month and already pay ₹10,000 in EMIs, you can add a new EMI of up to ₹20,000 (keeping total FOIR at 50%). Higher income applicants (above ₹1 lakh/month) may be allowed up to 55%.
+
+Q: Can I apply jointly with my spouse to increase eligibility?
+A: Yes. Adding a co-applicant — typically a spouse, parent, or adult child — allows the bank to consider combined income. This increases the eligible loan amount. Both applicants are equally responsible for repayment. For Home Loans, joint applications are common and women co-applicants may attract a 0.05% rate concession.
+
+Q: How much loan can I get on my salary?
+A: As a thumb rule: Home Loan — approximately 60x net monthly income over 20 years; Personal Loan — up to 24x net monthly income; Car Loan — up to 10x net monthly income; MSME Loan — based on business turnover and cash flows, not salary. These are rough guides and actual eligibility depends on existing EMIs, credit score, and the specific bank's policy.
+
+Q: I am self-employed and my income on paper (ITR) is lower than my actual earnings. What can I do?
+A: Banks rely on documented income for loan appraisal. If your ITR income is low, your loan eligibility will be lower than your actual earning capacity. Options include: (1) adding a salaried co-applicant, (2) offering additional collateral, (3) filing an amended or revised ITR if the filing was genuinely incorrect (requires CA advice), or (4) waiting until the next ITR cycle reflects higher income. Banks cannot consider undocumented cash income.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION B: INTEREST RATES AND EMI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q: What is the difference between fixed and floating interest rates?
+A: A fixed rate remains the same throughout the loan tenure — your EMI never changes. A floating rate is linked to a benchmark (such as RBI's repo rate) and can go up or down when the benchmark changes. Home Loans are almost always floating in India, by RBI directive. Personal Loans and Car Loans are typically fixed. Floating rates are riskier in a rising rate environment but benefit borrowers when rates fall.
+
+Q: What is EBLR and how does it affect my home loan rate?
+A: EBLR stands for External Benchmark Lending Rate. Since October 2019, all floating rate retail loans (including home loans) must be linked to an external benchmark — most banks use RBI's repo rate. When the RBI raises or lowers the repo rate, your home loan rate changes by the same amount, effective from the next quarterly reset date. This makes rate changes more transparent than the older MCLR system.
+
+Q: How is EMI calculated?
+A: EMI (Equated Monthly Instalment) is calculated using the reducing balance formula: EMI = P × r × (1+r)^n ÷ ((1+r)^n - 1), where P = principal loan amount, r = monthly interest rate (annual rate ÷ 12 ÷ 100), and n = tenure in months. In the early years, a larger portion of the EMI goes towards interest; in later years, more goes towards principal repayment.
+
+Q: Will my EMI change if interest rates go up?
+A: For floating rate loans (Home Loans), yes — when rates rise, either your EMI increases or your tenure is extended (bank's choice, usually communicated in advance). For fixed rate loans (Personal Loan, Car Loan), the EMI stays constant for the entire tenure regardless of rate changes.
+
+Q: Can I reduce my EMI burden during the loan tenure?
+A: Yes, through partial prepayment. Making a lump-sum payment reduces the outstanding principal. For floating rate loans, no prepayment penalty applies (RBI guideline). You can choose either a lower EMI or a shorter tenure after prepayment — a shorter tenure saves more on interest. Fixed rate loans carry prepayment charges — check your sanction letter for specifics.
+
+Q: What is a moratorium and is it available?
+A: A moratorium is a period at the start of the loan during which you pay only interest (no principal). It is common in Home Loans under construction (Pre-EMI interest), MSME term loans, and was offered broadly during COVID-19. Standard home loans on ready property, personal loans, and car loans do not carry a moratorium — EMI repayment starts from the month following disbursement.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION C: DOCUMENTATION AND PROCESS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q: How long does it take to get a loan approved?
+A: Timelines vary by product and completeness of documents. Car Loan (salaried): 1–3 working days. Personal Loan (pre-approved): Same day. Personal Loan (new application): 2–5 working days. Home Loan: 7–15 working days (includes property legal and valuation check). MSME Loan (small): 3–10 working days. MSME Loan (large): 15–30 working days. Incomplete documentation is the most common cause of delays.
+
+Q: Is Aadhaar mandatory for all loan applications?
+A: Yes. Aadhaar is used for e-KYC (digital verification) across all bank products. For loans above ₹50,000, Aadhaar-based OTP verification is mandatory under RBI/PMLA guidelines. Applicants without Aadhaar must complete full in-person KYC with original documents at the branch.
+
+Q: What is a NACH mandate and why is the bank asking me to sign it?
+A: NACH (National Automated Clearing House) is a system that allows the bank to automatically debit your EMI from your linked bank account on the due date each month. Signing a NACH mandate is mandatory for loan disbursement. It ensures timely repayment and avoids late payment charges. You can change the linked account later by submitting a new mandate.
+
+Q: What happens if I miss an EMI?
+A: A missed EMI is reported to credit bureaus (CIBIL, Experian, Equifax) after 30 days of non-payment. Late payment penalty (typically 2–3% per month on overdue amount) is charged from the due date. Missing 3+ consecutive EMIs results in the loan being classified as NPA (Non-Performing Asset), which severely impacts your credit score and may initiate recovery proceedings. It is strongly advisable to contact the bank proactively if you anticipate repayment difficulty.
+
+Q: What is the difference between sanction and disbursement?
+A: Sanction is the bank's written approval of the loan — it specifies the amount, rate, tenure, and conditions but does not release funds. Disbursement is the actual release of funds. For Home Loans, disbursement happens only after property registration and mortgage creation. For Personal and Car Loans, disbursement typically follows within 24–48 hours of sanction.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION D: PRODUCT COMPARISON
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q: Should I take a Home Loan or a Personal Loan for home renovation?
+A: For major renovation (above ₹5 lakh), a Home Loan top-up (if you have an existing home loan) is almost always cheaper — rates are 8.5–10% vs 11–18% for personal loans. If you don't have an existing home loan, some banks offer a Home Improvement Loan at home-loan rates against a property mortgage. For smaller renovations (under ₹3 lakh), a personal loan is quicker and avoids property-related documentation.
+
+Q: What is the difference between a New Car Loan and a Loan Against Car?
+A: A New Car Loan finances the purchase of a new car — the car being purchased becomes the collateral. A Loan Against Car is a different product where you pledge a car you already own to get cash — this is not in scope for this copilot. Also note that a New Car Loan is disbursed directly to the dealer, not to the borrower.
+
+Q: I need funds urgently. Which loan is fastest to get?
+A: Personal Loan (pre-approved for existing customers): Same day. Car Loan: 1–3 days. MSME Mudra Loan: 3–7 days. Personal Loan (new applicant): 2–5 days. Home Loan: 7–15 days (slowest because of property checks). If speed is the priority and you have a good credit profile, a personal loan or a pre-approved offer from your existing bank is the fastest option.
+
+Q: Can I use a Personal Loan to pay the down payment for a Home Loan?
+A: This is explicitly not permitted by most banks. Banks ask borrowers to declare the source of the down payment and require it to come from own savings. Taking a personal loan for the down payment artificially inflates your FOIR and is considered a red flag during credit appraisal. It can lead to rejection of both the personal loan and the home loan.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION E: ESCALATION AND HUMAN HANDOFF
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q: When should I speak to a Relationship Manager instead of using this copilot?
+A: You should escalate to a Relationship Manager (RM) when: (1) you have a complex income structure (multiple employers, rental income, foreign income), (2) your loan requirement is above the product's standard limits, (3) there is a mismatch between your documents and the eligibility criteria, (4) you want to negotiate rates or fees on a large loan, (5) you have received a partial approval or conditional sanction and need clarification, or (6) the copilot has flagged your case as High Risk or recommended escalation.
+
+Q: This copilot says my case is borderline or high risk. What does that mean?
+A: It means one or more of your inputs — income, credit score, FOIR, or documentation — does not comfortably meet the standard eligibility criteria. It does not mean your application will be rejected. It means a Relationship Manager needs to review your case individually, potentially with additional documentation or an explanation. Banks have discretionary powers to approve borderline cases that show strong qualitative factors (stable employment, strong employer, additional collateral).
+
+Q: Can this copilot approve my loan or give me a guaranteed rate?
+A: No. This copilot provides indicative eligibility and EMI estimates based on the information you share, using published policy guidelines. It cannot access your actual credit bureau report, verify your income, or appraise your property. Final approval, interest rate, and sanction are decisions made by the bank's credit team after full documentation and appraisal. Any figure shared by this copilot is indicative only and not a commitment.
+
+Q: I want to make a complaint about my existing loan account. Can this help?
+A: This copilot covers the loan origination (application) journey only. For complaints, billing disputes, interest rate queries on existing loans, or account service requests, please contact the bank's customer care at the number on your loan statement, visit the nearest branch, or log in to your net banking portal. If unresolved, you may also approach the RBI Banking Ombudsman.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION F: REGULATORY CONTEXT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q: What is the RBI's role in home loans and personal loans?
+A: The Reserve Bank of India (RBI) regulates all banks and NBFCs in India. Key RBI directives relevant to retail lending include: (1) Home loan rates must be linked to an external benchmark (repo rate) — no discretionary rate-setting; (2) No prepayment penalty on floating rate loans; (3) LTV ratios for home loans are capped by RBI regulation; (4) Banks must report to credit bureaus; (5) Fair Practices Code mandates transparent communication of all charges. RBI's Banking Ombudsman Scheme provides a grievance redressal mechanism for unresolved complaints.
+
+Q: What is KYC and why does every bank ask for it?
+A: KYC (Know Your Customer) is a mandatory regulatory requirement under RBI and PMLA (Prevention of Money Laundering Act) guidelines. Banks must verify the identity and address of every customer before extending credit. The standard KYC documents are Aadhaar (identity + address) and PAN (tax identity). Failure to complete KYC means the bank cannot process your application.
+
+Q: What are my rights as a loan applicant?
+A: As an applicant, you have the right to: (1) receive a written explanation if your application is rejected; (2) know all fees and charges before signing the loan agreement; (3) receive a copy of the loan agreement; (4) prepay a floating rate loan without penalty; (5) switch from a higher to a lower rate if market rates fall (subject to reset cycles); (6) approach the Banking Ombudsman if your complaint is unresolved after 30 days. The bank is not obligated to approve your application — credit decisions are the bank's discretion within regulatory limits.
+
+DISCLAIMER: This FAQ document is intended for informational purposes within the Loan Origination Copilot prototype. Interest rates, fees, and policy terms are indicative and based on publicly available information as of June 2026. They do not constitute a financial offer, legal advice, or binding commitment from any bank. Always verify current terms directly with the lending institution before making financial decisions.

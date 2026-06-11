@@ -1,0 +1,182 @@
+RETAIL LENDING POLICY — NEW CAR LOAN
+Internal Reference Document | Loan Origination Knowledge Base
+Last Updated: June 2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PRODUCT OVERVIEW AND HARD SCOPE BOUNDARIES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A New Car Loan is a secured credit facility for the purchase of a brand-new passenger car from an authorized dealership. The vehicle being purchased serves as collateral through hypothecation in favour of the bank.
+
+THIS PRODUCT COVERS:
+- Brand-new passenger cars (hatchbacks, sedans, SUVs, MUVs) purchased from manufacturer-authorized dealerships
+- On-road price financing including ex-showroom price, road tax, registration charges, and insurance (first year)
+- Both salaried and self-employed individuals
+
+THIS PRODUCT DOES NOT COVER — AGENT MUST REDIRECT:
+- Used, second-hand, or pre-owned vehicles of any age → Redirect: used car loan product (not in scope for this copilot)
+- Two-wheelers: motorcycles, scooters, mopeds, e-bikes → Redirect: two-wheeler loan product (not in scope)
+- Three-wheelers, auto-rickshaws, e-rickshaws → Redirect: commercial vehicle loan (not in scope)
+- Commercial vehicles: taxis, trucks, school buses, goods carriers → Redirect: commercial vehicle loan (not in scope)
+- Refinancing or top-up on an existing car loan → Not available under this product
+- Electric vehicles — covered under same product; mention FAME-II subsidy if applicable
+- Dealer-linked subvented schemes with zero-interest offers → These are marketing arrangements between dealer and financier; bank's standard rates apply unless otherwise notified
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. INTEREST RATES (INDICATIVE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+New car loan rates are typically fixed for the loan tenure and are determined by credit profile and vehicle segment.
+
+Indicative rates (as of June 2026):
+
+Applicant Profile                          | Interest Rate
+------------------------------------------|----------------
+Salaried, CIBIL 760+                      | 8.75% – 9.25%
+Salaried, CIBIL 700–759                   | 9.25% – 10.25%
+Self-employed professional, CIBIL 750+    | 9.50% – 10.50%
+Self-employed non-professional, CIBIL 700+| 10.50% – 12.50%
+Existing bank customer (salary account)   | 0.25% concession on applicable slab
+
+Reference rates: SBI new car loan starts at 8.95% p.a.; HDFC Bank starts at 8.75% p.a. for CIBIL 760+ salaried customers (FY 2026-27).
+
+Note: Electric vehicle (EV) purchases may attract 0.25% rate concession under the bank's Green Mobility initiative, subject to the vehicle being BIS-certified and FAME-II registered.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. LOAN AMOUNT AND LTV (LOAN-TO-VALUE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Loan amount range: ₹3 lakh to ₹20 lakh (standard retail segment)
+For premium / luxury vehicles: up to ₹75 lakh subject to enhanced income verification and credit committee approval. This is outside the standard advisory scope of this copilot.
+
+LTV (Loan-to-Value) ratio:
+- Standard: Up to 85% of the on-road price
+- High CIBIL (800+): Up to 90% of on-road price offered by select banks
+- Minimum down payment by borrower: 10% to 15% of on-road price
+
+Note: The on-road price includes ex-showroom price + road tax + registration + insurance (1st year) + accessories (if dealer-fitted). The bank finances the on-road price, not just the ex-showroom price.
+
+Income cap: Maximum eligible loan = the lesser of (85% of on-road price) OR (10x net monthly income)
+Example: Applicant earning ₹40,000/month is eligible for a maximum of ₹4 lakh on the income cap, regardless of the vehicle's on-road price.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. TENURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Minimum tenure: 12 months
+Maximum tenure: 84 months (7 years) for new cars
+
+Recommended tenure guidance:
+- Shorter tenure (12–36 months): Higher EMI, lower interest outgo, faster ownership
+- Longer tenure (60–84 months): Lower EMI, significantly higher total interest paid
+- Most customers choose 36–60 months for a balance of manageable EMI and reasonable interest cost
+
+The copilot should always present EMI for at least 3 tenure options (e.g., 36 / 60 / 84 months) so the applicant can make an informed choice.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. ELIGIBILITY CRITERIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5.1 Age
+- Minimum: 21 years
+- Maximum: 70 years at loan maturity (most banks allow up to 65 for self-employed)
+
+5.2 Income — Salaried
+- Minimum net annual income: ₹2.50 lakh (₹20,833/month)
+- Employment: Permanent employee with at least 1 year of work experience
+- Stable salary credit to bank account (verified via bank statement)
+
+5.3 Income — Self-Employed
+- Minimum net annual income: ₹3 lakh (as per ITR)
+- Business vintage: Minimum 2 years
+- ITR filing: At least 1 year of filed and assessed ITR required
+
+5.4 Credit Score
+- Minimum CIBIL score: 700
+- Preferred: 750 and above for best rates
+- No active NPA, write-off, or settlement in credit bureau report
+
+5.5 FOIR
+- Maximum 50% of net monthly income including the proposed car loan EMI
+- All existing loan EMIs and credit card minimums are included
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. REQUIRED DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6.1 Mandatory for ALL applicants
+- Proforma Invoice (PI) from the authorized dealer: Shows vehicle make, model, variant, ex-showroom price, road tax, insurance, and total on-road price. THIS IS THE SINGLE MOST IMPORTANT DOCUMENT — loan cannot be processed without it.
+- Aadhaar Card (KYC)
+- PAN Card (mandatory)
+- Address proof (Aadhaar or utility bill not older than 3 months)
+
+6.2 Income Documents — Salaried
+- Latest 3 months' salary slips
+- Last 6 months' bank statement (salary account)
+- Form 16 for last financial year (optional but preferred for higher loan amounts)
+
+6.3 Income Documents — Self-Employed
+- ITR with income computation for last 1–2 financial years
+- Last 6 months' bank statement (business/savings account)
+- Business registration proof (GST certificate / Shop Act)
+
+6.4 No property documents required
+A new car loan is secured against the vehicle itself (hypothecation). No property, fixed deposit, or other collateral is required. This distinguishes it from a Home Loan.
+
+6.5 Post-disbursement documents (submitted within 90 days)
+- RC (Registration Certificate) with bank's hypothecation endorsement
+- Comprehensive insurance policy with bank named as hypothecatee
+
+Note: These documents are submitted after purchase and registration. The bank may place a hold on future credit if these are not submitted within 90 days.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. PROCESSING FEES AND CHARGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Processing fee: 0.40% to 1.00% of loan amount + GST (minimum ₹1,500; maximum ₹5,000)
+Prepayment / foreclosure:
+  - Within 6 months: Not permitted
+  - 7–12 months: 5% of outstanding principal
+  - After 12 months: 3% of outstanding principal
+  - After 24 months: 2% of outstanding principal
+Duplicate RC / NOC charges: ₹500 (for issuing No Objection Certificate on full repayment)
+Late payment: 2% per month on overdue EMI amount
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. APPLICATION AND DISBURSEMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Step 1 — Pre-qualification: Copilot collects income, employment type, desired vehicle (on-road price), down payment ability. Provides indicative loan amount and EMI range.
+Step 2 — Application: Customer visits branch or applies online. Submits proforma invoice and income documents.
+Step 3 — Credit check and approval: Bank verifies documents, runs CIBIL, calculates FOIR. Approval typically in 1–3 working days for salaried applicants.
+Step 4 — Loan agreement execution: Customer signs loan agreement and hypothecation deed (can be done at dealership in tie-up banks).
+Step 5 — Disbursement: Funds transferred directly to the dealership's bank account. Customer pays the down payment directly to the dealer. Bank does not disburse to the customer's personal account.
+Step 6 — Vehicle collection: Customer collects vehicle and registration documents from the dealer.
+
+Typical turnaround: Same-day to 3 working days for salaried applicants with clean profiles.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. INDICATIVE EMI REFERENCE TABLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EMI per ₹1 lakh of new car loan (approximate):
+
+Tenure   | @ 8.75% p.a. | @ 9.25% p.a. | @ 10.50% p.a.
+---------|--------------|--------------|---------------
+1 year   |   ₹8,729     |   ₹8,753     |   ₹8,815
+2 years  |   ₹4,576     |   ₹4,601     |   ₹4,663
+3 years  |   ₹3,167     |   ₹3,191     |   ₹3,252
+5 years  |   ₹2,074     |   ₹2,098     |   ₹2,149
+7 years  |   ₹1,571     |   ₹1,595     |   ₹1,649
+
+Example: ₹8 lakh car loan at 9.25% for 5 years → EMI ≈ ₹8 × ₹2,098 = ₹16,784/month.
+
+DISCLAIMER: These figures are indicative only. Final rate and EMI depend on credit appraisal outcome. Disbursement is subject to complete document submission and credit approval. This is not a loan commitment.

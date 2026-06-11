@@ -1,0 +1,49 @@
+# Langfuse self-hosted — Task 2.1 (Bucket 2 / Phase 3)
+#
+# Usage:
+#   docker compose up -d          # start in background
+#   docker compose logs -f        # watch logs
+#   docker compose down           # stop (data persisted in volume)
+#
+# After first start:
+#   1. Open http://localhost:3000
+#   2. Sign up for a local account
+#   3. Create a project → copy its Public Key and Secret Key
+#   4. Paste both into your .env file (LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY)
+
+version: "3.8"
+
+services:
+  langfuse-server:
+    image: langfuse/langfuse:2
+    depends_on:
+      langfuse-db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://langfuse:langfuse@langfuse-db:5432/langfuse"
+      NEXTAUTH_SECRET: "change-me-at-least-32-chars-long-abc"
+      SALT: "change-me-at-least-32-chars-long-xyz"
+      NEXTAUTH_URL: "http://localhost:3000"
+      TELEMETRY_ENABLED: "false"
+      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: "true"
+
+  langfuse-db:
+    image: postgres:15-alpine
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U langfuse"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_USER: langfuse
+      POSTGRES_PASSWORD: langfuse
+      POSTGRES_DB: langfuse
+    volumes:
+      - langfuse_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  langfuse_postgres_data:
+    driver: local
