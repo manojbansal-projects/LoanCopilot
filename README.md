@@ -84,9 +84,9 @@ streamlit run deployment/app.py
 
 | Phase | Description | Key Files | Status |
 |-------|-------------|-----------|--------|
-| 2 | Rules-based CLI agent | `agent/core_agent.py` | Pending |
-| 3 | LLM + Langfuse + prompt A/B | `agent/prompts.py`, `monitoring/langfuse_logger.py` | Pending |
-| 4 | RAG with ChromaDB | `retrieval/`, `scripts/ingest_documents.py` | Pending |
+| 2 | Rules-based CLI agent | `agent/core_agent.py` | Complete |
+| 3 | LLM + Langfuse + prompt A/B | `agent/prompts.py`, `monitoring/langfuse_logger.py` | Complete |
+| 4 | RAG with ChromaDB | `retrieval/`, `scripts/ingest_documents.py` | Complete |
 | 5 | 5-tool AgentExecutor (ReAct) | `tools/`, `tools/tool_registry.py` | Pending |
 | 6 | Multi-turn memory | `agent/memory.py` | Pending |
 | 7 | Adaptive behaviour (RLHF) | `policy_rlhf/` | Pending |

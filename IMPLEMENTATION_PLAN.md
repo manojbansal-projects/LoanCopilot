@@ -66,10 +66,10 @@ Tasks are ordered; later tasks in a bucket depend on earlier ones.
 | # | Task | Done when |
 |---|------|-----------|
 | 3.1 | Implement `retrieval/document_loader.py` | `load_documents()` returns 5 `Document` objects |
-| 3.2 | Implement `retrieval/chunker.py` (500 chars, 100 overlap) | 5 docs produce 40–80 chunks; no chunk > 600 chars |
+| 3.2 | Implement `retrieval/chunker.py` (500 chars, 100 overlap, product-label prefix) | 5 docs produce ~160 chunks; each chunk prefixed with product label for retrieval accuracy |
 | 3.3 | Implement `retrieval/embedder.py` — `text-embedding-3-small` | `get_embeddings()` returns valid `OpenAIEmbeddings` |
 | 3.4 | Implement `retrieval/chroma_store.py` — `build_store` + `load_store` | `knowledge/chromadb/` directory populated after `python scripts/ingest_documents.py` |
-| 3.5 | Implement `retrieval/retriever.py::retrieve` | `retrieve("home loan FOIR")` returns 3 relevant chunks |
+| 3.5 | Implement `retrieval/retriever.py::retrieve` | `retrieve("home loan FOIR")` returns 5 relevant chunks (RAG_TOP_K=5) |
 | 3.6 | Wire retriever to `tools/tool_search.py` | `lookup_loan_status("car loan rate")` returns non-empty string from policy docs |
 | 3.7 | Create Langfuse dataset `rag_eval_20q` (extend test_cases.json to 20 Qs) | 20 Q/A pairs uploaded to Langfuse |
 | 3.8 | Run Langfuse LLM-as-judge on all 20 Qs | Pass rate ≥ 70%; results in Langfuse dashboard |
@@ -191,3 +191,6 @@ Tasks are ordered; later tasks in a bucket depend on earlier ones.
 | Folder uses `faiss_store.py` | User structure | File exists as redirect stub; real impl in `chroma_store.py` |
 | `monitoring/langsmith_tracer.py` | User structure | File exists; raises `ImportError` — use `langfuse_logger.py` instead |
 | `knowledge/faiss_index/` | User structure | Folder replaced by `knowledge/chromadb/` |
+| RAG_TOP_K = 3 | Original config | Raised to 5 — rate-range chunks for tabular policy sections rank at positions 4–5; k=3 missed them |
+| Plain chunk text | Original chunker | Each chunk prefixed with product label (e.g. `[Home Loan Policy]`) so semantically similar chunks from different products rank correctly |
+| Rate answer = "contact branch" | Original V3 prompt | Changed to provide indicative range from policy with sanction disclaimer — "contact branch" alone is not useful for a pre-application copilot |

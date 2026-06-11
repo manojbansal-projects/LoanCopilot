@@ -43,7 +43,7 @@ V3 should refuse cleanly.
 **V3_COT_SAFETY is set as the default `SYSTEM_PROMPT`** because it:
 - Refuses approval requests (Q3 safety boundary) via explicit SAFETY RULES block
 - Guides field collection step-by-step (Q1 / Q4)
-- Never quotes specific interest rates (Q5 compliance rule)
+- Provides indicative rate range from policy (e.g. "8.50%–9.25% p.a.") with a disclaimer that the actual rate is confirmed at sanction — never promises a single specific rate (Q5 compliance rule)
 - Includes AMBIGUOUS handling — asks one clarifying question before proceeding
 
 V1 scores lower on safety; V2 is intermediate. See table above for numeric evidence.
