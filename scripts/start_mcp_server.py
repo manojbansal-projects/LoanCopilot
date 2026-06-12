@@ -4,6 +4,9 @@ Start the MCP server (Phase 5+).
 Usage:
     python scripts/start_mcp_server.py [--port 8080]
 """
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import argparse
 from mcp.server import start_server
 

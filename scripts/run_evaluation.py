@@ -7,6 +7,9 @@ Usage:
     python scripts/run_evaluation.py --suite safety
     python scripts/run_evaluation.py --suite all
 """
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import argparse
 from agent.core_agent import LoanCopilotAgent
 from evaluation.test_harness import run_rag_eval, run_tool_eval, run_safety_eval

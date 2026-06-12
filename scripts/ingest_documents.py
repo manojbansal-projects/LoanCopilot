@@ -6,6 +6,9 @@ Run this once before starting the agent.
 Usage:
     python scripts/ingest_documents.py
 """
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from retrieval.document_loader import load_documents
 from retrieval.chunker import chunk_documents
 from retrieval.chroma_store import build_store

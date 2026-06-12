@@ -183,6 +183,28 @@ def _extract_profile(text: str, profile: CustomerProfile,
             if m:
                 profile.credit_score = int(m.group(1))
 
+    # ── Customer name ─────────────────────────────────────────────────────────
+    if profile.customer_name is None or last_asked == "customer_name":
+        # Search on lowercased text; title-case the extracted name
+        _NOT_A_NAME = {
+            'salaried', 'self', 'employed', 'business', 'going', 'looking',
+            'trying', 'planning', 'interested', 'not', 'also', 'here',
+            'available', 'ready', 'working', 'earning', 'seeking', 'applying',
+            'a', 'an', 'the',
+        }
+        m = re.search(
+            r'(?:my name is|this is|call me|name\s*[:\s])\s*'
+            r'([a-z]+(?:\s+[a-z]+){0,3})',
+            lower,
+        )
+        if not m:
+            m = re.search(r"(?:i am|i'm)\s+([a-z]+(?:\s+[a-z]+){0,2})", lower)
+        if m:
+            candidate = m.group(1).strip()
+            first_word = candidate.split()[0]
+            if first_word not in _NOT_A_NAME and not first_word[0].isdigit():
+                profile.customer_name = candidate.title()
+
 
 # ── FAQ templates (Phase 2 — no LLM) ───────────────────────────────────────
 
@@ -238,9 +260,21 @@ class LoanCopilotAgent:
 
     # ── Public API ────────────────────────────────────────────────────────────
 
+    _RESET_PHRASES = frozenset({
+        "start over", "reset", "restart", "begin again",
+        "start again", "new session", "clear session", "start fresh",
+    })
+
     def chat(self, user_input: str) -> str:
         """Process one user turn and return the agent response."""
         self.state.turn_count += 1
+        if user_input.strip().lower() in self._RESET_PHRASES:
+            self.reset()
+            return (
+                "Sure, I've cleared our previous conversation. "
+                "Let's start fresh — which loan product can I help you with today? "
+                "(Home / Personal / MSME / New Car)"
+            )
         if self.phase == 2:
             return self._rules_response(user_input)
         return self._llm_response(user_input)
@@ -250,6 +284,20 @@ class LoanCopilotAgent:
         self.state.reset()
         if self.memory:
             self.memory.clear()
+
+    def inject_context(self, user_message: str, assistant_message: str) -> None:
+        """Inject a pre-canned exchange into conversation memory without calling the LLM.
+
+        Call this when a product is selected via a shortcut (UI button, terminal menu)
+        and a rule-based intake prompt is shown to the user.  Syncing the exchange here
+        means the LLM sees the product choice on the user's very next turn and never
+        asks 'which loan type?' again.
+        """
+        self.state.turn_count += 1
+        _extract_profile(user_message, self.state.profile)
+        if self.memory:
+            self.memory.chat_memory.add_user_message(user_message)
+            self.memory.chat_memory.add_ai_message(assistant_message)
 
     # ── Phase 2: rules-based (no LLM) ────────────────────────────────────────
 
@@ -371,11 +419,24 @@ class LoanCopilotAgent:
                 "loan_amount": p.loan_amount,
                 "monthly_income": p.monthly_income,
                 "escalation_reason": elig.get("escalation_note", "Amount exceeds advisory ceiling"),
+                "gender": p.gender or "",
             })
             lines.append(f"Status : ⚠  Referred to Relationship Manager")
-            lines.append(f"Reason : {esc['reason']}")
-            lines.append("")
-            lines.append(esc["customer_message"])
+            # esc may have validation_errors if contact details not yet collected
+            # (normal in Phase 2 rules path — no contact collection in that flow)
+            if esc.get("escalation_saved"):
+                lines.append(f"Reason : {esc['escalation_reason']}")
+                lines.append("")
+                lines.append(esc["customer_message"])
+            else:
+                reason = elig.get("escalation_note", "Amount exceeds advisory ceiling")
+                lines.append(f"Reason : {reason}")
+                lines.append("")
+                lines.append(
+                    "Your query requires a detailed review by our Relationship Manager. "
+                    "To proceed, please share your name, mobile number, and email so we "
+                    "can arrange a callback within 1 business day."
+                )
             lines.append("")
             lines.append("(All assessments are indicative and subject to formal credit appraisal.)")
             return "\n".join(lines)
@@ -561,20 +622,116 @@ class LoanCopilotAgent:
         return response.content
 
     def _executor_response(self, user_input: str) -> str:
-        """Phase 5+: invoke the ReAct executor with tools."""
-        executor = self._get_executor()
+        """Phase 5+: invoke the LangGraph tool-calling agent.
+
+        LangChain 1.3.x uses create_agent() which returns a LangGraph
+        CompiledStateGraph. Input/output use the messages protocol:
+          input  → {"messages": [*history, HumanMessage(user_input)]}
+          output → {"messages": [..., AIMessage(final_response)]}
+        Memory is managed manually here after each turn.
+        """
+        from langchain_core.messages import HumanMessage
+
+        agent = self._get_executor()
+        history = self.memory.chat_memory.messages if self.memory else []
+
         try:
-            result = executor.invoke(
-                {"input": user_input,
-                 "chat_history": self.memory.chat_memory.messages if self.memory else []},
+            result = agent.invoke(
+                {"messages": [*history, HumanMessage(content=user_input)]},
                 config={"callbacks": self._get_callbacks()},
             )
-            return result["output"]
+            # Last message in the output list is the final AI response
+            response_text = result["messages"][-1].content
         except Exception as exc:
             return (
                 "I'm sorry, I encountered an issue processing your request. "
                 f"Please try again. ({type(exc).__name__})"
             )
+
+        # Manually update sliding-window memory so history grows across turns
+        if self.memory:
+            self.memory.chat_memory.add_user_message(user_input)
+            self.memory.chat_memory.add_ai_message(response_text)
+
+        # Keep SessionState.profile in sync so phase6 verification and
+        # the Phase 2 fallback path always have an up-to-date profile.
+        _extract_profile(user_input, self.state.profile)
+
+        # Phase 7: score any policy violations in Langfuse (log-only, don't block)
+        try:
+            from policy_rlhf.policy_checker import check_response as _check_policy
+            violations = _check_policy(response_text)
+            if violations:
+                from monitoring.langfuse_logger import score_session
+                hex_id = self.session_id.replace("-", "").lower()
+                score_session(
+                    trace_id=hex_id,
+                    score_name="policy_compliance",
+                    value=0.0,
+                    comment=f"Violations: {[v['rule_id'] for v in violations]}",
+                )
+        except Exception:
+            pass
+
+        # Attach full conversation history to any escalation saved this turn
+        try:
+            self._try_attach_conversation(result["messages"])
+        except Exception:
+            pass
+
+        return response_text
+
+    def _try_attach_conversation(self, messages) -> None:
+        """Scan the turn's messages for a successful generate_escalation_summary
+        call and, if found, write the full conversation history into that record."""
+        import json as _json
+        from langchain_core.messages import ToolMessage
+        for msg in messages:
+            if not isinstance(msg, ToolMessage):
+                continue
+            if getattr(msg, "name", None) != "generate_escalation_summary":
+                continue
+            try:
+                content = msg.content
+                if isinstance(content, str):
+                    tool_result = _json.loads(content)
+                elif isinstance(content, list):
+                    text = next((c["text"] for c in content if c.get("type") == "text"), "")
+                    tool_result = _json.loads(text) if text else {}
+                else:
+                    tool_result = content if isinstance(content, dict) else {}
+                if isinstance(tool_result, dict) and tool_result.get("escalation_saved"):
+                    esc_id = tool_result.get("escalation_id")
+                    if esc_id:
+                        self._attach_history_to_escalation(esc_id)
+            except Exception:
+                pass
+
+    def _attach_history_to_escalation(self, escalation_id: str) -> None:
+        """Append the current conversation turns to an escalation record."""
+        import json as _json
+        from deployment.config import DATA_DIR
+        path = DATA_DIR / "rlhf" / "escalations.json"
+        if not path.exists():
+            return
+        try:
+            records = _json.loads(path.read_text(encoding="utf-8"))
+            history = []
+            if self.memory:
+                for msg in self.memory.chat_memory.messages:
+                    role = "user" if msg.type == "human" else "assistant"
+                    content = str(msg.content)
+                    if len(content) > 600:
+                        content = content[:600] + "…"
+                    history.append({"role": role, "content": content})
+            for r in records:
+                if r.get("escalation_id") == escalation_id:
+                    r["conversation_history"] = history
+                    r["session_id"] = r.get("session_id") or self.session_id
+                    break
+            path.write_text(_json.dumps(records, indent=2, ensure_ascii=False))
+        except Exception:
+            pass
 
     def _get_executor(self):
         if self._executor is None:
@@ -582,28 +739,27 @@ class LoanCopilotAgent:
         return self._executor
 
     def _build_executor(self):
-        """Build a ReAct AgentExecutor with all 5 tools (Phase 5+)."""
-        try:
-            from langchain_classic.agents import AgentExecutor, create_react_agent
-        except ImportError:
-            from langchain.agents import AgentExecutor, create_react_agent  # type: ignore
-        from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+        """Build a LangGraph tool-calling agent with all 5 tools (Phase 5+).
+
+        LangChain 1.3.x create_agent() wraps a LangGraph ReAct loop that uses
+        OpenAI's function-calling API: the LLM decides which tool to call,
+        the graph executes it, and loops until no more tool calls are needed.
+        This is equivalent to the classic AgentExecutor ReAct pattern but more
+        reliable — no text parsing, structured tool calls via the OpenAI API.
+        """
+        from langchain.agents import create_agent
         from tools.tool_registry import get_all_tools
 
         tools = get_all_tools()
-        llm = self._get_llm()
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", self._system_prompt),
-            MessagesPlaceholder(variable_name="chat_history"),
-            ("human", "{input}"),
-            MessagesPlaceholder(variable_name="agent_scratchpad"),
-        ])
-        agent = create_react_agent(llm, tools, prompt)
-        return AgentExecutor(
-            agent=agent,
-            tools=tools,
-            memory=self.memory,
-            verbose=True,
-            max_iterations=10,
-            handle_parsing_errors=True,
+        llm   = self._get_llm()
+
+        # Inject the real session UUID so the LLM can pass it as session_id
+        # when calling generate_escalation_summary.  Without this the LLM has
+        # no way to know the value and passes a placeholder like "agent.session_id".
+        hex_sid = self.session_id.replace("-", "").lower()
+        system_prompt = self._system_prompt.replace(
+            "(available as agent.session_id)",
+            f'— use this exact value: "{hex_sid}"',
         )
+
+        return create_agent(llm, tools, system_prompt=system_prompt)

@@ -14,17 +14,24 @@ def record_feedback(
     session_id: str,
     turn: int,
     agent_response: str,
-    rating: int,          # 1 = helpful, 0 = not helpful
+    rating: int,               # 1–5 star scale (1 = very poor, 5 = excellent)
     comment: str = "",
+    feedback_type: str = "per_turn",  # "per_turn" | "session"
 ) -> None:
-    """Append a feedback record (PII-masked) to the persistent JSON store."""
+    """Append a feedback record (PII-masked) to the persistent JSON store.
+
+    rating must be 1–5; values outside this range are clamped silently.
+    feedback_type distinguishes quick per-turn signals from end-of-session ratings.
+    """
+    rating = max(1, min(5, int(rating)))
     entry = {
         "id": str(uuid.uuid4()),
         "session_id": session_id,
         "turn": turn,
+        "feedback_type": feedback_type,
         "response_preview": mask(agent_response[:200]),
         "rating": rating,
-        "comment": mask(comment),
+        "comment": mask(comment) if comment else "",
         "ts": datetime.utcnow().isoformat(),
     }
     store = _load_store()

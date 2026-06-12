@@ -13,10 +13,12 @@ class CustomerProfile:
     loan_product: Optional[str] = None        # home / personal / msme / car
     monthly_income: Optional[float] = None    # net take-home, INR
     age: Optional[int] = None
+    gender: Optional[str] = None             # male / female / other
     employment_type: Optional[str] = None     # salaried / self_employed / business
     credit_score: Optional[int] = None
     loan_amount: Optional[float] = None       # INR
     tenure_months: Optional[int] = None
+    customer_name: Optional[str] = None       # first or full name for escalation
     # Extended fields (collected progressively)
     existing_emi_obligations: Optional[float] = None
     property_value: Optional[float] = None    # for home loan LTV

@@ -31,16 +31,95 @@ Bot:  [Calls check_eligibility → PASS, FOIR ~42%, no escalation]
 
 ## Demo 2 — Escalation Trigger (MSME ₹5 Crore)
 
-**Shows:** Ceiling breach → escalation summary → RM handoff
+**Shows:** Ceiling breach → step-by-step contact collection → mobile validation error →
+email validation error → optional field skipped → closure with personalised callback
+confirmation. Demonstrates that the copilot never loses a lead due to a data-entry mistake.
 
 ```
+Turn 1
 User: I need a ₹5 crore MSME loan for my textile manufacturing unit.
-Bot:  [Calls check_eligibility → advisory ceiling ₹2Cr breached]
-      [Calls generate_escalation_summary]
-      Your requested amount of ₹5 crore exceeds our advisory digital ceiling.
-      A Relationship Manager will contact you within 1 business day to discuss
-      a bespoke credit structure. Reference: ESC-20260610-001.
+Bot:  Great, I can help assess this! A few quick questions first.
+      What is your approximate monthly income or take-home from the business?
+
+Turn 2
+User: Around ₹3 lakh per month. Business has been running for 6 years,
+      and we have Udyam registration.
+Bot:  Excellent. Do you know your approximate CIBIL or business credit score?
+
+Turn 3
+User: Around 720 I think.
+Bot:  [Calls check_eligibility]
+      → loan_amount ₹5,00,00,000 > ceiling ₹2,00,00,000 → escalate_to_rm: True
+
+      Based on your profile you appear indicatively viable for MSME financing —
+      however, ₹5 crore exceeds the digital advisory limit of ₹2 crore for
+      this channel. Your case needs to be reviewed by an MSME Relationship
+      Specialist who can structure a bespoke credit facility.
+
+      I'd like to register your details so a specialist can call you back
+      within 1 business day. Could you share your full name?
+
+Turn 4
+User: Rajesh Mehta.
+Bot:  Thank you, Rajesh. What is your 10-digit mobile number?
+
+Turn 5
+User: 78654 321
+Bot:  That looks incomplete — I need a 10-digit Indian mobile number starting
+      with 6, 7, 8, or 9 (e.g., 98XXXXXXXX). Could you re-enter the full number?
+
+      ↳ [Validation: 7865432 — 7 digits, too short → validation_error returned]
+
+Turn 6
+User: Oh sorry — 9876543210.
+Bot:  Got it. And your email address so the specialist can also send you a
+      written summary?
+
+Turn 7
+User: rajesh.mehta@
+Bot:  That email address looks incomplete — the part after "@" is missing
+      (e.g., gmail.com). Could you re-enter your full email address?
+
+      ↳ [Validation: regex fullmatch fails on "rajesh.mehta@" → validation_error returned]
+
+Turn 8
+User: rajesh.mehta@gmail.com
+Bot:  Perfect. Just one optional question — may I know your gender
+      (male / female / other)? This helps our specialist personalise
+      the conversation. Feel free to skip if you prefer.
+
+Turn 9
+User: Skip that, not comfortable sharing.
+Bot:  Absolutely fine, Rajesh. Last question — what time of day works
+      best for a callback? For example: "mornings", "after 6 PM",
+      "weekday afternoons". This is optional too.
+
+Turn 10
+User: Evenings after 7 PM on weekdays.
+Bot:  [Calls generate_escalation_summary]
+      → gender: "" (skipped), preferred_contact_time: "Evenings after 7 PM on weekdays"
+      → mobile validated: 9876543210 ✓, email validated: rajesh.mehta@gmail.com ✓
+      → escalation_saved: True, escalation_id: A3F2B9C1
+
+      Thank you, Rajesh! Your request has been registered successfully.
+
+      ✅  A Relationship Specialist will call you back on the number ending
+          in **3210**, preferably on a weekday evening after 7 PM — within
+          1 business day.
+      ✅  A written summary will also be sent to rajesh.mehta@gmail.com.
+
+      Reference ID: A3F2B9C1 — please keep this handy for follow-up.
+
+      Is there anything else I can help you with while you wait?
 ```
+
+**What the RM receives** — a pre-call briefing document with:
+- INTERACTION DETAILS: date/time of chat, channel, best time = "Evenings after 7 PM on weekdays"
+- CONTACT: Rajesh Mehta, full mobile 9876543210, email rajesh.mehta@gmail.com
+- CUSTOMER PROFILE: ₹3L/month income, business 6 yrs, CIBIL ~720
+- ESCALATION REASON: ₹5 Cr requested — exceeds ₹2 Cr advisory ceiling
+- SUGGESTED TALKING POINTS: 6 MSME-specific bullets (Udyam cert, DSCR, CGTMSE, etc.)
+- CONVERSATION SUMMARY: brief recap of what was already discussed
 
 ---
 
@@ -74,11 +153,31 @@ Bot:  (Does NOT re-ask income or employment type already collected)
 
 ## Demo 5 — Feedback and Adaptation (Phase 7)
 
-**Shows:** Thumbs-up/down collected; Langfuse score posted; adaptation signal logged
+**Shows:** 1–5 star rating + optional comment collected; Langfuse score posted; adaptation signal logged
 
 ```
 Bot:  Your EMI estimate is ₹10,543/month. Does this answer your question?
-User: [👍 Helpful]
-Bot:  (records rating=1 in data/rlhf/feedback_store.json, posts score to Langfuse)
-      Glad to help! Is there anything else you'd like to know?
+
+      [Rate this response:]
+      ☆ ☆ ☆ ☆ ☆   ← star selector rendered by st.feedback("stars")
+
+User: [★★★★ 4 stars — clicks 4th star]
+
+Bot UI: You selected ★★★★ — add a comment below (optional):
+        ┌──────────────────────────────────────────────────────┐
+        │ What was helpful or could be improved?               │
+        └──────────────────────────────────────────────────────┘
+        [Submit feedback]
+
+User: "EMI range was clear but I wanted to know processing fees too."
+      [Submit feedback]
+
+Bot:  (records rating=4, comment=masked text in data/rlhf/feedback_store.json)
+      (posts score=0.75 to Langfuse — normalized from 4★ → (4-1)/4 = 0.75)
+      ★★★★  Feedback recorded — "EMI range was clear but…" — thank you
 ```
+
+**Adaptation trigger thresholds:**
+- Avg normalized < 0.60  (≈ < 3.4★)  →  `adapt='increase_empathy'`  — EMPATHY_PREFIX prepended for new sessions
+- Avg normalized ≥ 0.85  (≈ ≥ 4.4★)  →  `adapt='maintain'`  — no change
+- In between  →  `adapt='neutral'`  — no change

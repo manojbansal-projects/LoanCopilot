@@ -64,6 +64,23 @@ def get_langfuse_callback(
     try:
         # Langfuse v4 trace_id must be 32 lowercase hex chars (UUID without dashes)
         hex_id = session_id.replace("-", "").lower() if session_id else None
+
+        if hex_id:
+            # Ingest a trace-create event so Langfuse records session_id.
+            # Without this, the v4 CallbackHandler only sets trace_id but not
+            # session_id, so traces appear ungrouped in the Langfuse UI.
+            import uuid as _uuid
+            from datetime import datetime, timezone
+            from langfuse.api.ingestion import TraceBody, TraceEvent
+            _client().api.ingestion.batch(batch=[
+                TraceEvent(
+                    type="trace-create",
+                    body=TraceBody(id=hex_id, session_id=hex_id, tags=tags),
+                    id=str(_uuid.uuid4()),
+                    timestamp=datetime.now(timezone.utc).isoformat(),
+                )
+            ])
+
         trace_ctx = {"trace_id": hex_id} if hex_id else None
         return _CallbackHandler(trace_context=trace_ctx)
     except Exception:
