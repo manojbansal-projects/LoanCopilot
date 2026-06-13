@@ -766,6 +766,10 @@ with tab_rm:
 
     lats = st.session_state.get("latencies", [])
     log_entries = read_recent(20)
+    # P95 from persisted log (survives hot-reloads); fall back to session lats only
+    _log_lats = [r["latency_ms"] for r in read_recent(500)
+                 if r.get("latency_ms", 0) > 0 and not r.get("blocked")]
+    _lats_for_p95 = _log_lats or lats
 
     from policy_rlhf.policy_updater import analyse_feedback
     fb_signal = analyse_feedback() if len(fb_records) >= 5 else {}
@@ -780,8 +784,8 @@ with tab_rm:
     k3.metric("✅ Resolved", n_resolved)
     avg_stars = fb_signal.get("avg_stars")
     k4.metric("Avg rating", f"{avg_stars} ★" if avg_stars else "—")
-    if lats:
-        p95 = sorted(lats)[max(0, int(0.95 * len(lats)) - 1)]
+    if _lats_for_p95:
+        p95 = sorted(_lats_for_p95)[max(0, int(0.95 * len(_lats_for_p95)) - 1)]
         k5.metric("P95 latency", f"{p95} ms",
                   delta="within SLA" if p95 <= 5000 else "over 5 s SLA",
                   delta_color="normal" if p95 <= 5000 else "inverse")
@@ -847,7 +851,8 @@ with tab_rm:
             out.append(r)
         return out
 
-    def _render_esc_card(rec: dict, card_n: int, allow_resolve: bool) -> None:
+    def _render_esc_card(rec: dict, card_n: int, allow_resolve: bool,
+                         key_suffix: str = "") -> None:
         prod      = rec.get("loan_product", "")
         prod_icon = _PRODUCT_ICON.get(prod, "₹")
         prod_label = _LOAN_LABELS.get(prod, prod.replace("_", " ").title()) if prod else "—"
@@ -974,11 +979,11 @@ with tab_rm:
                 with st.expander("✅ Mark as Resolved", expanded=False):
                     comment = st.text_area(
                         "Resolution comment",
-                        key=f"resolve_comment_{esc_id}",
+                        key=f"resolve_comment_{esc_id}{key_suffix}",
                         placeholder="Describe the action taken — e.g. 'Called customer, referred to branch RM for premium financing.'",
                         height=90,
                     )
-                    if st.button("Confirm Resolution", key=f"resolve_btn_{esc_id}",
+                    if st.button("Confirm Resolution", key=f"resolve_btn_{esc_id}{key_suffix}",
                                  type="primary"):
                         _update_escalation_status(esc_id, "resolved", comment)
                         st.rerun()
@@ -1035,7 +1040,7 @@ with tab_rm:
             else:
                 st.caption(f"{len(pending_recs)} pending lead(s) — most recent first")
                 for card_n, rec in enumerate(reversed(pending_recs), 1):
-                    _render_esc_card(rec, card_n, allow_resolve=True)
+                    _render_esc_card(rec, card_n, allow_resolve=True, key_suffix="_p")
 
         with tab_resolved_esc:
             lt2, df2, dt2 = _filter_bar("res")
@@ -1049,7 +1054,7 @@ with tab_rm:
             else:
                 st.caption(f"{len(resolved_recs)} resolved lead(s) — most recent first")
                 for card_n, rec in enumerate(reversed(resolved_recs), 1):
-                    _render_esc_card(rec, card_n, allow_resolve=False)
+                    _render_esc_card(rec, card_n, allow_resolve=False, key_suffix="_r")
 
         with tab_all_esc:
             lt3, df3, dt3 = _filter_bar("all")
@@ -1059,7 +1064,7 @@ with tab_rm:
             else:
                 st.caption(f"{len(all_recs)} of {len(esc_records)} lead(s) — most recent first")
                 for card_n, rec in enumerate(reversed(all_recs), 1):
-                    _render_esc_card(rec, card_n, allow_resolve=True)
+                    _render_esc_card(rec, card_n, allow_resolve=True, key_suffix="_a")
 
     # ══════════════════════════════════════════════════════════════════════════
     # Section 2 — Feedback Analytics
