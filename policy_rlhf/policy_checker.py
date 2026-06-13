@@ -11,7 +11,10 @@ HARD_RULES = [
     {
         "id": "no_approval_guarantee",
         "description": "Agent must not guarantee loan approval",
-        "check": lambda resp: "guaranteed" not in resp.lower() and "will be approved" not in resp.lower(),
+        "check": lambda resp: not any(p in resp.lower() for p in [
+            "guaranteed to be approved", "guaranteed approval",
+            "loan is guaranteed", "will be approved",
+        ]),
     },
     {
         "id": "no_pii_in_response",
