@@ -27,7 +27,7 @@ st.set_page_config(
 # ── Langfuse live conversation fetch ─────────────────────────────────────────
 
 def _extract_trace_text(value) -> str:
-    """Pull readable text out of a Langfuse trace input/output field."""
+    """Pull the CURRENT turn's text out of a Langfuse trace input/output field."""
     if not value:
         return ""
     if isinstance(value, str):
@@ -37,13 +37,44 @@ def _extract_trace_text(value) -> str:
             v = value.get(key)
             if isinstance(v, str) and v:
                 return v[:800]
-        # LangGraph stores messages as a list under "messages"
+        # LangGraph stores messages as a list under "messages" — take the last one
         msgs = value.get("messages")
         if isinstance(msgs, list) and msgs:
             last = msgs[-1]
             if isinstance(last, dict):
                 return str(last.get("content", ""))[:800]
     return str(value)[:800]
+
+
+def _extract_full_messages(value) -> list[dict]:
+    """Extract the complete turn-by-turn conversation from a LangChain/LangGraph
+    trace input (which carries the full sliding-window message history).
+
+    Skips the system prompt message.  Returns a list of
+    {"role": "user"|"assistant", "content": str} dicts.
+    """
+    if not isinstance(value, dict):
+        return []
+    msgs = value.get("messages", [])
+    if not isinstance(msgs, list):
+        return []
+    turns = []
+    for msg in msgs:
+        if not isinstance(msg, dict):
+            continue
+        msg_type = (msg.get("type") or msg.get("role") or "").lower()
+        content = msg.get("content", "")
+        if not msg_type or not content:
+            continue
+        if "system" in msg_type:
+            continue
+        if "human" in msg_type or "user" in msg_type:
+            turns.append({"role": "user", "content": str(content)[:1200]})
+        elif "ai" in msg_type or "assistant" in msg_type:
+            text = str(content).strip()
+            if text:
+                turns.append({"role": "assistant", "content": text[:1200]})
+    return turns
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -93,14 +124,30 @@ def _fetch_langfuse_conversation(hex_id: str) -> list[dict]:
         if not raw_traces:
             return []
 
-        turns = []
-        for trace in sorted(raw_traces, key=lambda t: t.get("timestamp", "")):
-            user_text  = _extract_trace_text(trace.get("input"))
-            agent_text = _extract_trace_text(trace.get("output"))
-            if user_text:
-                turns.append({"role": "user",      "content": user_text})
-            if agent_text:
-                turns.append({"role": "assistant", "content": agent_text})
+        sorted_traces = sorted(raw_traces, key=lambda t: t.get("timestamp", ""))
+
+        # When the sessionId query returns multiple traces (one per agent turn),
+        # extract the current user message + agent output from each trace in order.
+        if len(sorted_traces) > 1:
+            turns = []
+            for trace in sorted_traces:
+                user_text  = _extract_trace_text(trace.get("input"))
+                agent_text = _extract_trace_text(trace.get("output"))
+                if user_text:
+                    turns.append({"role": "user",      "content": user_text})
+                if agent_text:
+                    turns.append({"role": "assistant", "content": agent_text})
+            return turns
+
+        # Only 1 trace returned (session_id mismatch for older records — legacy fallback).
+        # The trace input carries the full LangChain memory window as a messages array.
+        # Reconstruct the whole conversation from that array, then append the output.
+        latest = sorted_traces[0]
+        turns = _extract_full_messages(latest.get("input"))
+        agent_text = _extract_trace_text(latest.get("output"))
+        # Append final agent response only if it's not already the last item
+        if agent_text and (not turns or turns[-1].get("content") != agent_text):
+            turns.append({"role": "assistant", "content": agent_text})
         return turns
     except Exception:
         return []
@@ -136,6 +183,72 @@ def _get_langfuse_project_id() -> str:
     except Exception:
         pass
     return ""
+
+
+# ── Escalation history injection ──────────────────────────────────────────────
+
+def _read_escalation_count() -> int:
+    """Return the current number of persisted escalation records."""
+    esc_path = DATA_DIR / "rlhf" / "escalations.json"
+    try:
+        if esc_path.exists():
+            return len(json.loads(esc_path.read_text()))
+    except Exception:
+        pass
+    return 0
+
+
+def _inject_history_if_new(count_before: int, session_id: str) -> None:
+    """If a new escalation was saved this turn, patch it with the full conversation
+    history from session state and the correct session_id for Langfuse linking.
+
+    This runs *after* the assistant response is appended to st.session_state.messages
+    so the stored history includes every turn including the escalation message itself.
+    """
+    esc_path = DATA_DIR / "rlhf" / "escalations.json"
+    try:
+        if not esc_path.exists():
+            return
+        records = json.loads(esc_path.read_text())
+        if len(records) <= count_before:
+            return  # no new escalation this turn
+        last = records[-1]
+        if last.get("conversation_history"):
+            return  # already populated (guard against double-write)
+        history = [
+            {"role": m["role"], "content": m["content"]}
+            for m in st.session_state.get("messages", [])
+            if m.get("content") and m.get("role") in ("user", "assistant")
+        ]
+        if history:
+            records[-1]["conversation_history"] = history
+        # LLM cannot access agent.session_id at runtime — fix it here
+        if not records[-1].get("session_id"):
+            records[-1]["session_id"] = session_id
+        # Ensure every new record has a status field (default: pending)
+        if not records[-1].get("status"):
+            records[-1]["status"] = "pending"
+        esc_path.write_text(json.dumps(records, indent=2, ensure_ascii=False))
+    except Exception:
+        pass
+
+
+def _update_escalation_status(escalation_id: str, status: str, comment: str = "") -> None:
+    """Update an escalation record's workflow status and write a resolution comment."""
+    esc_path = DATA_DIR / "rlhf" / "escalations.json"
+    try:
+        if not esc_path.exists():
+            return
+        records = json.loads(esc_path.read_text())
+        for rec in records:
+            if rec.get("escalation_id") == escalation_id:
+                rec["status"] = status
+                rec["resolution_comment"] = comment.strip() or None
+                rec["resolved_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                break
+        esc_path.write_text(json.dumps(records, indent=2, ensure_ascii=False))
+    except Exception:
+        pass
 
 
 # ── CSS ───────────────────────────────────────────────────────────────────────
@@ -222,6 +335,15 @@ html, body, [class*="css"] {
 .badge-new      { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
 .badge-pending  { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
 .badge-older    { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+.badge-resolved { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+
+/* ── Resolution info block ── */
+.resolution-block {
+    background: #ecfdf5; border-left: 4px solid #10b981;
+    border-radius: 0 8px 8px 0;
+    padding: 0.65rem 1rem; margin: 0.6rem 0; font-size: 0.88rem;
+    color: #064e3b;
+}
 
 /* ── Escalation reason block ── */
 .esc-reason {
@@ -550,6 +672,7 @@ with tab_chat:
         else:
             with st.spinner("Analysing your query…"):
                 t0 = time.time()
+                _esc_count_before = _read_escalation_count()
                 response = agent.chat(text)
                 latency_ms = int((time.time() - t0) * 1000)
             st.session_state.latencies.append(latency_ms)
@@ -563,6 +686,8 @@ with tab_chat:
             blocked=blocked,
         )
         st.session_state.messages.append({"role": "assistant", "content": response, "feedback": None})
+        if not blocked:
+            _inject_history_if_new(_esc_count_before, agent.session_id)
         st.session_state["_processing"] = False
         st.session_state["_pending_input"] = None
         st.rerun()
@@ -646,12 +771,15 @@ with tab_rm:
     fb_signal = analyse_feedback() if len(fb_records) >= 5 else {}
 
     # ── KPI strip ──────────────────────────────────────────────────────────────
+    n_pending  = sum(1 for r in esc_records if (r.get("status") or "pending") == "pending")
+    n_resolved = sum(1 for r in esc_records if (r.get("status") or "pending") == "resolved")
+
     k1, k2, k3, k4, k5 = st.columns(5)
-    k1.metric("Escalations", len(esc_records))
-    k2.metric("Feedback entries", len(fb_records))
+    k1.metric("Escalations (total)", len(esc_records))
+    k2.metric("🔴 Pending",  n_pending)
+    k3.metric("✅ Resolved", n_resolved)
     avg_stars = fb_signal.get("avg_stars")
-    k3.metric("Avg rating", f"{avg_stars} ★" if avg_stars else "—")
-    k4.metric("Session turns", len(lats))
+    k4.metric("Avg rating", f"{avg_stars} ★" if avg_stars else "—")
     if lats:
         p95 = sorted(lats)[max(0, int(0.95 * len(lats)) - 1)]
         k5.metric("P95 latency", f"{p95} ms",
@@ -671,8 +799,16 @@ with tab_rm:
         "home_loan": "🏠", "personal_loan": "💳",
         "msme_loan": "🏭", "car_loan": "🚗",
     }
+    _LOAN_LABELS = {
+        "home_loan": "Home Loan", "personal_loan": "Personal Loan",
+        "msme_loan": "MSME Loan", "car_loan":      "Car Loan",
+    }
 
-    def _status_badge(ts_str: str) -> str:
+    def _status_badge(rec: dict) -> str:
+        """Return status badge HTML. Resolved records get a green badge."""
+        if (rec.get("status") or "pending") == "resolved":
+            return '<span class="badge badge-resolved">✅ RESOLVED</span>'
+        ts_str = rec.get("timestamp", "")
         try:
             ts = datetime.strptime(ts_str[:19], "%Y-%m-%d %H:%M:%S")
             hours = (datetime.now() - ts).total_seconds() / 3600
@@ -691,136 +827,239 @@ with tab_rm:
             return f"₹{amt/1e7:.2f} Cr"
         return f"₹{amt/1e5:.1f} L"
 
+    def _apply_esc_filters(records: list[dict], loan_type: str,
+                           date_from, date_to) -> list[dict]:
+        out = []
+        for r in records:
+            prod_key = r.get("loan_product", "")
+            if loan_type != "All" and _LOAN_LABELS.get(prod_key, "") != loan_type:
+                continue
+            ts_str = r.get("timestamp", "")[:10]
+            try:
+                from datetime import date as _date
+                rec_date = datetime.strptime(ts_str, "%Y-%m-%d").date()
+                if date_from and rec_date < date_from:
+                    continue
+                if date_to and rec_date > date_to:
+                    continue
+            except Exception:
+                pass
+            out.append(r)
+        return out
+
+    def _render_esc_card(rec: dict, card_n: int, allow_resolve: bool) -> None:
+        prod      = rec.get("loan_product", "")
+        prod_icon = _PRODUCT_ICON.get(prod, "₹")
+        prod_label = _LOAN_LABELS.get(prod, prod.replace("_", " ").title()) if prod else "—"
+        amt_str   = _fmt_amount(rec.get("loan_amount_inr", 0))
+        date_str  = rec.get("timestamp", "")[:10]
+        cust      = rec.get("customer_name", "Unknown")
+        esc_id    = rec.get("escalation_id", f"card{card_n}")
+        badge_html = _status_badge(rec)
+
+        with st.expander(
+            f"#{card_n}  ·  {cust}  ·  {prod_icon} {prod_label}  ·  {amt_str}  ·  {date_str}",
+            expanded=(card_n == 1),
+        ):
+            # Badge + timestamp row
+            st.markdown(badge_html + "&nbsp;&nbsp;" +
+                        f"<small style='color:#6b7280'>{rec.get('timestamp','')[:16]}</small>",
+                        unsafe_allow_html=True)
+            st.markdown("")
+
+            # Resolution block (resolved records only)
+            if (rec.get("status") or "pending") == "resolved":
+                res_comment = rec.get("resolution_comment") or "No comment provided."
+                res_at      = rec.get("resolved_at", "")[:16]
+                st.markdown(
+                    f'<div class="resolution-block">'
+                    f'<strong>✅ Resolved</strong>'
+                    + (f'  ·  <small>{res_at}</small>' if res_at else '')
+                    + f'<br>{_html.escape(res_comment)}'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown("")
+
+            # Contact | Loan split
+            col_c, col_l = st.columns(2)
+            with col_c:
+                st.markdown("**📋 Contact**")
+                st.markdown(f"- **Name:** {cust}")
+                mobile = rec.get("callback_number") or "—"
+                st.markdown(f"- **Mobile:** `{mobile}`")
+                email = rec.get("customer_email") or "—"
+                st.markdown(f"- **Email:** {email}")
+                gender = (rec.get("gender") or "—")
+                if gender not in ("—", "Not collected"):
+                    st.markdown(f"- **Gender:** {gender.title()}")
+                pct = rec.get("preferred_contact_time") or "Not specified"
+                st.markdown(f"- **Best time:** {pct}")
+
+            with col_l:
+                st.markdown(f"**{prod_icon} Loan**")
+                st.markdown(f"- **Product:** {prod_label}")
+                st.markdown(f"- **Amount:** {amt_str}")
+                income = rec.get("monthly_income_inr", 0) or 0
+                st.markdown(f"- **Monthly income:** ₹{income:,.0f}")
+                if rec.get("credit_score"):
+                    st.markdown(f"- **CIBIL score:** {rec['credit_score']}")
+                if rec.get("age"):
+                    st.markdown(f"- **Age:** {rec['age']} yrs")
+                if rec.get("employment_type"):
+                    emp = rec["employment_type"].replace("_", " ").title()
+                    st.markdown(f"- **Employment:** {emp}")
+                if rec.get("tenure_months"):
+                    yrs, mo = divmod(int(rec["tenure_months"]), 12)
+                    tenure_str = f"{yrs} yr" + (f" {mo} mo" if mo else "")
+                    st.markdown(f"- **Tenure:** {tenure_str}")
+
+            # Escalation reason
+            reason = rec.get("escalation_reason") or "—"
+            st.markdown(
+                f'<div class="esc-reason">'
+                f'<strong>⚠️ Escalation reason:</strong> {_html.escape(reason)}'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+
+            # Conversation summary
+            summary = rec.get("conversation_summary")
+            stored_history = rec.get("conversation_history") or []
+
+            if summary:
+                st.markdown("**📝 Conversation Summary**")
+                st.info(summary)
+
+            # ── Conversation history (Langfuse live fetch → stored → nothing) ──
+            sid = rec.get("session_id", "")
+            hex_id_for_fetch = sid.replace("-", "").lower() if sid else ""
+            valid_sid = len(hex_id_for_fetch) == 32 and all(
+                c in "0123456789abcdef" for c in hex_id_for_fetch
+            )
+
+            if valid_sid and LANGFUSE_PUBLIC_KEY:
+                live_history = _fetch_langfuse_conversation(hex_id_for_fetch)
+            else:
+                live_history = []
+
+            history = live_history or stored_history
+            source_label = (
+                "📡 Live from Langfuse" if live_history
+                else "💾 Stored history"  if stored_history
+                else None
+            )
+
+            if history:
+                with st.expander(
+                    f"💬 Full conversation ({len(history)} turns)"
+                    + (f"  ·  {source_label}" if source_label else ""),
+                    expanded=False,
+                ):
+                    for turn in history:
+                        role    = turn.get("role", "user")
+                        content = turn.get("content", "")
+                        if role == "user":
+                            with st.chat_message("user", avatar="🧑"):
+                                st.write(content)
+                        else:
+                            with st.chat_message("assistant", avatar="🤖"):
+                                st.write(content)
+            elif not summary:
+                st.caption("💬 Conversation not captured for this record.")
+
+            # ── Mark as Resolved (pending records only) ───────────────────────
+            if allow_resolve and (rec.get("status") or "pending") == "pending":
+                st.divider()
+                with st.expander("✅ Mark as Resolved", expanded=False):
+                    comment = st.text_area(
+                        "Resolution comment",
+                        key=f"resolve_comment_{esc_id}",
+                        placeholder="Describe the action taken — e.g. 'Called customer, referred to branch RM for premium financing.'",
+                        height=90,
+                    )
+                    if st.button("Confirm Resolution", key=f"resolve_btn_{esc_id}",
+                                 type="primary"):
+                        _update_escalation_status(esc_id, "resolved", comment)
+                        st.rerun()
+
+            # Footer: ref ID + trace link
+            st.divider()
+            foot_l, foot_r = st.columns([3, 1])
+            with foot_l:
+                st.caption(f"Ref: `{esc_id}`  ·  {date_str}")
+            with foot_r:
+                if valid_sid and LANGFUSE_PUBLIC_KEY:
+                    host = (LANGFUSE_HOST or "https://cloud.langfuse.com").rstrip("/")
+                    project_id = _get_langfuse_project_id()
+                    if project_id:
+                        trace_url = f"{host}/project/{project_id}/traces/{hex_id_for_fetch}"
+                    else:
+                        trace_url = f"{host}/traces/{hex_id_for_fetch}"
+                    st.markdown(f"[🔍 Langfuse trace]({trace_url})")
+                else:
+                    st.caption("*(no trace)*")
+
+    # ── Tabs: Pending / Resolved / All ────────────────────────────────────────
     if not esc_records:
         st.info("No escalation records yet. Leads appear here when a loan request exceeds "
                 "the advisory ceiling for that product.")
     else:
-        st.caption(f"{len(esc_records)} lead(s) on file — most recent first")
-        for card_n, rec in enumerate(reversed(esc_records), 1):
-            prod       = rec.get("loan_product", "")
-            prod_icon  = _PRODUCT_ICON.get(prod, "₹")
-            prod_label = prod.replace("_", " ").title() if prod else "—"
-            amt_str    = _fmt_amount(rec.get("loan_amount_inr", 0))
-            date_str   = rec.get("timestamp", "")[:10]
-            cust       = rec.get("customer_name", "Unknown")
-            badge_html = _status_badge(rec.get("timestamp", ""))
+        tab_pending_esc, tab_resolved_esc, tab_all_esc = st.tabs([
+            f"🔴 Pending  ({n_pending})",
+            f"✅ Resolved  ({n_resolved})",
+            f"📋 All  ({len(esc_records)})",
+        ])
 
-            with st.expander(
-                f"#{card_n}  ·  {cust}  ·  {prod_icon} {prod_label}  ·  {amt_str}  ·  {date_str}",
-                expanded=(card_n == 1),
-            ):
-                # Badge row
-                st.markdown(badge_html + "&nbsp;&nbsp;" +
-                            f"<small style='color:#6b7280'>{rec.get('timestamp','')[:16]}</small>",
-                            unsafe_allow_html=True)
-                st.markdown("")
+        _LOAN_FILTER_CHOICES = ["All", "Home Loan", "Personal Loan", "MSME Loan", "Car Loan"]
 
-                # Contact | Loan split
-                col_c, col_l = st.columns(2)
-                with col_c:
-                    st.markdown("**📋 Contact**")
-                    st.markdown(f"- **Name:** {cust}")
-                    mobile = rec.get("callback_number") or "—"
-                    st.markdown(f"- **Mobile:** `{mobile}`")
-                    email = rec.get("customer_email") or "—"
-                    st.markdown(f"- **Email:** {email}")
-                    gender = (rec.get("gender") or "—")
-                    if gender not in ("—", "Not collected"):
-                        st.markdown(f"- **Gender:** {gender.title()}")
-                    pct = rec.get("preferred_contact_time") or "Not specified"
-                    st.markdown(f"- **Best time:** {pct}")
+        def _filter_bar(suffix: str):
+            fc1, fc2, fc3 = st.columns([2, 2, 2])
+            with fc1:
+                lt = st.selectbox("Loan type", _LOAN_FILTER_CHOICES, key=f"lt_{suffix}")
+            with fc2:
+                df = st.date_input("From date", value=None, key=f"df_{suffix}")
+            with fc3:
+                dt = st.date_input("To date",   value=None, key=f"dt_{suffix}")
+            return lt, df, dt
 
-                with col_l:
-                    st.markdown(f"**{prod_icon} Loan**")
-                    st.markdown(f"- **Product:** {prod_label}")
-                    st.markdown(f"- **Amount:** {amt_str}")
-                    income = rec.get("monthly_income_inr", 0) or 0
-                    st.markdown(f"- **Monthly income:** ₹{income:,.0f}")
-                    if rec.get("credit_score"):
-                        st.markdown(f"- **CIBIL score:** {rec['credit_score']}")
-                    if rec.get("age"):
-                        st.markdown(f"- **Age:** {rec['age']} yrs")
-                    if rec.get("employment_type"):
-                        emp = rec["employment_type"].replace("_", " ").title()
-                        st.markdown(f"- **Employment:** {emp}")
-                    if rec.get("tenure_months"):
-                        yrs, mo = divmod(int(rec["tenure_months"]), 12)
-                        tenure_str = f"{yrs} yr" + (f" {mo} mo" if mo else "")
-                        st.markdown(f"- **Tenure:** {tenure_str}")
+        with tab_pending_esc:
+            lt, df, dt = _filter_bar("pend")
+            pending_recs = _apply_esc_filters(
+                [r for r in esc_records if (r.get("status") or "pending") == "pending"],
+                lt, df, dt,
+            )
+            if not pending_recs:
+                st.info("No pending records match the selected filters." if n_pending
+                        else "No pending escalations. All leads have been resolved.")
+            else:
+                st.caption(f"{len(pending_recs)} pending lead(s) — most recent first")
+                for card_n, rec in enumerate(reversed(pending_recs), 1):
+                    _render_esc_card(rec, card_n, allow_resolve=True)
 
-                # Escalation reason
-                reason = rec.get("escalation_reason") or "—"
-                st.markdown(
-                    f'<div class="esc-reason">'
-                    f'<strong>⚠️ Escalation reason:</strong> {_html.escape(reason)}'
-                    f'</div>',
-                    unsafe_allow_html=True,
-                )
+        with tab_resolved_esc:
+            lt2, df2, dt2 = _filter_bar("res")
+            resolved_recs = _apply_esc_filters(
+                [r for r in esc_records if (r.get("status") or "pending") == "resolved"],
+                lt2, df2, dt2,
+            )
+            if not resolved_recs:
+                st.info("No resolved records match the selected filters." if n_resolved
+                        else "No resolved escalations yet. Use 'Mark as Resolved' on a pending lead.")
+            else:
+                st.caption(f"{len(resolved_recs)} resolved lead(s) — most recent first")
+                for card_n, rec in enumerate(reversed(resolved_recs), 1):
+                    _render_esc_card(rec, card_n, allow_resolve=False)
 
-                # Conversation summary
-                summary  = rec.get("conversation_summary")
-                stored_history = rec.get("conversation_history") or []
-
-                if summary:
-                    st.markdown("**📝 Conversation Summary**")
-                    st.info(summary)
-
-                # ── Conversation history ───────────────────────────────────
-                # Priority: live Langfuse traces > stored history > nothing.
-                # For records with a valid session_id, attempt a live fetch
-                # from the Langfuse backend (cached 5 min per session).
-                sid = rec.get("session_id", "")
-                hex_id_for_fetch = sid.replace("-", "").lower() if sid else ""
-                valid_sid = len(hex_id_for_fetch) == 32 and all(
-                    c in "0123456789abcdef" for c in hex_id_for_fetch
-                )
-
-                if valid_sid and LANGFUSE_PUBLIC_KEY:
-                    live_history = _fetch_langfuse_conversation(hex_id_for_fetch)
-                else:
-                    live_history = []
-
-                history      = live_history or stored_history
-                source_label = (
-                    "📡 Live from Langfuse" if live_history
-                    else "💾 Stored history"  if stored_history
-                    else None
-                )
-
-                if history:
-                    with st.expander(
-                        f"💬 Full conversation ({len(history)} turns)"
-                        + (f"  ·  {source_label}" if source_label else ""),
-                        expanded=False,
-                    ):
-                        for turn in history:
-                            role    = turn.get("role", "user")
-                            content = turn.get("content", "")
-                            if role == "user":
-                                with st.chat_message("user", avatar="🧑"):
-                                    st.write(content)
-                            else:
-                                with st.chat_message("assistant", avatar="🤖"):
-                                    st.write(content)
-                elif not summary:
-                    st.caption("💬 Conversation not captured for this record.")
-
-                # Footer: ref ID + trace link
-                st.divider()
-                foot_l, foot_r = st.columns([3, 1])
-                with foot_l:
-                    st.caption(f"Ref: `{rec.get('escalation_id', '—')}`  ·  {date_str}")
-                with foot_r:
-                    if valid_sid and LANGFUSE_PUBLIC_KEY:
-                        host = (LANGFUSE_HOST or "https://cloud.langfuse.com").rstrip("/")
-                        project_id = _get_langfuse_project_id()
-                        if project_id:
-                            trace_url = f"{host}/project/{project_id}/traces/{hex_id_for_fetch}"
-                        else:
-                            trace_url = f"{host}/traces/{hex_id_for_fetch}"
-                        st.markdown(f"[🔍 Langfuse trace]({trace_url})")
-                    else:
-                        st.caption("*(no trace)*")
+        with tab_all_esc:
+            lt3, df3, dt3 = _filter_bar("all")
+            all_recs = _apply_esc_filters(esc_records, lt3, df3, dt3)
+            if not all_recs:
+                st.info("No records match the selected filters.")
+            else:
+                st.caption(f"{len(all_recs)} of {len(esc_records)} lead(s) — most recent first")
+                for card_n, rec in enumerate(reversed(all_recs), 1):
+                    _render_esc_card(rec, card_n, allow_resolve=True)
 
     # ══════════════════════════════════════════════════════════════════════════
     # Section 2 — Feedback Analytics
