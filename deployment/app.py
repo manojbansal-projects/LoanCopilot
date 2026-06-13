@@ -14,7 +14,7 @@ from agent.core_agent import LoanCopilotAgent
 from monitoring.langfuse_logger import flush, score_session
 from monitoring.interaction_logger import log_interaction, read_recent
 from policy_rlhf.feedback_collector import record_feedback
-from deployment.config import DATA_DIR, LANGFUSE_HOST, LANGFUSE_PUBLIC_KEY
+from deployment.config import DATA_DIR, LANGFUSE_HOST, LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY
 
 st.set_page_config(
     page_title="Loan Origination Copilot",
@@ -104,6 +104,39 @@ def _fetch_langfuse_conversation(hex_id: str) -> list[dict]:
         return turns
     except Exception:
         return []
+
+@st.cache_data(ttl=3600)
+def _get_langfuse_project_id() -> str:
+    """Return the Langfuse project ID by inspecting any trace's htmlPath (cached 1 hr).
+
+    Langfuse v4 uses /project/{project_id}/traces/{id} — the old /traces/{id}
+    URL returns 404.  The htmlPath field on every trace object contains the
+    correct path, so we read one trace and extract the project ID segment.
+    """
+    if not LANGFUSE_PUBLIC_KEY:
+        return ""
+    try:
+        import base64, urllib.request as _urlreq, json as _json
+        creds = base64.b64encode(
+            f"{LANGFUSE_PUBLIC_KEY}:{LANGFUSE_SECRET_KEY}".encode()
+        ).decode()
+        base = (LANGFUSE_HOST or "https://cloud.langfuse.com").rstrip("/")
+        req = _urlreq.Request(
+            f"{base}/api/public/traces?limit=1",
+            headers={"Authorization": f"Basic {creds}"},
+        )
+        with _urlreq.urlopen(req, timeout=10) as r:
+            data = _json.loads(r.read())
+        for t in data.get("data", []):
+            hp = t.get("htmlPath", "")
+            # htmlPath = /project/{project_id}/traces/{trace_id}
+            parts = hp.split("/")
+            if len(parts) > 2 and parts[1] == "project":
+                return parts[2]
+    except Exception:
+        pass
+    return ""
+
 
 # ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -764,7 +797,12 @@ with tab_rm:
                 with foot_r:
                     if valid_sid and LANGFUSE_PUBLIC_KEY:
                         host = (LANGFUSE_HOST or "https://cloud.langfuse.com").rstrip("/")
-                        st.markdown(f"[🔍 Langfuse trace]({host}/traces/{hex_id_for_fetch})")
+                        project_id = _get_langfuse_project_id()
+                        if project_id:
+                            trace_url = f"{host}/project/{project_id}/traces/{hex_id_for_fetch}"
+                        else:
+                            trace_url = f"{host}/traces/{hex_id_for_fetch}"
+                        st.markdown(f"[🔍 Langfuse trace]({trace_url})")
                     else:
                         st.caption("*(no trace)*")
 
