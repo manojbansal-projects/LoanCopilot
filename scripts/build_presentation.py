@@ -579,24 +579,27 @@ def slide_phases(prs):
          "scripts/run_evaluation.py\ndocs/evaluation_report.md"),
     ]
 
-    row_labels  = ["RUBRIC DIMENSION", "KEY METRIC / EVIDENCE", "KEY ARTIFACT"]
+    row_labels  = ["RUBRIC\nDIMENSION", "KEY METRIC /\nEVIDENCE", "KEY\nARTIFACT"]
     row_colors  = [LTBLUE, WHITE, OFFWHITE]
     row_heights = [0.52, 0.58, 0.52]
 
+    LBL_W = 0.88                     # dedicated label column, no longer inside phase data
+    rbw   = (12.63 - LBL_W) / 8     # per-phase column: 11.75 / 8 ≈ 1.469 in
+
     for ri, (rlabel, rc, rh) in enumerate(zip(row_labels, row_colors, row_heights)):
         ry = sect_y + 0.32 + sum(row_heights[:ri])
-        rect(sl, 0.35, ry, 12.63, rh, fill=rc)
-        # row label stub
-        txt(sl, rlabel, 0.38, ry+0.04, 0.35, rh-0.06,
-            size=6, bold=True, color=MIDGRAY)
+        rect(sl, 0.35, ry, 12.63, rh, fill=rc)               # full-width row bg
+        rect(sl, 0.35, ry, LBL_W,  rh, fill=NAVY)            # navy label cell
+        txt(sl, rlabel, 0.38, ry+0.04, LBL_W-0.06, rh-0.08,
+            size=7, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 
-    # Fill per-phase data
+    # Fill per-phase data (columns start after label column)
     for i, (phase, rubric, metric, artifact) in enumerate(rubric_data):
-        x = 0.35 + i*bw
+        x = 0.35 + LBL_W + i*rbw
         col_data = [rubric, metric, artifact]
         for ri, (data, rh) in enumerate(zip(col_data, row_heights)):
             ry = sect_y + 0.32 + sum(row_heights[:ri])
-            txt(sl, data, x+0.04, ry+0.04, bw-0.06, rh-0.06,
+            txt(sl, data, x+0.04, ry+0.04, rbw-0.06, rh-0.06,
                 size=7.5, color=NAVY if ri==0 else DARKGRAY,
                 bold=(ri==0))
 
