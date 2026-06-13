@@ -74,16 +74,34 @@ is far less harmful than blocking a genuine loan enquiry.
 Respond with ONLY the label — no explanation."""
 
 
-def classify_intent(text: str, model: str = "gpt-4o-mini") -> Intent:
-    """Full two-stage classification. Returns an Intent enum value."""
+def classify_intent(
+    text: str,
+    model: str = "gpt-4o-mini",
+    conversation_context: str | None = None,
+) -> Intent:
+    """Full two-stage classification. Returns an Intent enum value.
+
+    conversation_context: optional snippet of the preceding exchange (e.g. the
+    last assistant message) to give the classifier enough context to correctly
+    classify data-provision replies such as "on road price is 15 lacs".
+    """
     fast = keyword_filter(text)
     if fast is not None:
         return fast
 
     llm = ChatOpenAI(model=model, temperature=0, max_tokens=10)
+
+    if conversation_context:
+        user_payload = (
+            f"[Previous assistant message]: {conversation_context[:200]}\n"
+            f"[Current user message]: {text[:300]}"
+        )
+    else:
+        user_payload = text[:300]
+
     response = llm.invoke([
         SystemMessage(content=_CLASSIFIER_SYSTEM),
-        HumanMessage(content=text[:300]),   # cap at 300 chars to keep tokens low
+        HumanMessage(content=user_payload),
     ])
     label = response.content.strip().upper()
     try:

@@ -292,24 +292,40 @@ _OUT_OF_SCOPE_REPLY = (
 )
 
 
+_LOAN_CONVERSATION_SIGNALS = (
+    "loan", "emi", "eligible", "cibil", "income", "interest rate",
+    "home loan", "car loan", "personal loan", "msme", "tenure",
+    "on-road price", "on road price", "loan amount", "how much",
+    "credit score", "employment", "salaried", "self-employed",
+    "relationship manager", "10-digit", "mobile number",
+    "callback number", "specialist", "escalat",
+)
+
+
 def _run_safety_gate(text: str) -> tuple[str, bool]:
     """Return (intent_label, blocked). Fails open — never blocks on gate error."""
-    # If the agent recently asked for escalation contact details, bypass the
-    # classifier — the user is responding with name/phone/email/gender, and the
-    # LLM classifier has no conversation context to judge that correctly.
+    from safety.guardrails import keyword_filter, classify_intent, Intent
+
+    # Stage A: keyword blocklist always runs (catches jailbreaks / injections at any turn)
+    if keyword_filter(text) == Intent.OUT_OF_SCOPE:
+        return "OUT_OF_SCOPE", True
+
+    # Stage B bypass: once the conversation is clearly about loans, skip the LLM
+    # classifier for subsequent user messages.  The classifier has no history and
+    # misclassifies data-provision replies ("on road price is 15 lacs") as
+    # OUT_OF_SCOPE when it can't see the question that preceded them.
     recent = st.session_state.get("messages", [])[-6:]
-    escalation_collecting = any(
+    active_loan_convo = any(
         m.get("role") == "assistant" and
-        any(kw in m.get("content", "").lower()
-            for kw in ("relationship manager", "10-digit", "mobile number",
-                       "callback number", "specialist", "escalat"))
+        any(kw in m.get("content", "").lower() for kw in _LOAN_CONVERSATION_SIGNALS)
         for m in recent
     )
-    if escalation_collecting:
+    if active_loan_convo:
         return "IN_SCOPE", False
 
+    # Stage B: LLM classifier — only for cold-start / first messages where context
+    # is absent and we need to detect completely off-topic requests.
     try:
-        from safety.guardrails import classify_intent, Intent
         intent = classify_intent(text)
         if intent == Intent.OUT_OF_SCOPE:
             return "OUT_OF_SCOPE", True

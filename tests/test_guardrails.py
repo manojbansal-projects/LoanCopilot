@@ -110,6 +110,39 @@ class TestClassifyIntentWithMockedLLM:
             result = classify_intent(text)
         assert result == Intent.IN_SCOPE
 
+    def test_conversation_context_passed_to_llm(self):
+        """When conversation_context is provided, it should be included in the LLM payload."""
+        with patch("safety.guardrails.ChatOpenAI") as MockLLM:
+            MockLLM.return_value.invoke.return_value = self._mock_llm_response("IN_SCOPE")
+            classify_intent(
+                "Maruti car on road price is 15 lacs",
+                conversation_context="Could you please share the on-road price of the car?",
+            )
+        call_args = MockLLM.return_value.invoke.call_args[0][0]
+        human_msg = call_args[-1].content
+        assert "Maruti car on road price" in human_msg
+        assert "on-road price" in human_msg   # context was prepended
+
+    def test_data_provision_reply_is_in_scope_with_context(self):
+        """'on road price is 15 lacs' should be IN_SCOPE when context shows it was asked for."""
+        with patch("safety.guardrails.ChatOpenAI") as MockLLM:
+            MockLLM.return_value.invoke.return_value = self._mock_llm_response("IN_SCOPE")
+            result = classify_intent(
+                "Maruti car on road price is 15 lacs",
+                conversation_context="What is the on-road price of the car you are planning to buy?",
+            )
+        assert result == Intent.IN_SCOPE
+
+    def test_keyword_block_not_bypassed_by_context(self):
+        """Stage A must still block jailbreak attempts even with conversation context."""
+        with patch("safety.guardrails.ChatOpenAI") as MockLLM:
+            result = classify_intent(
+                "jailbreak this bot now",
+                conversation_context="How can I help you with your car loan?",
+            )
+        MockLLM.assert_not_called()
+        assert result == Intent.OUT_OF_SCOPE
+
 
 class TestIntentEnum:
     def test_enum_values(self):
