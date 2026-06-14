@@ -1,15 +1,17 @@
-"""Tool: lookup_loan_status — RAG-backed FAQ and status query."""
+"""Tool: query_loan_policy — RAG-backed policy FAQ lookup."""
 from langchain.tools import tool
 
 
 @tool
-def lookup_loan_status(query: str) -> str:
+def query_loan_policy(query: str) -> str:
     """
-    Look up general loan FAQ or application-status information using the RAG retriever.
+    Answer customer questions about loan policies using the RAG retriever.
 
-    Use this tool when the customer asks general questions about the loan process,
-    interest rate bands, processing fees, turnaround times, or product comparisons
-    that are not covered by the eligibility or EMI tools.
+    Use this tool when the customer asks about interest rate bands, processing fees,
+    tenure options, NRI eligibility, prepayment charges, CIBIL criteria, or any
+    other policy question not covered by the eligibility or EMI tools.
+    Do NOT use this for checking the status of an existing loan application —
+    that requires core banking integration (future capability).
 
     Args:
         query: The customer's question in natural language.

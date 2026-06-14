@@ -666,7 +666,7 @@ def slide_tools(prs):
          "Inputs: loan_product, employment_type (salaried/self_employed/business)\n"
          "Lookup: product × employment_type matrix — 5 common + 4 product-specific docs\n"
          "Returns: list of required documents as structured JSON"),
-        ("lookup_loan_status",
+        ("query_loan_policy",
          AMBER,
          "Inputs: natural-language query string\n"
          "Flow: embed query → ChromaDB search (TOP_K=5) → LLM synthesises answer\n"
@@ -711,7 +711,7 @@ def slide_rag(prs):
         ("✂️",  "Chunker",           "500-char chunks\n100-char overlap\n\nKey fix: product-label\nprefix per chunk\n[HOME LOAN] …text…"),
         ("🔢", "Embedder",           "text-embedding-\n3-small\n1536-dim vectors\n\nBatch embed via\nOpenAIEmbeddings"),
         ("🗄️", "ChromaDB\nStore",    "Persistent collection\nMetadata filter by\nproduct label\n\n~160 total chunks\nknowledge/chromadb/"),
-        ("🔍", "Retriever",          "RAG_TOP_K = 5\nlookup_loan_status\ntool calls this\n\nMMR diversity\nre-ranking"),
+        ("🔍", "Retriever",          "RAG_TOP_K = 5\nquery_loan_policy\ntool calls this\n\nMMR diversity\nre-ranking"),
     ]
 
     step_w = 2.35

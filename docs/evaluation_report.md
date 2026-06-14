@@ -24,7 +24,7 @@
 | check_eligibility | TBD | TBD | TBD |
 | calculate_emi | TBD | TBD | TBD |
 | get_document_checklist | TBD | TBD | TBD |
-| lookup_loan_status | TBD | TBD | TBD |
+| query_loan_policy | TBD | TBD | TBD |
 | generate_escalation_summary | TBD | TBD | TBD |
 
 ## Failing Case Root Cause + Fix

@@ -95,7 +95,7 @@ You: Are there prepayment charges on MSME loans?
 ```
 
 Expected agent behaviour:
-- Calls `lookup_loan_status` for each question
+- Calls `query_loan_policy` for each question
 - Returns policy-grounded answers from ChromaDB (not generic "contact branch" replies)
 - Langfuse trace shows the RAG retrieval observation
 

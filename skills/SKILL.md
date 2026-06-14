@@ -7,7 +7,7 @@ Five LangChain tools registered in `tools/tool_registry.py`.
 | 1 | `check_eligibility` | `tools/eligibility_checker.py` | Phase 5 | Rules-based FOIR + credit score + amount-limit check |
 | 2 | `calculate_emi` | `tools/emi_calculator.py` | Phase 5 | Reducing-balance EMI formula |
 | 3 | `get_document_checklist` | `tools/document_checklist.py` | Phase 5 | Product × employment-type lookup table |
-| 4 | `lookup_loan_status` | `tools/tool_search.py` | Phase 5 | RAG query over knowledge/raw/ |
+| 4 | `query_loan_policy` | `tools/tool_search.py` | Phase 5 | RAG-backed policy FAQ over knowledge/raw/ |
 | 5 | `generate_escalation_summary` | `tools/tool_escalate.py` | Phase 5 | Structured RM handoff packet |
 
 ## Tool invocation order (ReAct agent preferred sequence)
@@ -16,7 +16,7 @@ Five LangChain tools registered in `tools/tool_registry.py`.
 2. `calculate_emi` — only if eligibility passes
 3. `get_document_checklist` — after eligibility confirmed
 4. `generate_escalation_summary` — when amount > advisory ceiling or eligibility is borderline
-5. `lookup_loan_status` — for FAQ / policy questions not covered by the above tools
+5. `query_loan_policy` — for FAQ / policy questions not covered by the above tools
 
 ## Adding a new tool
 

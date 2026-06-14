@@ -70,7 +70,7 @@ Tasks are ordered; later tasks in a bucket depend on earlier ones.
 | 3.3 | Implement `retrieval/embedder.py` — `text-embedding-3-small` | `get_embeddings()` returns valid `OpenAIEmbeddings` |
 | 3.4 | Implement `retrieval/chroma_store.py` — `build_store` + `load_store` | `knowledge/chromadb/` directory populated after `python scripts/ingest_documents.py` |
 | 3.5 | Implement `retrieval/retriever.py::retrieve` | `retrieve("home loan FOIR")` returns 5 relevant chunks (RAG_TOP_K=5) |
-| 3.6 | Wire retriever to `tools/tool_search.py` | `lookup_loan_status("car loan rate")` returns non-empty string from policy docs |
+| 3.6 | Wire retriever to `tools/tool_search.py` | `query_loan_policy("car loan rate")` returns non-empty string from policy docs |
 | 3.7 | Create Langfuse dataset `rag_eval_20q` (extend test_cases.json to 20 Qs) | 20 Q/A pairs uploaded to Langfuse |
 | 3.8 | Run Langfuse LLM-as-judge on all 20 Qs | Pass rate ≥ 70%; results in Langfuse dashboard |
 | 3.9 | Before/after notebook cell on Q2 (doc list) and Q5 (rate) | Notebook shows no-RAG vs RAG response side by side |

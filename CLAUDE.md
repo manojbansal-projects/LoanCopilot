@@ -64,7 +64,7 @@ python scripts/run_rlhf_pipeline.py
 | `tools/eligibility_checker.py` | FOIR + credit score + amount/tenure limits |
 | `tools/emi_calculator.py` | Reducing-balance EMI formula |
 | `tools/document_checklist.py` | Product × employment-type lookup table |
-| `tools/tool_search.py` | RAG-backed FAQ (`lookup_loan_status`) |
+| `tools/tool_search.py` | RAG-backed policy FAQ (`query_loan_policy`) |
 | `tools/tool_escalate.py` | RM handoff packet (`generate_escalation_summary`) |
 | `safety/guardrails.py` | Stage A: keyword filter; Stage B: GPT-4o-mini intent classifier |
 | `safety/pii_filter.py` | Regex masker — Aadhaar, PAN, mobile, email, account numbers |
