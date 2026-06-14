@@ -8,7 +8,7 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import argparse
-from mcp.server import start_server
+from loan_mcp.server import start_server
 
 
 def main():

@@ -278,7 +278,7 @@ Full task breakdown with done criteria: **[IMPLEMENTATION_PLAN.md](IMPLEMENTATIO
 ├── monitoring/         Langfuse callbacks, interaction JSONL logger
 ├── evaluation/         Test harness and metrics
 ├── policy_rlhf/        Feedback collection, policy checker, adaptation rules
-├── mcp/                MCP server/client stubs
+├── loan_mcp/           MCP server/client (FastMCP, exposes 5 loan tools)
 ├── deployment/         Streamlit app + central config
 ├── scripts/            CLI entry points (ingest, run, evaluate, RLHF, seed, metrics)
 ├── knowledge/
