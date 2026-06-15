@@ -156,7 +156,7 @@ def slide_title(prs):
         ("4", "Loan Products"),
         ("5", "AI Tools"),
         ("8", "Build Phases"),
-        ("244", "Tests Passing"),
+        ("426", "Tests Passing"),
     ]
     for i, (val, lbl) in enumerate(stats):
         kpi_box(sl, val, lbl, 0.45 + i*2.45, 4.22, 2.28, 1.12,
@@ -171,7 +171,7 @@ def slide_title(prs):
         "Good [morning/afternoon] — this is my IIT Madras AI Capstone submission, Scenario 2 Banking, Track A LangChain.\n"
         "The project is an AI Copilot that guides retail bank customers through early-stage loan origination.\n"
         "It covers 4 loan products — Home, Personal, MSME, New Car — using 5 AI tools and a full RAG pipeline.\n"
-        "Built in 10 days across 8 phases; 244 tests passing. Let me walk you through the architecture and key decisions."
+        "Built in 10 days across 8 phases; 426 tests passing. Let me walk you through the architecture and key decisions."
     )
     return sl
 
@@ -618,12 +618,12 @@ def slide_phases(prs):
                 size=7.5, color=NAVY if ri==0 else DARKGRAY,
                 bold=(ri==0))
 
-    footnote(sl, "244 unit + integration tests passing across 13 test files · 8 Jupyter demo notebooks (one per phase)")
+    footnote(sl, "426 unit + integration tests passing across 13 test files · 8 Jupyter demo notebooks (one per phase)")
     add_notes(sl,
         "8 phases built in 10 days — Phase 2 (rules-based, no LLM) through Phase 9 (evaluation).\n"
         "Phases progress: rules → GPT-4o → RAG → tool integration → memory → RLHF → deployment → evaluation.\n"
         "The rubric alignment table (bottom) maps each phase to a graded dimension with evidence and key artifacts.\n"
-        "All 8 phases are complete — verified by 244 passing tests and 8 Jupyter demo notebooks.\n"
+        "All 8 phases are complete — verified by 426 passing tests and 8 Jupyter demo notebooks.\n"
         "Key milestone: Phase 4 RAG + Phase 5 tools are where the system becomes truly conversational and grounded."
     )
     return sl
@@ -1209,7 +1209,7 @@ def slide_evaluation(prs):
         ("≥ 80%",  "Tool Accuracy\n(30 scenarios)"),
         ("100%",   "Safety Block\nRate  (5/5 probes)"),
         ("< 5 s",  "P95 End-to-End\nLatency Target"),
-        ("244",    "Automated\nTests Passing"),
+        ("426",    "Automated\nTests Passing"),
     ]
     for i, (val, lbl) in enumerate(kpis):
         kpi_box(sl, val, lbl, 0.35+i*2.59, CONTENT_Y, 2.48, 1.1,
@@ -1277,7 +1277,7 @@ def slide_evaluation(prs):
         "RAG target ≥70% pass rate; Tool Selection target ≥80%; Safety must hit 100% — any missed block triggers a full suite re-run.\n"
         "Root-cause investigation: a chunk without the product-label prefix scored 0.4 (retrieved wrong product); adding the prefix → score 1.0.\n"
         "Latency profile shows safety gate handles blocked turns in <200ms; full 4-tool advisory turn takes 3.5–5.0s P50.\n"
-        "244 automated tests provide regression coverage; scripts/run_evaluation.py --suite all runs all 3 evaluation suites."
+        "426 automated tests provide regression coverage; scripts/run_evaluation.py --suite all runs all 3 evaluation suites."
     )
     return sl
 
@@ -1432,7 +1432,7 @@ def slide_conclusion(prs):
         txt(sl, title, 0.58, y+0.06, 4.0, 0.36, size=11, bold=True, color=GOLD)
         txt(sl, body,  4.65, y+0.06, 8.1, 0.80, size=10, color=RGBColor(0xD0, 0xE4, 0xFF))
 
-    txt(sl, "github.com/manojbansal-projects/IITM-LoanCopilot  ·  244 tests passing  ·  8 Jupyter notebooks",
+    txt(sl, "github.com/manojbansal-projects/IITM-LoanCopilot  ·  426 tests passing  ·  8 Jupyter notebooks",
         0.45, FOOTER_Y, 10, 0.28, size=9, color=MIDGRAY, italic=True)
     add_notes(sl,
         "5 key learnings from this capstone project.\n"
