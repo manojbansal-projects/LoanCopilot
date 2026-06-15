@@ -404,7 +404,7 @@ def build():
         ("15", "The Web UI (Streamlit)", "deployment/app.py"),
         ("16", "End-to-End Message Flow", "What happens step by step on every turn"),
         ("17", "The 4 Loan Products", "Home, Personal, MSME, New Car"),
-        ("18", "Evaluation Framework", "244 tests, 3 suites, LLM-as-judge"),
+        ("18", "Evaluation Framework", "426 tests, 3 suites, LLM-as-judge"),
         ("19", "How to Build It From Scratch", "Complete step-by-step recipe"),
         ("20", "Key Design Decisions & Why", "The engineering judgement calls"),
     ]
@@ -561,7 +561,7 @@ def build():
         ("python-dotenv", "Loads secrets (API keys) from a .env file so they "
          "never appear in the code",
          "Standard secure practice"),
-        ("pytest (244 tests)", "Automated test runner — runs all tests in under 60 seconds "
+        ("pytest (426 tests)", "Automated test runner — runs all tests in under 60 seconds "
          "to catch regressions",
          "Industry standard; parametrize + fixtures keep tests DRY"),
     ])
@@ -614,11 +614,11 @@ def build():
          "3 automated evaluation suites: RAG quality (20 Q/A pairs), "
          "tool accuracy (30 scenarios), safety (5 adversarial probes). "
          "LLM-as-judge scoring via Langfuse dataset runs.",
-         "scripts/run_evaluation.py; 244 total tests"),
+         "scripts/run_evaluation.py; 426 total tests"),
         ("Sub-bucket 4C — MCP",
          "FastMCP server exposes all 5 tools via MCP protocol. "
          "Claude Desktop, Claude Code, and external bank APIs can now call any tool. "
-         "Agent can be switched to MCP path via USE_MCP=true.",
+         "MCP is the default tool path (USE_MCP=true); direct import available via USE_MCP=false.",
          "loan_mcp/server.py; loan_mcp/client.py; tools/tool_registry.py (get_mcp_tools)"),
     ])
 
@@ -1296,14 +1296,14 @@ def build():
         "regardless of which transport is used.")
     code_block(doc, [
         "# In agent/core_agent.py:",
-        "use_mcp = os.getenv('USE_MCP', 'false').lower() == 'true'",
+        "use_mcp = os.getenv('USE_MCP', 'true').lower() == 'true'",
         "tools = get_mcp_tools() if use_mcp else get_all_tools()",
         "",
-        "# Run agent with MCP path:",
-        "USE_MCP=true python scripts/run_agent.py",
-        "",
-        "# Run agent with direct path (default):",
+        "# Run agent (MCP path is the default):",
         "python scripts/run_agent.py",
+        "",
+        "# Run agent with direct import path (override):",
+        "USE_MCP=false python scripts/run_agent.py",
     ])
 
     doc.add_page_break()
@@ -1348,8 +1348,8 @@ def build():
         "# The browser opens automatically at:",
         "http://localhost:8501",
         "",
-        "# With MCP tools path:",
-        "USE_MCP=true streamlit run deployment/app.py",
+        "# With direct import path (override, MCP is default):",
+        "USE_MCP=false streamlit run deployment/app.py",
     ])
 
     doc.add_page_break()
@@ -1507,7 +1507,7 @@ def build():
     # ════════════════════════════════════════════════════════════════════════
     h1(doc, "18  Evaluation Framework  (scripts/run_evaluation.py)")
     body(doc,
-        "244 automated tests (233 core + 11 MCP) verify the system from three angles: "
+        "426 automated tests (244 original + 182 coverage tests) verify the system from three angles: "
         "pytest for unit correctness, evaluation suites for AI quality, "
         "and adversarial probes for safety.")
 
@@ -1663,7 +1663,7 @@ def build():
     numbered(doc, "Wire safety gate into Streamlit (check before agent.chat())")
     numbered(doc, "Write scripts/run_evaluation.py: 3 suites (RAG, tools, safety)")
     numbered(doc, "Run: python scripts/run_evaluation.py --suite all")
-    numbered(doc, "Ensure 244 pytest tests pass: python -m pytest")
+    numbered(doc, "Ensure 426 pytest tests pass: python -m pytest")
 
     h3(doc, "Sub-bucket 4C — MCP Layer")
     numbered(doc, "pip install mcp[fastmcp]>=1.0.0")
@@ -1722,12 +1722,13 @@ def build():
          "for debt capacity. The 50%/55% limit is RBI guideline. "
          "Using FOIR makes the eligibility tool directly comparable to real bank assessment.",
          "Using a custom metric would make the results meaningless to a real banker."),
-        ("MCP as an additive layer (not replacing direct tools)",
-         "The default path (USE_MCP=false) imports tools directly — zero overhead, "
-         "no subprocess spawning. MCP is opt-in via environment variable. "
-         "This keeps the default fast while enabling external access via MCP.",
-         "Adding MCP as a mandatory transport would add <1ms serialisation overhead "
-         "to every tool call. Opt-in preserves backwards compatibility."),
+        ("MCP as the default transport (not an optional add-on)",
+         "The default path (USE_MCP=true) routes tools through the FastMCP server — "
+         "external access, standard protocol, auto-generated schemas. "
+         "Direct import is available via USE_MCP=false as a fast override. "
+         "This makes the MCP path the primary path while keeping a low-overhead fallback.",
+         "Making MCP the default means external agents (Claude Desktop, API callers) "
+         "get the same tool behaviour as the built-in agent with no extra setup."),
         ("Escalation ceiling separate from product maximum",
          "The escalation ceiling (e.g. ₹1.5Cr for home loan) is NOT the same as the "
          "product maximum (₹5Cr). Amounts between the ceiling and maximum are handled "
@@ -1770,7 +1771,7 @@ def build():
         "# MCP server over HTTP (network/Docker access)",
         "python scripts/start_mcp_server.py --transport http --port 8080",
         "",
-        "# Run all 244 tests",
+        "# Run all 426 tests",
         "python -m pytest",
         "",
         "# Run all 3 evaluation suites",
@@ -1806,7 +1807,7 @@ def build():
     p2 = doc.add_paragraph()
     r2 = p2.add_run(
         "Loan Copilot Capstone  ·  IIT Madras AI Programme  ·  "
-        "244 tests passing  ·  Manoj Bansal  ·  2026"
+        "426 tests passing  ·  Manoj Bansal  ·  2026"
     )
     r2.font.size = Pt(10)
     r2.font.color.rgb = DKGRAY

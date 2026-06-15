@@ -15,7 +15,7 @@
 **Talking points:**
 1. **Scenario context:** This is Scenario 2 — Banking — on Track A, using LangChain as the primary orchestration framework. The build was completed in 10 working days across 8 structured phases.
 2. **What I built:** A conversational agent that handles four loan products — Home, Personal, MSME, and New Car — covering eligibility assessment, EMI estimates, document checklists, policy Q&A, and escalation to a Relationship Manager.
-3. **Scale of the artefact:** The project includes 5 LangChain tools, 8 Jupyter phase notebooks, a Streamlit web application with an RM Dashboard, a self-hosted Langfuse observability stack, and 233 automated tests passing.
+3. **Scale of the artefact:** The project includes 5 LangChain tools, 8 Jupyter phase notebooks, a Streamlit web application with an RM Dashboard, a self-hosted Langfuse observability stack, and 426 automated tests passing.
 4. **Technology spine:** LangChain ReAct agent → GPT-4o → ChromaDB RAG → Langfuse observability — each chosen for a specific engineering reason I'll cover in slide 5.
 
 **Transition:** Let me start with the problem this system solves.
@@ -99,7 +99,7 @@
 2. **Phase 3 — LLM + Prompts:** Wired GPT-4o into the agent and set up Langfuse tracing. Ran three prompt variants (V1 minimal, V2 structured, V3 CoT+Safety) against five test questions. V3 was selected based on safety-boundary compliance — I'll cover this in slide 13.
 3. **Phase 4 — RAG:** Built the five-stage retrieval pipeline. The product-label prefix was a mid-phase fix that improved precision from ~45% to ≥70% — more on that in slide 8.
 4. **Phases 5+6 — Tools + Memory:** Wired all five tools into the ReAct agent and added the k=10 memory window. The agent now maintains state across turns without re-asking collected fields.
-5. **Phase 7 — RLHF:** Added the star-rating feedback loop and policy_checker inline validation. The empathy adaptation rule and policy violation scoring in Langfuse close the quality feedback loop.
+5. **Phase 7 — RLHF:** Added the 👍/👎 thumbs feedback loop and policy_checker inline validation. The empathy adaptation rule and policy violation scoring in Langfuse close the quality feedback loop.
 6. **Phase 8+9 — Deployment + Evaluation:** Streamlit app, RM Dashboard, PII masking, and the three-suite evaluation framework.
 
 **On the rubric section:** The bottom table maps each phase to its graded rubric dimension — you can see the key metric expected and the main artefact delivered for each. Every phase is marked complete.
@@ -169,7 +169,7 @@
 **Talking points:**
 1. **Two-layer memory:** LangChain's `ConversationBufferWindowMemory(k=10)` provides conversational context — the last 10 turns — for the LLM's reasoning. `SessionState` with a `CustomerProfile` dataclass provides structured, queryable profile state for the tools. These serve different purposes.
 2. **CustomerProfile — 13 fields:** The dataclass captures loan_product, monthly_income, age, gender, employment_type, credit_score, loan_amount, tenure_months, customer_name, existing_emi_obligations, property_value, business_vintage_years, and a cibil_assumed flag. Each field starts as `None` and is populated progressively.
-3. **Planner logic:** `next_question()` checks which of the six required fields for eligibility are still None and returns the next one to ask. Required sequence: product → amount → tenure → income → age → employment_type. The agent follows this sequence and never re-asks a field already captured.
+3. **Planner logic:** `next_question()` checks which of the required fields for eligibility are still None and returns the next one to ask. Required sequence: product → name → amount → tenure → income → age → employment_type → credit_score. The agent follows this sequence and never re-asks a field already captured.
 4. **The 9-turn MSME demo:** This transcript on the right side shows a real scenario — Rajesh Mehta with ₹5Cr MSME loan. Turn 3 triggers escalation (ceiling breach), turns 5-7 show the validation error handling for an incomplete mobile number and incomplete email, and turn 8 shows the escalation packet being generated and saved. The agent handles the validation errors gracefully without losing the conversation context.
 5. **Reset flow:** `chat('start over')` matches the `_RESET_PHRASES` set and calls `agent.reset()` — this clears the LangChain memory buffer AND replaces SessionState with a fresh instance. Same agent object, zero re-initialisation cost.
 
@@ -183,7 +183,7 @@
 > "Phase 7 implements a lightweight RLHF loop — not fine-tuning, but prompt-level adaptation driven by customer feedback. Let me walk through the full cycle."
 
 **Talking points:**
-1. **The feedback loop in four steps:** Customer rates the response (1–5 stars + optional comment in Streamlit) → `feedback_collector.record_feedback()` normalises the rating to 0–1 and writes it to `data/rlhf/feedback_store.json` with PII masking → `policy_updater.analyse_feedback()` reads the last 20 ratings → if average < 0.6, the EMPATHY_PREFIX is injected into the system prompt for the next session.
+1. **The feedback loop in four steps:** Customer clicks 👍 or 👎 under each AI response in Streamlit → `feedback_collector.record_feedback()` stores 1.0 (thumbs-up) or 0.0 (thumbs-down) to `data/rlhf/feedback_store.json` with PII masking → `policy_updater.analyse_feedback()` reads the last 20 ratings → if average < 0.6, the EMPATHY_PREFIX is injected into the system prompt for the next session.
 2. **Why prompt-level adaptation?** Fine-tuning GPT-4o for a 10-day prototype is impractical. Prompt-level adaptation is instantaneous, fully auditable — you can read exactly what changed — and reversible. The EMPATHY_PREFIX is a single constant that gets prepended to the system prompt. It directly addresses the failure mode it was designed for.
 3. **EMPATHY_PREFIX text:** It tells the agent: "Recent user feedback indicates responses have felt too transactional. Before answering, briefly acknowledge the customer's situation in one warm sentence." This is domain-appropriate — loan applications are stressful for customers, and empathy has measurable impact on customer satisfaction in financial services.
 4. **Policy checker:** On every single response, `check_response()` verifies three hard rules — no specific rate promises (rates must be ranges), no approval guarantees, no PII echo-back. Violations score `policy_compliance=0.0` in Langfuse. This creates an automatic audit trail for compliance review.
@@ -201,7 +201,7 @@
 **Talking points:**
 1. **Trace per turn:** The `LangfuseCallbackHandler` attaches to the LangChain executor. Every `agent.chat()` call creates one Langfuse trace containing the session ID, the full input messages array (including system prompt and conversation history), every tool call with its arguments and return value, token counts, and wall-clock latency.
 2. **LLM-as-judge evaluation:** I uploaded two datasets to Langfuse — `prompt_comparison_5q` (five standard questions run against all three prompt variants, 15 total traces) and `rag_eval_20q` (20 Q/A pairs for RAG quality testing). GPT-4o-mini scores each trace against the expected answer. This is automated evaluation at scale without manual annotation.
-3. **Feedback scores as Langfuse annotations:** Star ratings and policy compliance scores are posted back to Langfuse via `score_session()`. This means I can query: "show me all turns where policy_compliance=0" and audit exactly what the agent said.
+3. **Feedback scores as Langfuse annotations:** Thumbs feedback and policy compliance scores are posted back to Langfuse via `score_session()`. This means I can query: "show me all turns where policy_compliance=0" and audit exactly what the agent said.
 4. **Why not LangSmith:** This deserves emphasis. LangSmith is cloud-only. Banking conversations contain income, employment details, and potentially partial Aadhaar or PAN data. Sending these to a US cloud service creates regulatory risk under India's data protection framework. Langfuse self-hosted, running on localhost:3000, keeps all trace data within the network perimeter. This was a deliberate, documented decision in `docs/engineering_justification.md`.
 5. **Why not Arize Phoenix:** Phoenix was considered specifically for RAG evaluation (chunk-level precision/recall). But Langfuse's LLM-as-judge evaluation covers the same ground with less infrastructure overhead. I avoided the second tool install.
 
@@ -271,10 +271,10 @@
 2. **Product-label prefix was the highest-impact fix — and it wasn't a model change:** I initially assumed that improving RAG quality would require a better embedding model or more sophisticated retrieval. It didn't. The fix was a one-line change to `retrieval/chunker.py` — adding a product-label prefix to each chunk. This is a lesson in diagnosing the actual failure mode before reaching for model upgrades.
 3. **Safety must be architecturally enforced, not reliant on prompt instructions:** The two-stage safety gate, PII masking, and policy checker each address safety at a different layer. The keyword filter doesn't trust the LLM. The PII masker doesn't trust the agent. The policy checker verifies output after the LLM has already responded. Defence in depth — not a single "be safe" instruction in the system prompt.
 4. **Self-hosted observability solved two problems at once:** Choosing Langfuse self-hosted wasn't just a privacy decision — it was also the better engineering decision. Local traces load instantly, there's no rate limiting, and I have full control over data retention. For any system handling regulated data, self-hosted observability should be the default consideration, not cloud-hosted.
-5. **Prompt-level RLHF is a fast, auditable feedback loop:** The entire empathy adaptation mechanism — from star rating to prompt change to better response — requires zero model fine-tuning and is fully readable in source code. For a prototype on a 10-day timeline, this is the right tradeoff. The infrastructure exists to upgrade to RLHF with fine-tuning if the data volumes justify it.
+5. **Prompt-level RLHF is a fast, auditable feedback loop:** The entire empathy adaptation mechanism — from thumbs feedback to prompt change to better response — requires zero model fine-tuning and is fully readable in source code. For a prototype on a 10-day timeline, this is the right tradeoff. The infrastructure exists to upgrade to RLHF with fine-tuning if the data volumes justify it.
 
 **Closing statement:**
-> "The project is live on GitHub at github.com/manojbansal-projects/IITM-LoanCopilot. All 233 tests pass, all 8 phase notebooks run end-to-end, and the Streamlit app is deployable from a single `streamlit run deployment/app.py` command. Thank you — I'm happy to take questions on any component."
+> "The project is live on GitHub at github.com/manojbansal-projects/IITM-LoanCopilot. All 426 tests pass, all 8 phase notebooks run end-to-end, and the Streamlit app is deployable from a single `streamlit run deployment/app.py` command. Thank you — I'm happy to take questions on any component."
 
 ---
 

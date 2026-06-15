@@ -110,7 +110,7 @@ Tasks are ordered; later tasks in a bucket depend on earlier ones.
 | 4C.2 | Implement `loan_mcp/server.py` | ✅ FastMCP server registers all 5 tools; `mcp._tool_manager._tools` has 5 entries |
 | 4C.3 | Implement `loan_mcp/client.py` | ✅ `LoanMCPClient` async context manager (stdio subprocess) + `call_tool_sync` in-process helper |
 | 4C.4 | Wire `USE_MCP` into `tools/tool_registry.py` and `agent/core_agent.py` | ✅ `get_mcp_tools()` builds 5 `StructuredTool` objects with correct Pydantic schemas; `_build_executor` checks `USE_MCP` env var |
-| 4C.5 | Write `tests/test_mcp_server.py` (11 tests) | ✅ All 11 pass; full suite 244 tests green; 0 regressions |
+| 4C.5 | Write `tests/test_mcp_server.py` (11 tests) | ✅ All 11 pass; full suite 426 tests green; 0 regressions |
 | 4C.6 | Add MCP engineering justification (`docs/engineering_justification.md` §6) | ✅ Trade-off against low-level SDK + serialisation overhead documented |
 | 4C.7 | Update `IMPLEMENTATION_PLAN.md`, `CLAUDE.md`, `README.md` | ✅ Module map, commands, and phase map reflect MCP layer |
 | 4C.8 | Update `docs/specification_v2.docx` and `docs/concept_document.docx` | Architecture sections updated; old tool name `lookup_loan_status` → `query_loan_policy` fixed |
@@ -143,7 +143,7 @@ Tasks are ordered; later tasks in a bucket depend on earlier ones.
 | # | Task | Done when |
 |---|------|-----------|
 | 6.1 | Implement `policy_rlhf/feedback_collector.py::record_feedback` | ✅ `data/rlhf/feedback_store.json` grows by 1 entry per call; PII masked via `safety/pii_filter` |
-| 6.2 | Wire feedback in `deployment/app.py` (1–5 star rating + optional comment) | ✅ `st.feedback("stars")` renders star selector; comment text area appears on selection; Submit posts normalized score `(rating−1)/4` to store + Langfuse |
+| 6.2 | Wire feedback in `deployment/app.py` (👍/👎 thumbs per AI response) | ✅ `st.button("👍"/"👎")` under each response; click posts binary score (1.0/0.0) to feedback_store.json + Langfuse |
 | 6.3 | Implement Rule 1 in `policy_rlhf/policy_updater.py` — low-rating empathy injection | ✅ `analyse_feedback()` returns `adapt="increase_empathy"` when avg < 0.6 |
 | 6.4 | Implement Rule 2 — high-rating positive reinforcement | ✅ Returns `adapt="maintain"` when avg ≥ 0.85 |
 | 6.5 | Verify `policy_rlhf/policy_checker.py` blocks approval-language | ✅ `check_response("Your loan is guaranteed!")` returns 1 violation; wired into `_executor_response` |

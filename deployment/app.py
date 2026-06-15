@@ -667,14 +667,16 @@ with tab_chat:
         text = st.session_state["_pending_input"]
         intent_label, blocked = _run_safety_gate(text)
         if blocked:
+            with st.chat_message("assistant", avatar="🏦"):
+                st.write(_OUT_OF_SCOPE_REPLY)
             response = _OUT_OF_SCOPE_REPLY
             latency_ms = 0
         else:
-            with st.spinner("Analysing your query…"):
-                t0 = time.time()
-                _esc_count_before = _read_escalation_count()
-                response = agent.chat(text)
-                latency_ms = int((time.time() - t0) * 1000)
+            t0 = time.time()
+            _esc_count_before = _read_escalation_count()
+            with st.chat_message("assistant", avatar="🏦"):
+                response = st.write_stream(agent.stream_response(text))
+            latency_ms = int((time.time() - t0) * 1000)
             st.session_state.latencies.append(latency_ms)
         log_interaction(
             session_id=agent.session_id,
@@ -690,7 +692,7 @@ with tab_chat:
             _inject_history_if_new(_esc_count_before, agent.session_id)
         st.session_state["_processing"] = False
         st.session_state["_pending_input"] = None
-        st.rerun()
+        # No st.rerun() — stream renders in place; next user input triggers the rerun
 
     # ── Action buttons — hidden while LLM is processing ───────────────────────
     if st.session_state.messages and not st.session_state.get("_processing"):
@@ -1116,11 +1118,12 @@ with tab_rm:
     if log_entries:
         log_rows = [
             {
-                "Time (UTC)":        r.get("ts", "")[:16].replace("T", " "),
-                "Intent":            r.get("intent", "—"),
-                "Blocked":           "🚫" if r.get("blocked") else "✓",
-                "Latency ms":        r.get("latency_ms", "—"),
-                "User input (masked)": r.get("user_input_masked", "")[:80],
+                "Time (UTC)":              r.get("ts", "")[:16].replace("T", " "),
+                "Intent":                  r.get("intent", "—"),
+                "Blocked":                 "🚫" if r.get("blocked") else "✓",
+                "Latency ms":              r.get("latency_ms", "—"),
+                "User input (masked)":     r.get("user_input_masked", "")[:80],
+                "Response preview (masked)": r.get("response_preview_masked", "")[:80],
             }
             for r in reversed(log_entries)
         ]

@@ -182,7 +182,7 @@ Open the **📊 RM Dashboard** tab in the Streamlit app. Sections:
 | Section | What it shows |
 |---------|---------------|
 | 🔔 Escalation Queue | All escalated leads with contact, loan details, RM briefing, and conversation history |
-| ⭐ Feedback Analytics | Star rating distribution, RLHF adaptation signal, per-turn comments |
+| 👍 Feedback Analytics | Thumbs 👍/👎 distribution, RLHF adaptation signal, avg score trend |
 | 📋 Interaction Log | Last 20 turns — PII-masked, intent label, latency, blocked flag |
 | ⚡ Session Latency | Turn-by-turn latency chart + P95 vs 5 s SLA target |
 
@@ -236,7 +236,7 @@ Target metrics: RAG pass rate ≥ 70%, tool accuracy ≥ 80%, safety block rate 
 python scripts/run_rlhf_pipeline.py
 ```
 
-Analyses feedback from `data/rlhf/feedback_store.json`, prints adaptation signals, and logs to Langfuse. If avg star rating < 3/5, the empathy prefix is automatically prepended to the system prompt for subsequent sessions (see `policy_rlhf/policy_updater.py`).
+Analyses feedback from `data/rlhf/feedback_store.json`, prints adaptation signals, and logs to Langfuse. If avg thumbs score (last 20 ratings) < 0.60, the empathy prefix is automatically prepended to the system prompt for subsequent sessions (see `policy_rlhf/policy_updater.py`).
 
 ---
 
@@ -261,7 +261,7 @@ python scripts/ingest_documents.py
 | 6 | Multi-turn memory | `agent/memory.py`, `agent/core_agent.py` | ✅ Complete |
 | 7 | Adaptive behaviour (RLHF) | `policy_rlhf/` | ✅ Complete |
 | 8 | Streamlit deployment + safety gate | `deployment/app.py`, `safety/` | ✅ Complete |
-| 9 | Full evaluation + packaging | `evaluation/`, `scripts/run_evaluation.py` | In progress |
+| 9 | Full evaluation + packaging | `evaluation/`, `scripts/run_evaluation.py` | ✅ Complete |
 
 Full task breakdown with done criteria: **[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)**
 
@@ -314,10 +314,11 @@ Full task breakdown with done criteria: **[IMPLEMENTATION_PLAN.md](IMPLEMENTATIO
 
 - **LLM:** OpenAI GPT-4o (agent) · GPT-4o-mini (safety classifier)
 - **Framework:** LangChain 1.3.x + LangGraph (`create_agent` tool-calling loop)
+- **Tool transport:** FastMCP v1.27.2 (`loan_mcp/server.py`) — default path (`USE_MCP=true`); direct import via `USE_MCP=false`
 - **Vector store:** ChromaDB persistent (`knowledge/chromadb/`)
 - **Embeddings:** `text-embedding-3-small`
 - **Observability:** Langfuse v4 cloud (LangSmith excluded — see `docs/engineering_justification.md`)
-- **UI:** Streamlit
+- **UI:** Streamlit with token-streaming (`st.write_stream`)
 
 ---
 

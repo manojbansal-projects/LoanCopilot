@@ -481,7 +481,7 @@ def slide_techstack(prs):
          "FastMCP  (mcp v1.27 · loan_mcp/server.py)",
          "All 5 tools exposed via Model Context Protocol — discoverable by Claude Desktop, "
          "Claude Code, and external bank systems without Python imports. "
-         "USE_MCP=true selects MCP path; default is direct @tool imports (zero breaking change). "
+         "MCP path is the default (USE_MCP=true); USE_MCP=false selects direct @tool imports. "
          "Adds schema validation at the protocol layer; <1ms serialisation overhead"),
     ]
 
@@ -533,7 +533,7 @@ def slide_phases(prs):
         "• 5 policy docs ingested\n• ~160 chunks, 500-char\n• Product-label prefix fix\n• ≥70% pass rate target",
         "• 5 @tool functions\n• create_react_agent\n• MCP exposure layer\n• Escalation ceiling logic",
         "• k=10 sliding window\n• SessionState dataclass\n• Planner: next_question()\n• start-over reset flow",
-        "• Star rating UI\n• feedback_collector\n• EMPATHY_PREFIX inject\n• policy_checker inline",
+        "• Thumbs 👍/👎 feedback\n• feedback_collector\n• EMPATHY_PREFIX inject\n• policy_checker inline",
         "• Streamlit Customer Chat\n• RM Dashboard\n• PII masker on all logs\n• P95 latency target <5s",
         "• 55 test cases (3 suites)\n• RAG / Tools / Safety\n• Root-cause + re-run\n• Evaluation report",
     ]
@@ -584,7 +584,7 @@ def slide_phases(prs):
          "k=10 no re-asks;\nSessionState persists",
          "agent/memory.py\nphase6_memory.ipynb"),
         ("P7", "Adaptive\nBehaviour",
-         "Star ratings → empathy;\npolicy_checker inline",
+         "Thumbs feedback → empathy;\npolicy_checker inline",
          "policy_rlhf/\nfeedback_collector.py"),
         ("P8", "Safety Gate\n& Deploy",
          "100% adversarial block;\nPII masked in all logs",
@@ -920,7 +920,7 @@ def slide_memory(prs):
          "eligibility_result · emi_result · last_asked_field · cibil_assumed flag."),
         ("Planner — next_question()",
          "Returns the next missing required field based on profile state. "
-         "Required fields: product → amount → tenure → income → age → employment_type. "
+         "Required fields: product → name → amount → tenure → income → age → employment_type → credit_score. "
          "Agent never asks for a field already in SessionState."),
         ("Reset Flow",
          "chat('start over') → _RESET_PHRASES match → agent.reset() called: "
@@ -982,7 +982,7 @@ def slide_rlhf(prs):
     # Feedback loop steps
     loop_steps = [
         (0.35,  "Customer\nRates Response",
-         "1–5 ⭐ in Streamlit\n+ optional comment\n\nfeedback_collector.\nrecord_feedback()\n\nNormalised 0–1 score",
+         "👍/👎 in Streamlit\nper AI response\n\nfeedback_collector.\nrecord_feedback()\n\n1.0 (👍) or 0.0 (👎)",
          BLUE),
         (3.5,   "Feedback Store",
          "PII-masked before\nwrite to JSON store\n\ndata/rlhf/\nfeedback_store.json\n\nLangfuse annotation",
@@ -1041,7 +1041,7 @@ def slide_rlhf(prs):
         0.5, CONTENT_Y+5.06, 7.62, 0.48, size=9, color=DARKGRAY)
 
     add_notes(sl,
-        "The RLHF loop: customer star rating → feedback_collector → analyse_feedback() → EMPATHY_PREFIX injected into next session.\n"
+        "The RLHF loop: customer 👍/👎 → feedback_collector → analyse_feedback() → EMPATHY_PREFIX injected into next session.\n"
         "When average rating over the last 20 sessions drops below 0.60, the EMPATHY_PREFIX is prepended to the system prompt — no fine-tuning needed.\n"
         "policy_checker runs on every single response: checks no-approval-guarantee, no-single-rate-promise, no-PII-in-response.\n"
         "RM Dashboard (right) provides the RM with a pending queue, resolved case management, KPI strip, and PII-masked interaction log.\n"
@@ -1069,7 +1069,7 @@ def slide_observability(prs):
          "GPT-4o-mini scores each run 0–1 against expected criteria. "
          "Results visible in Langfuse Evaluations panel."),
         ("💬", "Feedback\n& Scores",    AMBER,
-         "Star ratings normalised (rating−1)/4 → Langfuse score 'user_feedback'. "
+         "Thumbs feedback (👍=1.0, 👎=0.0) → Langfuse score 'user_feedback'. "
          "policy_checker violations → score 'policy_compliance=0.0'. "
          "All scores queryable for trend analysis."),
         ("🔐", "Privacy First\n(On-Premise)", NAVY,
@@ -1106,7 +1106,7 @@ def slide_observability(prs):
         "One Langfuse trace per agent turn captures everything: session_id, tool names + args + outputs, token count, wall-clock latency.\n"
         "Two evaluation datasets: prompt_comparison_5q (15 traces: V1×5, V2×5, V3×5) and rag_eval_20q (20 Q/A pairs for RAG quality).\n"
         "LLM-as-judge scores all evaluation runs 0–1; V3 selected as SYSTEM_PROMPT default based on Q3 (safety boundary) + Q1/Q4 accuracy.\n"
-        "Star ratings (user_feedback score) and policy_checker violations (policy_compliance score) both flow to Langfuse for trend analysis."
+        "Thumbs feedback (user_feedback score) and policy_checker violations (policy_compliance score) both flow to Langfuse for trend analysis."
     )
     return sl
 
@@ -1422,7 +1422,7 @@ def slide_conclusion(prs):
          "Langfuse self-hosted satisfied both the tracing need and the data-privacy constraint. "
          "LLM-as-judge evaluation on Langfuse closed the quality feedback loop without manual annotation overhead."),
         ("🔄  Prompt-Level RLHF is a Viable Fast Path",
-         "Star ratings → policy_updater → EMPATHY_PREFIX injection demonstrates a lightweight RLHF loop "
+         "Thumbs 👍/👎 feedback → policy_updater → EMPATHY_PREFIX injection demonstrates a lightweight RLHF loop "
          "without fine-tuning. Prompt-level adaptation is fast to iterate and fully auditable."),
     ]
 

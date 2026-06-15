@@ -302,6 +302,85 @@ class LoanCopilotAgent:
             return self._rules_response(user_input)
         return self._llm_response(user_input)
 
+    def stream_response(self, user_input: str):
+        """Generator yielding text chunks for st.write_stream().
+
+        Phase 2 and non-5 LLM phases yield a single string (no network streaming
+        benefit); Phase 5+ streams tokens from the LangGraph ReAct loop so the UI
+        shows text as it arrives instead of waiting for the full response.
+        """
+        self.state.turn_count += 1
+        _reset_reply = (
+            "Sure, I've cleared our previous conversation. "
+            "Let's start fresh — which loan product can I help you with today? "
+            "(Home / Personal / MSME / New Car)"
+        )
+        if user_input.strip().lower() in self._RESET_PHRASES:
+            self.reset()
+            yield _reset_reply
+            return
+
+        if self.phase == 2:
+            yield self._rules_response(user_input)
+            return
+
+        if self.phase < 5:
+            # Phase 3-4: simple chain — yield full string (no streaming benefit)
+            yield self._chain_response(user_input)
+            return
+
+        yield from self._executor_stream(user_input)
+
+    def _executor_stream(self, user_input: str):
+        """Stream Phase-5 ReAct agent response token-by-token."""
+        from langchain_core.messages import HumanMessage, AIMessageChunk
+
+        executor = self._get_executor()
+        history = self.memory.chat_memory.messages if self.memory else []
+
+        full_response = ""
+        try:
+            for msg, _meta in executor.stream(
+                {"messages": [*history, HumanMessage(content=user_input)]},
+                config={"callbacks": self._get_callbacks()},
+                stream_mode="messages",
+            ):
+                # Yield only final-synthesis chunks; skip tool-call generation chunks
+                if (isinstance(msg, AIMessageChunk)
+                        and msg.content
+                        and not msg.tool_call_chunks):
+                    full_response += msg.content
+                    yield msg.content
+        except Exception as exc:
+            error_msg = (
+                "I'm sorry, I encountered an issue processing your request. "
+                f"Please try again. ({type(exc).__name__})"
+            )
+            yield error_msg
+            full_response = error_msg
+
+        # Post-processing identical to _executor_response (minus attach_conversation)
+        if self.memory and full_response:
+            self.memory.chat_memory.add_user_message(user_input)
+            self.memory.chat_memory.add_ai_message(full_response)
+
+        _extract_profile(user_input, self.state.profile)
+
+        try:
+            from policy_rlhf.policy_checker import check_response as _check_policy
+            violations = _check_policy(full_response)
+            if violations:
+                from monitoring.langfuse_logger import score_session
+                hex_id = self.session_id.replace("-", "").lower()
+                score_session(
+                    trace_id=hex_id,
+                    score_name="policy_compliance",
+                    value=0.0,
+                    comment=f"Violations: {[v['rule_id'] for v in violations]}",
+                )
+        except Exception:
+            pass
+
     def reset(self) -> None:
         """Reset all session state (supports 'start over' command)."""
         self.state.reset()
@@ -774,7 +853,7 @@ class LoanCopilotAgent:
         from langchain.agents import create_agent
         from tools.tool_registry import get_all_tools, get_mcp_tools
 
-        use_mcp = os.getenv("USE_MCP", "false").lower() == "true"
+        use_mcp = os.getenv("USE_MCP", "true").lower() == "true"
         tools = get_mcp_tools() if use_mcp else get_all_tools()
         llm   = self._get_llm()
 

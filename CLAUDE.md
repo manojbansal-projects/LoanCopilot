@@ -19,12 +19,12 @@ A conversational AI agent that guides retail customers through early-stage loan 
 ## Tech Stack
 
 - **LLM / Agent:** LangChain AgentExecutor (ReAct), OpenAI GPT-4o (agent) + GPT-4o-mini (safety)
-- **Tool Transport:** LangChain `@tool` direct imports (default) **or** FastMCP server (`USE_MCP=true`)
+- **Tool Transport:** FastMCP server (default, `USE_MCP=true`) **or** LangChain `@tool` direct imports (`USE_MCP=false`)
 - **MCP:** `mcp>=1.0.0` (v1.27.2) — FastMCP; `loan_mcp/server.py` exposes all 5 tools via stdio or HTTP
 - **Vector DB:** ChromaDB persistent (`knowledge/chromadb/`)
 - **Embeddings:** OpenAI text-embedding-3-small
 - **Observability:** Langfuse self-hosted — **the only observability tool** (LangSmith and Arize Phoenix excluded; see `docs/engineering_justification.md`)
-- **Web UI:** Streamlit (`deployment/app.py`)
+- **Web UI:** Streamlit (`deployment/app.py`) — responses stream token-by-token via `agent.stream_response()` + `st.write_stream()`
 - **CLI:** `python scripts/run_agent.py`
 
 ---
@@ -38,11 +38,11 @@ pip install -r requirements.txt && cp .env.example .env
 # Build ChromaDB index (run after any policy doc change)
 python scripts/ingest_documents.py
 
-# Run CLI agent (direct tool path, default)
+# Run CLI agent (MCP tool path, default)
 python scripts/run_agent.py [--phase 2|3|4|5]
 
-# Run CLI agent via MCP tool path
-USE_MCP=true python scripts/run_agent.py
+# Run CLI agent via direct import path (override)
+USE_MCP=false python scripts/run_agent.py
 
 # Run Streamlit UI (Phase 8+)
 streamlit run deployment/app.py

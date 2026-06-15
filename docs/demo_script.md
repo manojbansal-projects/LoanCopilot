@@ -153,31 +153,26 @@ Bot:  (Does NOT re-ask income or employment type already collected)
 
 ## Demo 5 — Feedback and Adaptation (Phase 7)
 
-**Shows:** 1–5 star rating + optional comment collected; Langfuse score posted; adaptation signal logged
+**Shows:** 👍/👎 thumbs feedback collected per turn; Langfuse score posted; adaptation signal logged
 
 ```
 Bot:  Your EMI estimate is ₹10,543/month. Does this answer your question?
 
-      [Rate this response:]
-      ☆ ☆ ☆ ☆ ☆   ← star selector rendered by st.feedback("stars")
+      👍  👎   ← thumbs buttons rendered below each AI response
 
-User: [★★★★ 4 stars — clicks 4th star]
+User: [clicks 👍]
 
-Bot UI: You selected ★★★★ — add a comment below (optional):
-        ┌──────────────────────────────────────────────────────┐
-        │ What was helpful or could be improved?               │
-        └──────────────────────────────────────────────────────┘
-        [Submit feedback]
+Bot UI: (records rating=1.0, saves to data/rlhf/feedback_store.json)
+        (posts score=1.0 to Langfuse — thumbs up = 1.0, thumbs down = 0.0)
+        Feedback recorded — thank you
 
-User: "EMI range was clear but I wanted to know processing fees too."
-      [Submit feedback]
+User: [clicks 👎 on a different response]
 
-Bot:  (records rating=4, comment=masked text in data/rlhf/feedback_store.json)
-      (posts score=0.75 to Langfuse — normalized from 4★ → (4-1)/4 = 0.75)
-      ★★★★  Feedback recorded — "EMI range was clear but…" — thank you
+Bot UI: (records rating=0.0, saves to data/rlhf/feedback_store.json)
+        (posts score=0.0 to Langfuse)
 ```
 
-**Adaptation trigger thresholds:**
-- Avg normalized < 0.60  (≈ < 3.4★)  →  `adapt='increase_empathy'`  — EMPATHY_PREFIX prepended for new sessions
-- Avg normalized ≥ 0.85  (≈ ≥ 4.4★)  →  `adapt='maintain'`  — no change
+**Adaptation trigger thresholds (based on avg Langfuse score across session):**
+- Avg score < 0.60  →  `adapt='increase_empathy'`  — EMPATHY_PREFIX prepended for new sessions
+- Avg score ≥ 0.85  →  `adapt='maintain'`  — no change
 - In between  →  `adapt='neutral'`  — no change
