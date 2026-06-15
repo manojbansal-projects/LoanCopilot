@@ -119,13 +119,28 @@ def _extract_profile(text: str, profile: CustomerProfile,
 
     # ── Monthly income ────────────────────────────────────────────────────────
     if profile.monthly_income is None or last_asked == "monthly_income":
-        m = re.search(
+        # Try lakh/crore in the context of income-related words first
+        m_ctx_cr = re.search(
+            r'(?:earn|income|salary|take.?home|per month|monthly|ctc|get)\D{0,20}'
+            r'(?:₹|rs\.?\s*)?(\d[\d,]*(?:\.\d+)?)\s*(?:crore|cr)(?:s|e)?\b',
+            lower
+        )
+        m_ctx_lk = re.search(
+            r'(?:earn|income|salary|take.?home|per month|monthly|ctc|get)\D{0,20}'
+            r'(?:₹|rs\.?\s*)?(\d[\d,]*(?:\.\d+)?)\s*(?:lakh|lac|l)(?:s|hs)?\b',
+            lower
+        )
+        m_ctx_num = re.search(
             r'(?:earn|income|salary|take.?home|per month|monthly|ctc|get)\D{0,20}'
             r'(?:₹|rs\.?\s*)?(\d[\d,]*(?:\.\d+)?)',
             lower
         )
-        if m:
-            profile.monthly_income = float(m.group(1).replace(',', ''))
+        if m_ctx_cr:
+            profile.monthly_income = float(m_ctx_cr.group(1).replace(',', '')) * 1_00_00_000
+        elif m_ctx_lk:
+            profile.monthly_income = float(m_ctx_lk.group(1).replace(',', '')) * 1_00_000
+        elif m_ctx_num:
+            profile.monthly_income = float(m_ctx_num.group(1).replace(',', ''))
         else:
             # When we explicitly asked for income, accept lakh/crore or bare large number
             m_cr = re.search(r'(?:₹|rs\.?\s*)?(\d+(?:\.\d+)?)\s*(?:crore|cr)(?:s|e)?\b', lower)
@@ -155,7 +170,7 @@ def _extract_profile(text: str, profile: CustomerProfile,
 
     # ── Employment type ───────────────────────────────────────────────────────
     if profile.employment_type is None or last_asked == "employment_type":
-        if any(k in lower for k in ["salaried", "private job", "government job",
+        if any(k in lower for k in ["salaried", "salary", "private job", "government job",
                                      "work for a company", "employed by"]):
             profile.employment_type = "salaried"
         elif any(k in lower for k in ["self employed", "self-employed",
@@ -204,6 +219,14 @@ def _extract_profile(text: str, profile: CustomerProfile,
             first_word = candidate.split()[0]
             if first_word not in _NOT_A_NAME and not first_word[0].isdigit():
                 profile.customer_name = candidate.title()
+        elif last_asked == "customer_name":
+            # Bare reply like "Rahul" or "Rahul Sharma" when we explicitly asked for name
+            m = re.match(r'^([a-z]+(?:\s+[a-z]+){0,3})$', lower.strip())
+            if m:
+                candidate = m.group(1).strip()
+                first_word = candidate.split()[0]
+                if first_word not in _NOT_A_NAME and not first_word[0].isdigit():
+                    profile.customer_name = candidate.title()
 
 
 # ── FAQ templates (Phase 2 — no LLM) ───────────────────────────────────────

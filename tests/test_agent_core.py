@@ -211,6 +211,30 @@ class TestExtractProfile:
         _extract_profile("I am Priya", p)
         assert p.customer_name == "Priya"
 
+    def test_bare_name_when_last_asked_customer_name(self):
+        """Agent asked 'May I know your name?' — user replies 'Rahul Sharma'."""
+        p = self._fresh()
+        _extract_profile("Rahul Sharma", p, last_asked="customer_name")
+        assert p.customer_name == "Rahul Sharma"
+
+    def test_bare_first_name_when_last_asked_customer_name(self):
+        p = self._fresh()
+        _extract_profile("Priya", p, last_asked="customer_name")
+        assert p.customer_name == "Priya"
+
+    def test_salary_word_implies_salaried_employment(self):
+        """'my monthly salary is 10 lacs' must set employment_type = salaried."""
+        p = self._fresh()
+        _extract_profile("my monthly salary is 10 lacs", p)
+        assert p.employment_type == "salaried"
+
+    def test_salary_and_income_extracted_together(self):
+        """Single phrase sets both monthly_income and employment_type."""
+        p = self._fresh()
+        _extract_profile("my monthly salary is 10 lacs", p)
+        assert p.monthly_income == pytest.approx(10_00_000)
+        assert p.employment_type == "salaried"
+
     # ── No mutation when already set ──────────────────────────────
     def test_existing_product_not_overwritten(self):
         p = self._fresh()

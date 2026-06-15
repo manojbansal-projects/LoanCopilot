@@ -9,6 +9,7 @@ from agent.memory import CustomerProfile
 
 COLLECTION_SEQUENCE = [
     ("loan_product",    "Which loan are you interested in? (Home / Personal / MSME / Car)"),
+    ("customer_name",   "May I know your name?"),
     ("loan_amount",     "How much would you like to borrow?"),
     ("tenure_months",   "Over how many months/years would you like to repay?"),
     ("monthly_income",  "What is your approximate monthly take-home income?"),

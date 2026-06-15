@@ -9,9 +9,10 @@ from agent.planner import (
 
 def _full_profile():
     return CustomerProfile(
-        loan_product="home_loan", loan_amount=50_00_000,
-        tenure_months=240, monthly_income=1_50_000,
-        age=35, employment_type="salaried", credit_score=750,
+        loan_product="home_loan", customer_name="Test User",
+        loan_amount=50_00_000, tenure_months=240,
+        monthly_income=1_50_000, age=35,
+        employment_type="salaried", credit_score=750,
     )
 
 
@@ -27,7 +28,7 @@ class TestNextQuestion:
     def test_partial_profile_asks_next_missing(self):
         p = CustomerProfile(loan_product="home_loan")
         q = next_question(p)
-        # Next field after loan_product is loan_amount
+        # Next field after loan_product is customer_name
         assert q == COLLECTION_SEQUENCE[1][1]
 
     def test_complete_profile_returns_none(self):
