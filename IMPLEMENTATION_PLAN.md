@@ -101,6 +101,21 @@ Tasks are ordered; later tasks in a bucket depend on earlier ones.
 | 4B.4 | Test Q4 escalation ceiling | ✅ MSME ₹5 Cr → `generate_escalation_summary` auto-invoked; RM message returned |
 | 4B.5 | Verify all 5 tools appear across test traces | ✅ All 5 tools exercised across Demos 1–4 in phase5_tools.ipynb |
 
+### Sub-bucket 4C — MCP Exposure Layer ✅
+**Outcome:** All 5 tools discoverable and callable via Model Context Protocol; LangChain agent can use either direct or MCP path; 11 MCP-specific tests pass.
+
+| # | Task | Done when |
+|---|------|-----------|
+| 4C.1 | Install `mcp>=1.0.0` SDK (FastMCP) | ✅ `from mcp.server.fastmcp import FastMCP` succeeds; v1.27.2 installed |
+| 4C.2 | Implement `loan_mcp/server.py` | ✅ FastMCP server registers all 5 tools; `mcp._tool_manager._tools` has 5 entries |
+| 4C.3 | Implement `loan_mcp/client.py` | ✅ `LoanMCPClient` async context manager (stdio subprocess) + `call_tool_sync` in-process helper |
+| 4C.4 | Wire `USE_MCP` into `tools/tool_registry.py` and `agent/core_agent.py` | ✅ `get_mcp_tools()` builds 5 `StructuredTool` objects with correct Pydantic schemas; `_build_executor` checks `USE_MCP` env var |
+| 4C.5 | Write `tests/test_mcp_server.py` (11 tests) | ✅ All 11 pass; full suite 244 tests green; 0 regressions |
+| 4C.6 | Add MCP engineering justification (`docs/engineering_justification.md` §6) | ✅ Trade-off against low-level SDK + serialisation overhead documented |
+| 4C.7 | Update `IMPLEMENTATION_PLAN.md`, `CLAUDE.md`, `README.md` | ✅ Module map, commands, and phase map reflect MCP layer |
+| 4C.8 | Update `docs/specification_v2.docx` and `docs/concept_document.docx` | Architecture sections updated; old tool name `lookup_loan_status` → `query_loan_policy` fixed |
+| 4C.9 | Rebuild `docs/capstone_presentation.pptx` | S4 Architecture, S5 Tech Stack, S7 Tools updated; MCP shown in architecture diagram |
+
 ---
 
 ## BUCKET 5 — Phase 6: Memory + Multi-Turn ✅

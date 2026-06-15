@@ -12,13 +12,15 @@ A conversational AI agent that guides retail customers through early-stage loan 
 - Document requirement checklists
 - Policy-grounded answers for 4 loan products (Home, Personal, MSME, New Car)
 
-**Status:** Currently in development phases (Phases 2–4 using Jupyter notebooks; production code deployable in Phases 5+).
+**Status:** All 9 phases complete. MCP exposure layer added (Sub-bucket 4C).
 
 ---
 
 ## Tech Stack
 
 - **LLM / Agent:** LangChain AgentExecutor (ReAct), OpenAI GPT-4o (agent) + GPT-4o-mini (safety)
+- **Tool Transport:** LangChain `@tool` direct imports (default) **or** FastMCP server (`USE_MCP=true`)
+- **MCP:** `mcp>=1.0.0` (v1.27.2) — FastMCP; `loan_mcp/server.py` exposes all 5 tools via stdio or HTTP
 - **Vector DB:** ChromaDB persistent (`knowledge/chromadb/`)
 - **Embeddings:** OpenAI text-embedding-3-small
 - **Observability:** Langfuse self-hosted — **the only observability tool** (LangSmith and Arize Phoenix excluded; see `docs/engineering_justification.md`)
@@ -36,17 +38,29 @@ pip install -r requirements.txt && cp .env.example .env
 # Build ChromaDB index (run after any policy doc change)
 python scripts/ingest_documents.py
 
-# Run CLI agent
+# Run CLI agent (direct tool path, default)
 python scripts/run_agent.py [--phase 2|3|4|5]
+
+# Run CLI agent via MCP tool path
+USE_MCP=true python scripts/run_agent.py
 
 # Run Streamlit UI (Phase 8+)
 streamlit run deployment/app.py
+
+# Start MCP server (stdio — for Claude Desktop)
+python scripts/start_mcp_server.py
+
+# Start MCP server (HTTP — for network/Docker access)
+python scripts/start_mcp_server.py --transport http [--port 8080]
 
 # Run evaluations
 python scripts/run_evaluation.py --suite all   # or: rag | tools | safety
 
 # RLHF analysis
 python scripts/run_rlhf_pipeline.py
+
+# Run tests (426 total: 244 original + 182 new coverage tests)
+python -m pytest
 ```
 
 ---
@@ -55,17 +69,19 @@ python scripts/run_rlhf_pipeline.py
 
 | Module | Purpose |
 |--------|---------|
-| `agent/core_agent.py` | `LoanCopilotAgent` — instantiate with `phase=N` to select tier |
+| `agent/core_agent.py` | `LoanCopilotAgent` — instantiate with `phase=N` to select tier; checks `USE_MCP` env var |
 | `agent/prompts.py` | 3 prompt variants (V1/V2/V3); V3 is default (`SYSTEM_PROMPT`) |
 | `agent/memory.py` | `SessionState` dataclass + `ConversationBufferWindowMemory(k=10)` |
 | `agent/planner.py` | `next_question()` — drives profile collection sequence |
 | `retrieval/` | `document_loader → chunker → embedder → chroma_store → retriever` pipeline |
-| `tools/tool_registry.py` | `get_all_tools()` — registers all 5 `@tool` functions |
+| `tools/tool_registry.py` | `get_all_tools()` direct path; `get_mcp_tools()` builds StructuredTools via MCP |
 | `tools/eligibility_checker.py` | FOIR + credit score + amount/tenure limits |
 | `tools/emi_calculator.py` | Reducing-balance EMI formula |
 | `tools/document_checklist.py` | Product × employment-type lookup table |
 | `tools/tool_search.py` | RAG-backed policy FAQ (`query_loan_policy`) |
 | `tools/tool_escalate.py` | RM handoff packet (`generate_escalation_summary`) |
+| `loan_mcp/server.py` | FastMCP server — registers all 5 tools; `start_server(transport, port)` entry point |
+| `loan_mcp/client.py` | `LoanMCPClient` async stdio client; `call_tool_sync` in-process helper |
 | `safety/guardrails.py` | Stage A: keyword filter; Stage B: GPT-4o-mini intent classifier |
 | `safety/pii_filter.py` | Regex masker — Aadhaar, PAN, mobile, email, account numbers |
 | `monitoring/langfuse_logger.py` | `get_langfuse_callback()` + `score_session()` |
@@ -99,6 +115,7 @@ python scripts/run_rlhf_pipeline.py
 4. Add product to `tools/document_checklist.py::_BY_PRODUCT_EMPLOYMENT`
 5. Add product to `deployment/config.py::ESCALATION_CEILINGS`
 6. Re-run `python scripts/ingest_documents.py`
+7. The MCP server auto-discovers the updated tool; no changes to `loan_mcp/server.py` needed
 
 ## Resources
 

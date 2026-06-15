@@ -63,6 +63,47 @@ class TestProductEmploymentCombinations:
         assert any("proforma" in d.lower() or "invoice" in d.lower() for d in docs)
 
 
+    # ── Fallback combinations (not in _BY_PRODUCT_EMPLOYMENT) ────────────────
+
+    def test_home_loan_business_falls_back(self):
+        """home_loan + business has no specific mapping → branch fallback."""
+        r = _get("home_loan", "business")
+        assert len(r["product_specific_docs"]) == 1
+        assert "branch" in r["product_specific_docs"][0].lower()
+
+    def test_personal_loan_business_falls_back(self):
+        r = _get("personal_loan", "business")
+        assert "branch" in r["product_specific_docs"][0].lower()
+
+    def test_msme_loan_salaried_falls_back(self):
+        """msme_loan is designed for business owners; salaried → fallback."""
+        r = _get("msme_loan", "salaried")
+        assert "branch" in r["product_specific_docs"][0].lower()
+
+    def test_msme_loan_self_employed_falls_back(self):
+        r = _get("msme_loan", "self_employed")
+        assert "branch" in r["product_specific_docs"][0].lower()
+
+    def test_car_loan_business_falls_back(self):
+        r = _get("car_loan", "business")
+        assert "branch" in r["product_specific_docs"][0].lower()
+
+    # ── Output keys always present ────────────────────────────────────────────
+
+    def test_output_contains_all_keys(self):
+        r = _get("home_loan", "salaried")
+        for key in ("loan_product", "employment_type", "common_docs", "product_specific_docs", "note"):
+            assert key in r, f"Key '{key}' missing from output"
+
+    def test_common_docs_is_list(self):
+        r = _get("car_loan", "self_employed")
+        assert isinstance(r["common_docs"], list)
+
+    def test_product_specific_docs_is_list(self):
+        r = _get("msme_loan", "business")
+        assert isinstance(r["product_specific_docs"], list)
+
+
 class TestUnknownCombination:
     def test_unknown_falls_back_to_branch(self):
         r = _get("home_loan", "freelancer")

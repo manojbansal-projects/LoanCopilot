@@ -56,6 +56,37 @@ class TestEMIFormula:
         assert decimal_places <= 2
 
 
+    def test_30L_9pct_240mo_benchmark(self):
+        """₹30L × 9% × 240mo is used in presentation and MCP tests — must be ≈ ₹26,992."""
+        r = _invoke(30_00_000, 9.0, 240)
+        assert abs(r["emi"] - 26_992) < 5, f"EMI {r['emi']:.0f} deviates from 26,992"
+
+    def test_higher_rate_gives_higher_emi(self):
+        """For the same principal and tenure, a higher rate must produce a higher EMI."""
+        lo = _invoke(50_00_000, 8.50, 240)
+        hi = _invoke(50_00_000, 9.50, 240)
+        assert hi["emi"] > lo["emi"]
+
+    def test_longer_tenure_gives_lower_emi(self):
+        """Longer tenure spreads cost — EMI must decrease."""
+        short = _invoke(30_00_000, 9.0, 120)
+        long_ = _invoke(30_00_000, 9.0, 240)
+        assert long_["emi"] < short["emi"]
+
+    def test_longer_tenure_gives_higher_total_interest(self):
+        """Longer tenure = cheaper monthly but more total interest paid."""
+        short = _invoke(30_00_000, 9.0, 120)
+        long_ = _invoke(30_00_000, 9.0, 240)
+        assert long_["total_interest"] > short["total_interest"]
+
+    def test_emi_called_twice_gives_rate_band_spread(self):
+        """Agent always calls calculate_emi at low rate and high rate — results must differ."""
+        lo = _invoke(50_00_000, 8.50, 240)  # Home loan lower bound
+        hi = _invoke(50_00_000, 9.50, 240)  # Home loan upper bound
+        assert lo["emi"] != hi["emi"]
+        assert hi["emi"] - lo["emi"] > 100  # meaningful difference
+
+
 class TestEMIEdgeCases:
     def test_zero_principal_returns_error(self):
         r = _invoke(0, 9.0, 120)

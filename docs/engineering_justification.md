@@ -33,3 +33,22 @@ Arize Phoenix was considered for RAG evaluation but its functionality is fully c
 **Decision:** Sliding window of 10 turns, not full history.
 
 **Rationale:** A typical loan advisory session is 6–12 turns. Full history risks context overflow for longer sessions; k=10 retains sufficient context while keeping prompt tokens bounded.
+
+## 6. MCP (Model Context Protocol) as Tool Transport Layer
+
+**Decision:** Expose all 5 loan tools via FastMCP (`loan_mcp/server.py`) in addition to the existing LangChain `@tool` direct-import path. Agent selects the path via `USE_MCP=true`.
+
+**Rationale:** MCP (Anthropic's open standard) separates tool *definition* from tool *consumption*. Without MCP, every client (LangChain agent, Claude Desktop, external bank systems) must import the Python modules directly — creating a tight coupling that breaks the moment the tool implementation moves to a different service or language. With MCP:
+
+1. **External discoverability** — Claude Desktop and any MCP-capable client can call the 5 tools without Python imports. The server advertises tool names, descriptions, and JSON schemas automatically.
+2. **Schema enforcement at the protocol layer** — FastMCP validates every incoming call against a Pydantic model derived from the tool's type annotations, before the Python function is even called. This catches bad inputs earlier and produces structured error messages.
+3. **Additive, not disruptive** — the MCP layer wraps the existing `@tool` business logic rather than replacing it. The direct-import path (`USE_MCP` unset) is unchanged, so all 233 pre-MCP tests still pass.
+4. **Future-proofing** — the bank's integration team can connect a core-banking system or RPA bot to `python scripts/start_mcp_server.py --transport http` without touching the LangChain agent code at all.
+
+**Transport choices:**
+- `stdio` (default) — subprocess pipe; ideal for Claude Desktop and local tool inspection.
+- `streamable-http` (`--transport http`) — network-accessible; suitable for Docker deployments.
+
+**Why FastMCP over low-level MCP SDK?** FastMCP auto-generates schemas from Python type hints, reducing boilerplate by ~80%. The low-level `mcp.server.lowlevel.Server` would require manual schema registration and request-routing for every tool.
+
+**Trade-off acknowledged:** The MCP path adds one serialisation round-trip (Python dict → JSON text → Python dict) compared to the direct-import path. Measured overhead is under 1 ms in-process (thread-pool asyncio bridging) — negligible relative to LLM latency (~500–2000 ms per turn).

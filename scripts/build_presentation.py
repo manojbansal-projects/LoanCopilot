@@ -156,7 +156,7 @@ def slide_title(prs):
         ("4", "Loan Products"),
         ("5", "AI Tools"),
         ("8", "Build Phases"),
-        ("233", "Tests Passing"),
+        ("244", "Tests Passing"),
     ]
     for i, (val, lbl) in enumerate(stats):
         kpi_box(sl, val, lbl, 0.45 + i*2.45, 4.22, 2.28, 1.12,
@@ -171,7 +171,7 @@ def slide_title(prs):
         "Good [morning/afternoon] — this is my IIT Madras AI Capstone submission, Scenario 2 Banking, Track A LangChain.\n"
         "The project is an AI Copilot that guides retail bank customers through early-stage loan origination.\n"
         "It covers 4 loan products — Home, Personal, MSME, New Car — using 5 AI tools and a full RAG pipeline.\n"
-        "Built in 10 days across 8 phases; 233 tests passing. Let me walk you through the architecture and key decisions."
+        "Built in 10 days across 8 phases; 244 tests passing. Let me walk you through the architecture and key decisions."
     )
     return sl
 
@@ -398,13 +398,19 @@ def slide_architecture(prs):
     # ── Layer ④ content: Tools ────────────────────────────────────────────────
     y4 = CONTENT_Y + 3*(LH+LG)
     tool_labels = ["check_\neligibility", "calculate\n_emi", "get_doc_\nchecklist",
-                   "lookup_\nloan_status", "generate_\nescalation"]
+                   "query_loan\n_policy", "generate_\nescalation"]
     tw = (main_w - LLW - 0.15) / 5 - 0.04   # each tool width
     for ti, lbl in enumerate(tool_labels):
         tx = cx + ti*(tw+0.04)
-        rect(sl, tx, y4+0.08, tw, LH-0.16, fill=WHITE, line_color=BLUE, line_width=0.6)
-        txt(sl, lbl, tx+0.04, y4+0.16, tw-0.08, LH-0.30,
+        rect(sl, tx, y4+0.08, tw, LH-0.21, fill=WHITE, line_color=BLUE, line_width=0.6)
+        txt(sl, lbl, tx+0.04, y4+0.14, tw-0.08, LH-0.32,
             size=8.5, color=NAVY, align=PP_ALIGN.CENTER)
+    # MCP annotation strip below tool boxes
+    mcp_y = y4 + LH - 0.14
+    rect(sl, cx, mcp_y, main_w - LLW - 0.15, 0.22, fill=PURPLE)
+    txt(sl, "↑  All 5 tools exposed via MCP  (loan_mcp/server.py · FastMCP · stdio & HTTP · USE_MCP=true)",
+        cx+0.05, mcp_y+0.02, main_w - LLW - 0.22, 0.18,
+        size=7.5, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 
     # ── Layer ⑤ content: Retrieval ────────────────────────────────────────────
     y5 = CONTENT_Y + 4*(LH+LG)
@@ -423,8 +429,9 @@ def slide_architecture(prs):
         "5 layers — Presentation → Safety Gate → Agent/Orchestration → Tools → Retrieval — all traced through Langfuse.\n"
         "Users interact via Streamlit customer chat, RM dashboard, or CLI; every message passes through the 2-stage safety gate first.\n"
         "The ReAct agent (GPT-4o) sits at the centre — it reasons about what the user needs and selects the right tool with JSON args.\n"
-        "Layer ④ shows the 5 @tool functions; Layer ⑤ shows the full RAG ingestion pipeline ending in ChromaDB.\n"
-        "Langfuse (right panel) is self-hosted — all traces stay on-premise, satisfying Indian data-protection requirements."
+        "Layer ④ shows the 5 @tool functions; the purple MCP strip notes that all 5 are simultaneously exposed via FastMCP for external clients.\n"
+        "MCP (Model Context Protocol) makes the tools discoverable by Claude Desktop, Claude Code, and any external bank system — no code changes to the agent needed.\n"
+        "Layer ⑤ shows the full RAG ingestion pipeline ending in ChromaDB. Langfuse (right panel) self-hosted — all traces on-premise."
     )
     return sl
 
@@ -470,23 +477,31 @@ def slide_techstack(prs):
          "Streamlit  (deployment/app.py)  +  CLI  (scripts/run_agent.py)",
          "Streamlit enables rapid iteration; Customer Chat + RM Dashboard in one app. "
          "No separate API server needed; CLI supports all 5 phases for notebook-based demos"),
+        ("MCP Tool Transport",
+         "FastMCP  (mcp v1.27 · loan_mcp/server.py)",
+         "All 5 tools exposed via Model Context Protocol — discoverable by Claude Desktop, "
+         "Claude Code, and external bank systems without Python imports. "
+         "USE_MCP=true selects MCP path; default is direct @tool imports (zero breaking change). "
+         "Adds schema validation at the protocol layer; <1ms serialisation overhead"),
     ]
 
     rect(sl, 0.35, CONTENT_Y, 12.63, 0.36, fill=NAVY)
     for cx, hdr in [(0.5, "COMPONENT"), (3.0, "CHOICE / VERSION"), (6.2, "ENGINEERING JUSTIFICATION")]:
         txt(sl, hdr, cx, CONTENT_Y+0.06, 3.0, 0.26, size=9, bold=True, color=GOLD)
 
+    RH = 0.55   # row height — 9 rows × 0.55 = 4.95 in; fits within slide height
     for i, (comp, choice, just) in enumerate(rows):
         bg = WHITE if i % 2 == 0 else OFFWHITE
-        rect(sl, 0.35, CONTENT_Y+0.36+i*0.62, 12.63, 0.60, fill=bg)
-        txt(sl, comp,   0.5,  CONTENT_Y+0.38+i*0.62, 2.4,  0.54, size=9.5, bold=True, color=NAVY)
-        txt(sl, choice, 3.0,  CONTENT_Y+0.38+i*0.62, 3.1,  0.54, size=9,   color=DARKGRAY)
-        txt(sl, just,   6.2,  CONTENT_Y+0.38+i*0.62, 6.65, 0.54, size=8.5, color=MIDGRAY)
+        rect(sl, 0.35, CONTENT_Y+0.36+i*RH, 12.63, RH-0.02, fill=bg)
+        txt(sl, comp,   0.5,  CONTENT_Y+0.38+i*RH, 2.4,  RH-0.08, size=9.5, bold=True, color=NAVY)
+        txt(sl, choice, 3.0,  CONTENT_Y+0.38+i*RH, 3.1,  RH-0.08, size=9,   color=DARKGRAY)
+        txt(sl, just,   6.2,  CONTENT_Y+0.38+i*RH, 6.65, RH-0.08, size=8.5, color=MIDGRAY)
 
     add_notes(sl,
         "Every tech choice has a documented justification in docs/engineering_justification.md — this slide is the summary.\n"
         "GPT-4o chosen for tool-calling fidelity; GPT-4o-mini for safety gate (<50 tokens, <150ms, minimal cost overhead).\n"
         "ReAct over Plan-and-Execute: loan advisory is a sequential, deterministic flow — a separate planner adds 300ms with no accuracy benefit.\n"
+        "MCP (FastMCP): additive exposure layer — all 5 tools discoverable via Model Context Protocol without changing the LangChain agent path.\n"
         "Langfuse self-hosted: LangSmith is cloud-only — banking income and employment data cannot leave the network perimeter (India data-protection).\n"
         "ChromaDB persistent with metadata filtering: FAISS migration path documented; text-embedding-3-small chosen for cost/quality ratio."
     )
@@ -516,7 +531,7 @@ def slide_phases(prs):
         "• Keyword intent detection\n• EMI reducing-balance\n• Eligibility rules (FOIR)\n• No LLM, no API key",
         "• GPT-4o wired to agent\n• V1/V2/V3 prompt variants\n• Langfuse tracing live\n• Prompt comparison 5Q",
         "• 5 policy docs ingested\n• ~160 chunks, 500-char\n• Product-label prefix fix\n• ≥70% pass rate target",
-        "• 5 @tool functions\n• create_react_agent\n• All tools traced\n• Escalation ceiling logic",
+        "• 5 @tool functions\n• create_react_agent\n• MCP exposure layer\n• Escalation ceiling logic",
         "• k=10 sliding window\n• SessionState dataclass\n• Planner: next_question()\n• start-over reset flow",
         "• Star rating UI\n• feedback_collector\n• EMPATHY_PREFIX inject\n• policy_checker inline",
         "• Streamlit Customer Chat\n• RM Dashboard\n• PII masker on all logs\n• P95 latency target <5s",
@@ -603,12 +618,12 @@ def slide_phases(prs):
                 size=7.5, color=NAVY if ri==0 else DARKGRAY,
                 bold=(ri==0))
 
-    footnote(sl, "233 unit + integration tests passing across 12 test files · 8 Jupyter demo notebooks (one per phase)")
+    footnote(sl, "244 unit + integration tests passing across 13 test files · 8 Jupyter demo notebooks (one per phase)")
     add_notes(sl,
         "8 phases built in 10 days — Phase 2 (rules-based, no LLM) through Phase 9 (evaluation).\n"
         "Phases progress: rules → GPT-4o → RAG → tool integration → memory → RLHF → deployment → evaluation.\n"
         "The rubric alignment table (bottom) maps each phase to a graded dimension with evidence and key artifacts.\n"
-        "All 8 phases are complete — verified by 233 passing tests and 8 Jupyter demo notebooks.\n"
+        "All 8 phases are complete — verified by 244 passing tests and 8 Jupyter demo notebooks.\n"
         "Key milestone: Phase 4 RAG + Phase 5 tools are where the system becomes truly conversational and grounded."
     )
     return sl
@@ -677,20 +692,32 @@ def slide_tools(prs):
          "Collects: name · mobile (10-digit validated) · email (regex validated) · preferred time\n"
          "Outputs: RM briefing packet + escalation_id → persists to data/rlhf/escalations.json"),
     ]
+    TC_SP = 1.06  # tool card spacing — reduced from 1.12 to leave room for MCP strip
+    TC_H  = 1.00  # tool card height
     for k, (name, color, desc) in enumerate(tools_data):
-        rect(sl, 4.55, CONTENT_Y+k*1.12, 8.55, 1.06, fill=WHITE,
+        rect(sl, 4.55, CONTENT_Y+k*TC_SP, 8.55, TC_H, fill=WHITE,
              line_color=color, line_width=0.8)
-        rect(sl, 4.55, CONTENT_Y+k*1.12, 0.10, 1.06, fill=color)
-        txt(sl, name, 4.72, CONTENT_Y+k*1.12+0.06, 5.5, 0.34,
+        rect(sl, 4.55, CONTENT_Y+k*TC_SP, 0.10, TC_H, fill=color)
+        txt(sl, name, 4.72, CONTENT_Y+k*TC_SP+0.05, 5.5, 0.32,
             size=11, bold=True, color=NAVY)
-        txt(sl, desc, 4.72, CONTENT_Y+k*1.12+0.40, 8.22, 0.60,
+        txt(sl, desc, 4.72, CONTENT_Y+k*TC_SP+0.38, 8.22, 0.58,
             size=8.5, color=DARKGRAY)
+
+    # MCP strip below all tool cards
+    mcp_strip_y = CONTENT_Y + 5*TC_SP + 0.04
+    if mcp_strip_y + 0.22 < FOOTER_Y:
+        rect(sl, 4.55, mcp_strip_y, 8.55, 0.20, fill=PURPLE)
+        txt(sl,
+            "MCP Exposure Layer: all 5 tools discoverable via loan_mcp/server.py (FastMCP · stdio & HTTP)  ·  USE_MCP=true selects MCP path",
+            4.62, mcp_strip_y+0.03, 8.38, 0.16,
+            size=7.5, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 
     add_notes(sl,
         "The left panel shows the ReAct loop: Think → Act (select tool + JSON args) → Observe result → Loop → Respond.\n"
         "5 @tool functions are registered in tool_registry.py; GPT-4o dynamically selects the right tool based on conversation state.\n"
         "check_eligibility is the most complex: 8 input parameters, product-specific FOIR and credit limits, returns PASS/REFER/REJECT with reason.\n"
         "generate_escalation_summary is triggered automatically when loan_amount exceeds the product ceiling — validates mobile (10-digit) and email.\n"
+        "MCP strip (purple, below tools): all 5 tools are simultaneously exposed via FastMCP — Claude Desktop, Claude Code, and external bank systems can call them without Python imports.\n"
         "All tool calls are traced in Langfuse with full args + output — crucial for debugging and evaluation."
     )
     return sl
@@ -820,7 +847,7 @@ def slide_safety(prs):
         0.65, CONTENT_Y+3.66, 7.52, 0.34, size=10, color=DARKGRAY)
 
     # Adversarial examples
-    rect(sl, 0.5, CONTENT_Y+4.28, 7.85, 1.14, fill=OFFWHITE,
+    rect(sl, 0.5, CONTENT_Y+4.28, 7.85, 1.27, fill=OFFWHITE,
          line_color=MIDGRAY, line_width=0.4)
     txt(sl, "ADVERSARIAL PROMPT EXAMPLES — ALL BLOCKED:", 0.62, CONTENT_Y+4.30, 7.5, 0.28,
         size=9, bold=True, color=NAVY)
@@ -831,7 +858,7 @@ def slide_safety(prs):
         "\"What mutual funds should I invest in?\"  →  Stage B (out-of-scope: investment advice)",
     ]
     for ex_i, ex in enumerate(examples):
-        txt(sl, "✗  "+ex, 0.62, CONTENT_Y+4.60+ex_i*0.22, 7.5, 0.20, size=8.5, color=RED)
+        txt(sl, "✗  "+ex, 0.62, CONTENT_Y+4.60+ex_i*0.21, 7.5, 0.22, size=8.5, color=RED)
 
     # PII Filter panel
     rect(sl, 8.65, CONTENT_Y, 4.38, 5.55, fill=WHITE, line_color=NAVY, line_width=0.8)
@@ -1182,7 +1209,7 @@ def slide_evaluation(prs):
         ("≥ 80%",  "Tool Accuracy\n(30 scenarios)"),
         ("100%",   "Safety Block\nRate  (5/5 probes)"),
         ("< 5 s",  "P95 End-to-End\nLatency Target"),
-        ("233",    "Automated\nTests Passing"),
+        ("244",    "Automated\nTests Passing"),
     ]
     for i, (val, lbl) in enumerate(kpis):
         kpi_box(sl, val, lbl, 0.35+i*2.59, CONTENT_Y, 2.48, 1.1,
@@ -1250,7 +1277,7 @@ def slide_evaluation(prs):
         "RAG target ≥70% pass rate; Tool Selection target ≥80%; Safety must hit 100% — any missed block triggers a full suite re-run.\n"
         "Root-cause investigation: a chunk without the product-label prefix scored 0.4 (retrieved wrong product); adding the prefix → score 1.0.\n"
         "Latency profile shows safety gate handles blocked turns in <200ms; full 4-tool advisory turn takes 3.5–5.0s P50.\n"
-        "233 automated tests provide regression coverage; scripts/run_evaluation.py --suite all runs all 3 evaluation suites."
+        "244 automated tests provide regression coverage; scripts/run_evaluation.py --suite all runs all 3 evaluation suites."
     )
     return sl
 
@@ -1405,7 +1432,7 @@ def slide_conclusion(prs):
         txt(sl, title, 0.58, y+0.06, 4.0, 0.36, size=11, bold=True, color=GOLD)
         txt(sl, body,  4.65, y+0.06, 8.1, 0.80, size=10, color=RGBColor(0xD0, 0xE4, 0xFF))
 
-    txt(sl, "github.com/manojbansal-projects/IITM-LoanCopilot  ·  233 tests passing  ·  8 Jupyter notebooks",
+    txt(sl, "github.com/manojbansal-projects/IITM-LoanCopilot  ·  244 tests passing  ·  8 Jupyter notebooks",
         0.45, FOOTER_Y, 10, 0.28, size=9, color=MIDGRAY, italic=True)
     add_notes(sl,
         "5 key learnings from this capstone project.\n"

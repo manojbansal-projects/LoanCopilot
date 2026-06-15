@@ -90,6 +90,39 @@ class TestMixedPII:
         assert mask(text) == text
 
 
+class TestFalsePositivePrevention:
+    """Legitimate financial text that must NOT be masked."""
+
+    def test_loan_amount_in_lakhs_not_masked(self):
+        """'50 lakhs' is a loan amount, not PII — must pass through unchanged."""
+        text = "I want a loan of 50 lakhs for 20 years"
+        assert mask(text) == text
+
+    def test_emi_amount_not_masked(self):
+        text = "Your EMI will be approximately 45000 per month"
+        result = mask(text)
+        # 45000 (5 digits) is below the 9-digit account threshold
+        assert "45000" in result
+
+    def test_interest_rate_not_masked(self):
+        text = "The interest rate is 8.75% per annum"
+        assert mask(text) == text
+
+    def test_short_numbers_not_account_masked(self):
+        """Numbers < 9 digits should not be falsely masked as account numbers."""
+        text = "FOIR is 45%"
+        assert mask(text) == text
+
+    def test_four_digit_pin_not_masked(self):
+        text = "My PIN code is 4 digits"
+        assert mask(text) == text
+
+    def test_year_not_masked(self):
+        text = "I need a loan for 2024 construction"
+        # 2024 is 4 digits — well below account threshold
+        assert mask(text) == text
+
+
 class TestContainsPII:
     def test_detects_mobile(self):
         assert contains_pii("Call 9876543210") is True

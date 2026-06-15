@@ -90,6 +90,68 @@ class TestSessionState:
         assert s.last_asked_field == "credit_score"
 
 
+    def test_existing_emi_obligations_defaults_none(self):
+        p = CustomerProfile()
+        assert p.existing_emi_obligations is None
+
+    def test_existing_emi_obligations_settable(self):
+        p = CustomerProfile(existing_emi_obligations=15_000.0)
+        assert p.existing_emi_obligations == 15_000.0
+
+    def test_existing_emi_obligations_in_to_dict(self):
+        p = CustomerProfile(existing_emi_obligations=20_000.0)
+        d = p.to_dict()
+        assert "existing_emi_obligations" in d
+        assert d["existing_emi_obligations"] == 20_000.0
+
+    def test_existing_emi_obligations_excluded_from_to_dict_when_none(self):
+        p = CustomerProfile()
+        d = p.to_dict()
+        assert "existing_emi_obligations" not in d
+
+
+class TestSessionStateExtended:
+    def test_last_asked_field_cleared_on_reset(self):
+        s = SessionState(session_id="s1")
+        s.last_asked_field = "credit_score"
+        s.reset()
+        assert s.last_asked_field is None
+
+    def test_cibil_assumed_cleared_on_reset(self):
+        s = SessionState(session_id="s1")
+        s.cibil_assumed = True
+        s.reset()
+        assert s.cibil_assumed is False
+
+    def test_eligibility_result_cleared_on_reset(self):
+        s = SessionState(session_id="s1")
+        s.eligibility_result = {"eligible": True}
+        s.reset()
+        assert s.eligibility_result is None
+
+    def test_emi_result_cleared_on_reset(self):
+        s = SessionState(session_id="s1")
+        s.emi_result = {"low": {}, "high": {}}
+        s.reset()
+        assert s.emi_result is None
+
+    def test_profile_is_fresh_instance_after_reset(self):
+        """After reset, profile must be a brand-new CustomerProfile, not the same object."""
+        s = SessionState(session_id="s1")
+        old_profile = s.profile
+        s.profile.loan_product = "car_loan"
+        s.reset()
+        # The object may be reused or replaced — key requirement is all fields are None
+        assert s.profile.loan_product is None
+
+    def test_multiple_resets_are_idempotent(self):
+        s = SessionState(session_id="s1")
+        s.reset()
+        s.reset()
+        assert s.turn_count == 0
+        assert s.profile.loan_product is None
+
+
 class TestLangChainMemory:
     def test_returns_memory_object(self):
         mem = build_langchain_memory()

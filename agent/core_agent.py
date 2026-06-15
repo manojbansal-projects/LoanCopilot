@@ -747,10 +747,12 @@ class LoanCopilotAgent:
         This is equivalent to the classic AgentExecutor ReAct pattern but more
         reliable — no text parsing, structured tool calls via the OpenAI API.
         """
+        import os
         from langchain.agents import create_agent
-        from tools.tool_registry import get_all_tools
+        from tools.tool_registry import get_all_tools, get_mcp_tools
 
-        tools = get_all_tools()
+        use_mcp = os.getenv("USE_MCP", "false").lower() == "true"
+        tools = get_mcp_tools() if use_mcp else get_all_tools()
         llm   = self._get_llm()
 
         # Inject the real session UUID so the LLM can pass it as session_id
