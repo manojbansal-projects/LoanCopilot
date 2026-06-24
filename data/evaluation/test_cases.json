@@ -34,8 +34,8 @@
     {
       "id": "Q5",
       "question": "What is the interest rate for a car loan?",
-      "expected_tools": ["lookup_loan_status"],
-      "expected_response_contains": ["current rate", "branch", "8.75"],
+      "expected_tools": ["query_loan_policy"],
+      "expected_response_contains": ["current rate", "indicative", "8.75"],
       "tags": ["rates", "car_loan"]
     }
   ],

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "H1",
+    "product": "home_loan",
+    "question": "What is the interest rate range for home loans?"
+  },
+  {
+    "id": "H2",
+    "product": "home_loan",
+    "question": "What is the maximum LTV ratio available for a home loan above ₹75 lakh?"
+  },
+  {
+    "id": "H3",
+    "product": "home_loan",
+    "question": "What is the maximum home loan tenure offered?"
+  },
+  {
+    "id": "H4",
+    "product": "home_loan",
+    "question": "What is the minimum CIBIL score required to qualify for a home loan?"
+  },
+  {
+    "id": "H5",
+    "product": "home_loan",
+    "question": "Can a self-employed person apply for a home loan, and are there any additional requirements?"
+  },
+  {
+    "id": "P1",
+    "product": "personal_loan",
+    "question": "What is the FOIR limit applied when assessing personal loan eligibility?"
+  },
+  {
+    "id": "P2",
+    "product": "personal_loan",
+    "question": "What is the interest rate range for personal loans?"
+  },
+  {
+    "id": "P3",
+    "product": "personal_loan",
+    "question": "What is the maximum personal loan amount a customer can receive?"
+  },
+  {
+    "id": "P4",
+    "product": "personal_loan",
+    "question": "What is the maximum repayment tenure allowed for a personal loan?"
+  },
+  {
+    "id": "P5",
+    "product": "personal_loan",
+    "question": "What is the minimum monthly income required to apply for a personal loan?"
+  },
+  {
+    "id": "M1",
+    "product": "msme_loan",
+    "question": "What is DSCR and what is the minimum DSCR required for an MSME loan?"
+  },
+  {
+    "id": "M2",
+    "product": "msme_loan",
+    "question": "What is CGTMSE and how does it help small businesses get MSME loans without collateral?"
+  },
+  {
+    "id": "M3",
+    "product": "msme_loan",
+    "question": "Is Udyam registration mandatory for MSME loan applications?"
+  },
+  {
+    "id": "M4",
+    "product": "msme_loan",
+    "question": "What is the maximum MSME loan amount available?"
+  },
+  {
+    "id": "M5",
+    "product": "msme_loan",
+    "question": "What GST return filing requirement must a business meet for MSME loan eligibility?"
+  },
+  {
+    "id": "C1",
+    "product": "car_loan",
+    "question": "What is the maximum LTV ratio for a new car loan?"
+  },
+  {
+    "id": "C2",
+    "product": "car_loan",
+    "question": "What is the interest rate range for new car loans?"
+  },
+  {
+    "id": "C3",
+    "product": "car_loan",
+    "question": "What is the maximum car loan amount available?"
+  },
+  {
+    "id": "C4",
+    "product": "car_loan",
+    "question": "What is the maximum repayment tenure for a car loan?"
+  },
+  {
+    "id": "C5",
+    "product": "car_loan",
+    "question": "Does the bank offer loans for used or pre-owned vehicles, or only new cars?"
+  }
+]

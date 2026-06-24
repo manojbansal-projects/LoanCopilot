@@ -1,0 +1,182 @@
+[
+  {
+    "id": "T01",
+    "expected_tool": "check_eligibility",
+    "question": "I am a salaried employee, 32 years old, earning ₹60,000 per month with no existing EMIs. My CIBIL score is 750. I want a ₹50 lakh home loan. Am I eligible?",
+    "signal_keywords": ["eligible", "eligib", "foir", "credit score", "qualify", "can get", "approved"]
+  },
+  {
+    "id": "T02",
+    "expected_tool": "check_eligibility",
+    "question": "I am self-employed, 45 years old, earning ₹45,000 per month. My CIBIL score is 680 and I have no current loans. I want a ₹5 lakh personal loan. Am I eligible?",
+    "signal_keywords": ["eligible", "eligib", "foir", "credit score", "qualify", "can get", "approved"]
+  },
+  {
+    "id": "T03",
+    "expected_tool": "check_eligibility",
+    "question": "I am a salaried person aged 63 with income ₹80,000 per month and CIBIL score 780 and no EMIs. I want a home loan for ₹30 lakh for 20 years. Am I eligible?",
+    "signal_keywords": ["eligible", "eligib", "age", "tenure", "retirement", "qualify"]
+  },
+  {
+    "id": "T04",
+    "expected_tool": "check_eligibility",
+    "question": "I earn ₹55,000 per month as a salaried employee with existing EMIs of ₹20,000 per month. My CIBIL score is 720 and I am 35 years old. I want a car loan of ₹8 lakh. Am I eligible?",
+    "signal_keywords": ["eligible", "eligib", "foir", "obligation", "qualify", "can get"]
+  },
+  {
+    "id": "T05",
+    "expected_tool": "check_eligibility",
+    "question": "I am salaried, aged 38, earning ₹1.2 lakh per month with no existing loans and CIBIL score 800. What is the maximum home loan amount I can get?",
+    "signal_keywords": ["eligible", "eligib", "foir", "maximum", "lakh", "qualify"]
+  },
+  {
+    "id": "T06",
+    "expected_tool": "check_eligibility",
+    "question": "I earn ₹40,000 per month as a salaried employee. My CIBIL score is 580. I am 30 years old with no EMIs. Can I get a ₹2 lakh personal loan?",
+    "signal_keywords": ["eligible", "eligib", "credit score", "cibil", "qualify", "can get", "approved"]
+  },
+  {
+    "id": "T07",
+    "expected_tool": "calculate_emi",
+    "question": "What is the EMI for a ₹40 lakh home loan over 20 years?",
+    "signal_keywords": ["emi", "per month", "monthly", "installment", "₹", "lakh", "8.50", "9.25"]
+  },
+  {
+    "id": "T08",
+    "expected_tool": "calculate_emi",
+    "question": "Calculate my monthly payment for a ₹3 lakh personal loan over 3 years.",
+    "signal_keywords": ["emi", "per month", "monthly", "installment", "₹", "lakh"]
+  },
+  {
+    "id": "T09",
+    "expected_tool": "calculate_emi",
+    "question": "What would be the EMI for a ₹25 lakh MSME loan over 7 years?",
+    "signal_keywords": ["emi", "per month", "monthly", "installment", "₹", "lakh"]
+  },
+  {
+    "id": "T10",
+    "expected_tool": "calculate_emi",
+    "question": "What would I pay monthly for a ₹10 lakh car loan over 5 years?",
+    "signal_keywords": ["emi", "per month", "monthly", "installment", "₹", "lakh"]
+  },
+  {
+    "id": "T11",
+    "expected_tool": "calculate_emi",
+    "question": "If I borrow ₹60 lakh for a home for 30 years, what is the monthly EMI?",
+    "signal_keywords": ["emi", "per month", "monthly", "installment", "₹", "lakh"]
+  },
+  {
+    "id": "T12",
+    "expected_tool": "calculate_emi",
+    "question": "What is the monthly installment for a ₹5 lakh personal loan over 4 years?",
+    "signal_keywords": ["emi", "per month", "monthly", "installment", "₹", "lakh"]
+  },
+  {
+    "id": "T13",
+    "expected_tool": "get_document_checklist",
+    "question": "What documents do I need to apply for a home loan as a salaried employee?",
+    "signal_keywords": ["salary slip", "form 16", "aadhaar", "pan", "bank statement", "document", "passport"]
+  },
+  {
+    "id": "T14",
+    "expected_tool": "get_document_checklist",
+    "question": "I am self-employed. What documents are required for a personal loan?",
+    "signal_keywords": ["itr", "income tax", "balance sheet", "aadhaar", "pan", "document", "profit"]
+  },
+  {
+    "id": "T15",
+    "expected_tool": "get_document_checklist",
+    "question": "What documents are required for an MSME loan application?",
+    "signal_keywords": ["udyam", "gst", "aadhaar", "pan", "document", "balance sheet", "registration"]
+  },
+  {
+    "id": "T16",
+    "expected_tool": "get_document_checklist",
+    "question": "Give me the car loan document checklist for a salaried person.",
+    "signal_keywords": ["salary slip", "aadhaar", "pan", "document", "quotation", "insurance", "rc book"]
+  },
+  {
+    "id": "T17",
+    "expected_tool": "get_document_checklist",
+    "question": "I am a pensioner. What papers do I need to submit for a home loan?",
+    "signal_keywords": ["pension", "document", "aadhaar", "pan", "bank statement", "ppo"]
+  },
+  {
+    "id": "T18",
+    "expected_tool": "get_document_checklist",
+    "question": "I run my own business. What documents are needed for a car loan?",
+    "signal_keywords": ["itr", "document", "aadhaar", "pan", "registration", "balance sheet"]
+  },
+  {
+    "id": "T19",
+    "expected_tool": "query_loan_policy",
+    "question": "What is the maximum repayment tenure for a home loan?",
+    "signal_keywords": ["30 year", "tenure", "years", "maximum", "30", "policy"]
+  },
+  {
+    "id": "T20",
+    "expected_tool": "query_loan_policy",
+    "question": "What is the interest rate range for personal loans?",
+    "signal_keywords": ["9.99", "24", "%", "rate", "indicative", "interest", "p.a"]
+  },
+  {
+    "id": "T21",
+    "expected_tool": "query_loan_policy",
+    "question": "What is the loan-to-value ratio policy for home loans?",
+    "signal_keywords": ["ltv", "loan-to-value", "75", "80", "90", "ratio", "value"]
+  },
+  {
+    "id": "T22",
+    "expected_tool": "query_loan_policy",
+    "question": "What is the MUDRA scheme and how does it relate to MSME loans?",
+    "signal_keywords": ["mudra", "scheme", "shishu", "kishor", "tarun", "micro", "government"]
+  },
+  {
+    "id": "T23",
+    "expected_tool": "query_loan_policy",
+    "question": "Are there any prepayment or foreclosure charges on MSME loans?",
+    "signal_keywords": ["prepayment", "foreclosure", "penalty", "charge", "prepay", "close"]
+  },
+  {
+    "id": "T24",
+    "expected_tool": "query_loan_policy",
+    "question": "What is the maximum personal loan amount as per bank policy?",
+    "signal_keywords": ["40 lakh", "40", "lakh", "maximum", "ceiling", "₹40"]
+  },
+  {
+    "id": "T25",
+    "expected_tool": "generate_escalation_summary",
+    "question": "I am a salaried employee earning ₹4 lakh per month, CIBIL 800, age 42. I need a home loan of ₹2 crore for a luxury apartment.",
+    "signal_keywords": ["rm", "relationship manager", "escalat", "ceiling", "specialist", "contact", "branch", "exceed"]
+  },
+  {
+    "id": "T26",
+    "expected_tool": "generate_escalation_summary",
+    "question": "My manufacturing business needs an MSME loan of ₹3 crore for new equipment. I have Udyam registration.",
+    "signal_keywords": ["rm", "relationship manager", "escalat", "ceiling", "specialist", "contact", "branch", "exceed"]
+  },
+  {
+    "id": "T27",
+    "expected_tool": "generate_escalation_summary",
+    "question": "I am salaried, earning ₹1.5 lakh per month, age 35, CIBIL 780. I need a personal loan of ₹50 lakh for home renovation.",
+    "signal_keywords": ["rm", "relationship manager", "escalat", "ceiling", "specialist", "contact", "branch", "exceed"]
+  },
+  {
+    "id": "T28",
+    "expected_tool": "generate_escalation_summary",
+    "question": "I want a car loan of ₹25 lakh for a commercial vehicle. I am self-employed with income ₹2 lakh per month.",
+    "signal_keywords": ["rm", "relationship manager", "escalat", "ceiling", "specialist", "contact", "branch", "exceed"]
+  },
+  {
+    "id": "T29",
+    "expected_tool": "generate_escalation_summary",
+    "question": "I earn ₹5 lakh per month, age 40, CIBIL 830, no existing EMIs. I want the maximum possible home loan, which I believe would be around ₹1.6 crore or more.",
+    "signal_keywords": ["rm", "relationship manager", "escalat", "ceiling", "specialist", "contact", "branch", "exceed"]
+  },
+  {
+    "id": "T30",
+    "expected_tool": "generate_escalation_summary",
+    "question": "My company has annual turnover of ₹8 crore and needs ₹2.5 crore MSME working capital loan. I have GST returns for last 3 years.",
+    "signal_keywords": ["rm", "relationship manager", "escalat", "ceiling", "specialist", "contact", "branch", "exceed"]
+  }
+]
