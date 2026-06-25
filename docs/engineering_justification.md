@@ -42,7 +42,7 @@ Arize Phoenix was considered for RAG evaluation but its functionality is fully c
 
 1. **External discoverability** — Claude Desktop and any MCP-capable client can call the 5 tools without Python imports. The server advertises tool names, descriptions, and JSON schemas automatically.
 2. **Schema enforcement at the protocol layer** — FastMCP validates every incoming call against a Pydantic model derived from the tool's type annotations, before the Python function is even called. This catches bad inputs earlier and produces structured error messages.
-3. **Additive, not disruptive** — the MCP layer wraps the existing `@tool` business logic rather than replacing it. The direct-import path (`USE_MCP=false`) remains available, so all 244 pre-coverage tests still pass (233 original + 11 MCP).
+3. **Additive, not disruptive** — the MCP layer wraps the existing `@tool` business logic rather than replacing it. The direct-import path (`USE_MCP=false`) remains available, so all 426 tests still pass (233 original + 11 MCP-specific + 182 new coverage tests).
 4. **Future-proofing** — the bank's integration team can connect a core-banking system or RPA bot to `python scripts/start_mcp_server.py --transport http` without touching the LangChain agent code at all.
 
 **Transport choices:**
