@@ -6,65 +6,147 @@ A conversational AI agent that guides retail bank customers through early-stage 
 
 ---
 
-## Prerequisites
+## Quick Start — Run the App from Scratch
 
-| Requirement | Version |
-|-------------|---------|
-| Python | 3.10+ |
-| OpenAI API key | GPT-4o access required |
-| Langfuse account | cloud.langfuse.com (free tier works) |
+Follow these steps in order. Estimated time: 10 minutes.
+
+### Step 1 — Prerequisites
+
+| Requirement | Version | Notes |
+|-------------|---------|-------|
+| Python | 3.10+ | Check: `python --version` |
+| pip | latest | Check: `pip --version` |
+| Git | any | To clone the repo |
+| OpenAI API key | GPT-4o / GPT-4o-mini access | Required for Phase 3+ |
+| Langfuse account | cloud.langfuse.com free tier | For observability (optional for basic run) |
+
+> **No API key?** You can still run the rules-based Phase 2 agent (no LLM, no costs). See [Option B — CLI](#option-b--cli) and use `--phase 2`.
 
 ---
 
-## One-Time Setup
+### Step 2 — Clone the Repository
 
 ```bash
-# 1. Install dependencies
-pip install -r requirements.txt
+git clone <repo-url>
+cd <repo-folder>
+```
 
-# 2. Configure environment
+---
+
+### Step 3 — Create a Virtual Environment
+
+```bash
+python -m venv .venv
+source .venv/bin/activate        # macOS / Linux
+# .venv\Scripts\activate         # Windows PowerShell
+```
+
+Verify the environment is active: your shell prompt should show `(.venv)`.
+
+---
+
+### Step 4 — Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+This installs ~25 packages including LangChain, ChromaDB, Streamlit, FastMCP, Langfuse, and OpenAI.
+
+---
+
+### Step 5 — Configure Environment Variables
+
+```bash
 cp .env.example .env
 ```
 
-Open `.env` and fill in the following:
+Open `.env` in any text editor and fill in the values:
 
-```
-OPENAI_API_KEY=sk-...          # Required for Phase 3+
-OPENAI_BASE_URL=               # Leave blank for standard OpenAI; set for proxy (e.g. Vocareum)
+```ini
+# --- Required for LLM agent (Phase 3+) ---
+OPENAI_API_KEY=sk-...          # Your OpenAI API key (starts with sk-)
+OPENAI_BASE_URL=               # Leave blank for standard OpenAI
+                               # Set to proxy URL if using Vocareum or similar
+
+# --- Required for observability (optional for basic run) ---
 LANGFUSE_PUBLIC_KEY=pk-lf-...  # From cloud.langfuse.com → Settings → API keys
-LANGFUSE_SECRET_KEY=sk-lf-...
+LANGFUSE_SECRET_KEY=sk-lf-...  # Same location
 LANGFUSE_HOST=https://cloud.langfuse.com
+
+# --- Optional overrides (defaults shown) ---
+SAFETY_MODEL=gpt-4o-mini       # Model used for safety gate and RLHF policy updates
+USE_MCP=true                   # true = FastMCP tool path; false = direct import path
 ```
 
-```bash
-# 3. Build ChromaDB vector index (run once; re-run after any policy doc change)
-python scripts/ingest_documents.py
-```
-
-Expected output: `✓ 4 products ingested — N chunks stored in knowledge/chromadb/`
+> **Langfuse not configured?** The agent runs fine without it — tracing is silently skipped. You will see a warning on first run but the app is fully functional.
 
 ---
 
-## Running the Agent
+### Step 6 — Build the ChromaDB Knowledge Index
 
-### Option A — Streamlit Web UI (recommended)
+```bash
+python scripts/ingest_documents.py
+```
+
+Expected output:
+```
+✓ 4 products ingested — N chunks stored in knowledge/chromadb/
+```
+
+This embeds the 5 synthetic policy documents into a local ChromaDB vector store. Re-run this step only if you edit files in `knowledge/raw/`.
+
+---
+
+### Step 7 — Launch the Application
+
+**Web UI (recommended):**
 
 ```bash
 streamlit run deployment/app.py
 ```
 
-Open `http://localhost:8501`. Two tabs:
-- **💬 Customer Chat** — live agent with safety gate, per-turn feedback, and start-over
-- **📊 RM Dashboard** — escalation queue, feedback analytics, session latency, interaction log
+Open `http://localhost:8501` in your browser. Two tabs:
+- **💬 Customer Chat** — live agent with safety gate, per-turn 1–5 star feedback, and start-over
+- **📊 RM Dashboard** — escalation queue, feedback analytics, adaptive policy entries, session latency, interaction log
 
-### Option B — CLI
+**CLI (terminal):**
 
 ```bash
-python scripts/run_agent.py           # Phase 5 (LLM + tools, default)
-python scripts/run_agent.py --phase 2 # Phase 2 (rules-based, no API key needed)
+python scripts/run_agent.py            # Full LLM + tools agent (requires API key)
+python scripts/run_agent.py --phase 2  # Rules-based agent — no API key needed
 ```
 
 Type `start over` at any point to reset the session.
+
+---
+
+### Step 8 — Test with a Sample Conversation
+
+Try this in the chat:
+
+```
+You: I want a home loan of 50 lakhs for 20 years.
+You: I am 35, salaried, monthly income 1.2 lakhs, CIBIL 750.
+You: What documents do I need?
+```
+
+The agent should check eligibility, calculate an EMI range, and return a document checklist — all in a single multi-turn conversation.
+
+---
+
+### Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| `ModuleNotFoundError` | Re-run `pip install -r requirements.txt` with the virtualenv active |
+| `ChromaDB collection not found` | Run Step 6 (ingest) before launching the app |
+| `API budget exceeded` message | Top up your OpenAI / Vocareum API credit; the app shows a user-friendly message instead of a raw error |
+| `LANGFUSE_*` warnings | Fill in Langfuse keys in `.env`, or ignore — the app runs without them |
+| Port 8501 in use | Run `streamlit run deployment/app.py --server.port 8502` |
+| `USE_MCP=true` tool errors | Set `USE_MCP=false` in `.env` to use the direct import path |
+
+---
 
 ---
 
@@ -182,7 +264,8 @@ Open the **📊 RM Dashboard** tab in the Streamlit app. Sections:
 | Section | What it shows |
 |---------|---------------|
 | 🔔 Escalation Queue | All escalated leads with contact, loan details, RM briefing, and conversation history |
-| 👍 Feedback Analytics | Thumbs 👍/👎 distribution, RLHF adaptation signal, avg score trend |
+| 👍 Feedback Analytics | Star rating distribution, RLHF adaptation signal (empathy / maintain / neutral), avg score trend |
+| 🧠 Adaptive Policy | Active behavioral instructions generated by the RLHF pipeline from low-rated customer comments; each entry shows source (🤖 LLM-generated or ✏️ manual) and trigger count |
 | 📋 Interaction Log | Last 20 turns — PII-masked, intent label, latency, blocked flag |
 | ⚡ Session Latency | Turn-by-turn latency chart + P95 vs 5 s SLA target |
 
@@ -236,7 +319,17 @@ Target metrics: RAG pass rate ≥ 70%, tool accuracy ≥ 80%, safety block rate 
 python scripts/run_rlhf_pipeline.py
 ```
 
-Analyses feedback from `data/rlhf/feedback_store.json`, prints adaptation signals, and logs to Langfuse. If avg thumbs score (last 20 ratings) < 0.60, the empathy prefix is automatically prepended to the system prompt for subsequent sessions (see `policy_rlhf/policy_updater.py`).
+Analyses feedback from `data/rlhf/feedback_store.json` and runs two adaptation layers:
+
+**Layer 1 — Within-session correction** (`agent/core_agent.py`): When a customer gives a low rating (≤ 2 stars) during a live session, `inject_feedback_signal()` queues a correction as a `SystemMessage` that the agent sees on the very next turn — no session restart required. A 4–5 star rating clears all pending corrections.
+
+**Layer 2 — Cross-session adaptive policy** (`policy_rlhf/policy_updater.py`): `update_adaptive_policy()` calls GPT-4o-mini with the low-rated qualitative comments collected since the last run. The LLM generates novel behavioral instructions (e.g. "do not re-ask for information the customer already provided") and writes them to `data/rlhf/adaptive_policy.json`. On the next agent startup, `get_adapted_prompt()` prepends these instructions to the base system prompt.
+
+**Empathy prefix**: If the average rating of the last 20 feedback entries falls below 0.60, a warmth-and-empathy prefix is automatically prepended to the system prompt for all subsequent sessions.
+
+> **Manual policy entries**: Open `data/rlhf/adaptive_policy.json` and add entries with `"source": "manual"` — these are permanently protected from LLM overwrite and always stay active.
+
+> **API key needed**: The `update_adaptive_policy()` step requires a working OpenAI API key. If the key is unavailable or over budget, the pipeline prints a clear message and skips that step without error.
 
 ---
 

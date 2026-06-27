@@ -1,0 +1,14 @@
+[run]
+omit =
+    tests/*
+    scripts/*
+    .venv/*
+    */site-packages/*
+
+[report]
+omit =
+    tests/*
+    scripts/*
+    .venv/*
+    */site-packages/*
+show_missing = true

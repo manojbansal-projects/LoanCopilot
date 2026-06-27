@@ -59,7 +59,7 @@ python scripts/run_evaluation.py --suite all   # or: rag | tools | safety
 # RLHF analysis
 python scripts/run_rlhf_pipeline.py
 
-# Run tests (426 total: 244 original + 182 new coverage tests)
+# Run tests (442 total: 244 original + 182 new coverage tests + 16 RLHF adaptive tests)
 python -m pytest
 ```
 

@@ -151,28 +151,43 @@ Bot:  (Does NOT re-ask income or employment type already collected)
 
 ---
 
-## Demo 5 — Feedback and Adaptation (Phase 7)
+## Demo 5 — Feedback and Two-Layer Adaptation (Phase 7)
 
-**Shows:** 👍/👎 thumbs feedback collected per turn; Langfuse score posted; adaptation signal logged
+**Shows:** 1–5 star feedback collected per turn; within-session correction; cross-session adaptive policy; Langfuse score posted
 
 ```
 Bot:  Your EMI estimate is ₹10,543/month. Does this answer your question?
 
-      👍  👎   ← thumbs buttons rendered below each AI response
+      ⭐⭐⭐⭐⭐   ← star rating widget + optional text comment below each AI response
 
-User: [clicks 👍]
+User: [clicks 5 stars — no comment]
 
-Bot UI: (records rating=1.0, saves to data/rlhf/feedback_store.json)
-        (posts score=1.0 to Langfuse — thumbs up = 1.0, thumbs down = 0.0)
+Bot UI: (records rating=5, saves to data/rlhf/feedback_store.json, PII masked)
+        (posts score=1.0 to Langfuse)
         Feedback recorded — thank you
 
-User: [clicks 👎 on a different response]
+User: [clicks 2 stars on a later response, comment: "you already asked for my income, stop repeating"]
 
-Bot UI: (records rating=0.0, saves to data/rlhf/feedback_store.json)
-        (posts score=0.0 to Langfuse)
+Bot UI: (records rating=2, comment stored)
+        (calls agent.inject_feedback_signal(rating=2, comment="..."))
+        → _session_signals now contains a correction note for the next turn
+        → next agent turn sees a SystemMessage with the correction before responding
 ```
 
-**Adaptation trigger thresholds (based on avg Langfuse score across session):**
-- Avg score < 0.60  →  `adapt='increase_empathy'`  — EMPATHY_PREFIX prepended for new sessions
-- Avg score ≥ 0.85  →  `adapt='maintain'`  — no change
+**Layer 1 — Within-session correction (immediate, same conversation):**
+- ≤2 stars triggers `inject_feedback_signal()` → correction queued in `_session_signals`
+- Next turn: correction injected as `SystemMessage` before executor call — LLM adjusts immediately
+- 4–5 stars: all pending signals cleared
+
+**Layer 2 — Cross-session adaptive policy (run after sessions complete):**
+```bash
+python scripts/run_rlhf_pipeline.py
+```
+- Calls `update_adaptive_policy(low_rated_comments)` → GPT-4o-mini generates novel instructions
+- Results written to `data/rlhf/adaptive_policy.json` (LLM-generated behavioural rules)
+- On next agent startup, `get_adapted_prompt()` stacks: EMPATHY_PREFIX + active policy entries + base prompt
+
+**Adaptation trigger thresholds (avg normalised rating, last 20 entries):**
+- Avg < 0.60  →  `adapt='increase_empathy'`  — EMPATHY_PREFIX prepended for new sessions
+- Avg ≥ 0.85  →  `adapt='maintain'`  — no change
 - In between  →  `adapt='neutral'`  — no change
