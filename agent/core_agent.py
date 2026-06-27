@@ -13,8 +13,50 @@ import re
 import uuid
 from typing import Optional
 
+import logging
+
 from agent.memory import SessionState, CustomerProfile
 from agent.planner import next_field_and_question
+
+_log = logging.getLogger(__name__)
+
+
+def _friendly_error(exc: Exception) -> str:
+    """Convert an LLM API exception into a user-readable message.
+
+    Logs the full exception text at WARNING level so the developer can see it
+    in the terminal without exposing raw stack traces to the customer UI.
+    """
+    raw = str(exc)
+    _log.warning("LLM call failed: %s", raw)
+
+    low = raw.lower()
+    if "budget" in low or "insufficient" in low:
+        return (
+            "I'm unable to process your request right now — the AI service has "
+            "reached its usage limit for this session.  "
+            "Please contact the administrator to top up the API budget and try again."
+        )
+    if "rate limit" in low or "ratelimit" in low or "429" in raw:
+        return (
+            "The AI service is temporarily busy (rate limit reached).  "
+            "Please wait 30 seconds and try again."
+        )
+    if "authentication" in low or "api key" in low or "401" in raw:
+        return (
+            "There is a configuration issue with the AI service credentials.  "
+            "Please check that OPENAI_API_KEY is set correctly and try again."
+        )
+    if "context_length" in low or "maximum context" in low or "tokens" in low:
+        return (
+            "The conversation has become too long for the AI to process in one go.  "
+            "Please click 'Start Over' to begin a fresh session."
+        )
+    # Fallback: show something more informative than just the class name
+    return (
+        f"I'm sorry, I encountered a technical issue: {type(exc).__name__}.  "
+        "Please try again, or click 'Start Over' if the problem persists."
+    )
 
 
 # ── Indicative rate bands ────────────────────────────────────────────────────
@@ -339,6 +381,7 @@ class LoanCopilotAgent:
         history = self.memory.chat_memory.messages if self.memory else []
 
         full_response = ""
+        _api_error = False
         try:
             for msg, _meta in executor.stream(
                 {"messages": [*history, HumanMessage(content=user_input)]},
@@ -352,15 +395,14 @@ class LoanCopilotAgent:
                     full_response += msg.content
                     yield msg.content
         except Exception as exc:
-            error_msg = (
-                "I'm sorry, I encountered an issue processing your request. "
-                f"Please try again. ({type(exc).__name__})"
-            )
+            _api_error = True
+            error_msg = _friendly_error(exc)
             yield error_msg
             full_response = error_msg
 
-        # Post-processing identical to _executor_response (minus attach_conversation)
-        if self.memory and full_response:
+        # Only update memory for successful turns — storing error text as assistant
+        # history would confuse the LLM on the next turn.
+        if self.memory and full_response and not _api_error:
             self.memory.chat_memory.add_user_message(user_input)
             self.memory.chat_memory.add_ai_message(full_response)
 
@@ -712,10 +754,7 @@ class LoanCopilotAgent:
             llm = self._get_llm()
             response = llm.invoke(messages, config={"callbacks": self._get_callbacks()})
         except Exception as exc:
-            return (
-                "I'm sorry, I encountered an issue processing your request. "
-                f"Please try again. ({type(exc).__name__})"
-            )
+            return _friendly_error(exc)
 
         if self.memory:
             self.memory.chat_memory.add_user_message(user_input)
@@ -745,10 +784,7 @@ class LoanCopilotAgent:
             # Last message in the output list is the final AI response
             response_text = result["messages"][-1].content
         except Exception as exc:
-            return (
-                "I'm sorry, I encountered an issue processing your request. "
-                f"Please try again. ({type(exc).__name__})"
-            )
+            return _friendly_error(exc)
 
         # Manually update sliding-window memory so history grows across turns
         if self.memory:
