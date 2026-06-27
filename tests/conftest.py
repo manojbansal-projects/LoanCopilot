@@ -30,6 +30,16 @@ def empty_feedback_store(tmp_data_dir, monkeypatch):
 
 
 @pytest.fixture()
+def empty_adaptive_policy(tmp_data_dir, monkeypatch):
+    """Patch ADAPTIVE_POLICY_PATH in policy_updater to use a temp file."""
+    import policy_rlhf.policy_updater as pu
+    policy_path = tmp_data_dir / "data" / "rlhf" / "adaptive_policy.json"
+    policy_path.write_text("[]")
+    monkeypatch.setattr(pu, "ADAPTIVE_POLICY_PATH", policy_path)
+    return policy_path
+
+
+@pytest.fixture()
 def populated_feedback_store(empty_feedback_store):
     """Write 10 feedback records (mix of high/low ratings) to the store."""
     records = [

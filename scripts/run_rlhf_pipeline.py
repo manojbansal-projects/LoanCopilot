@@ -1,5 +1,5 @@
 """
-Phase 7 RLHF pipeline — analyse feedback and log adaptation signals.
+Phase 7 RLHF pipeline — analyse feedback, update adaptive policy, log signals.
 
 Usage:
     python scripts/run_rlhf_pipeline.py
@@ -7,7 +7,9 @@ Usage:
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from policy_rlhf.policy_updater import analyse_feedback
+from policy_rlhf.policy_updater import (
+    analyse_feedback, update_adaptive_policy, _load_adaptive_policy,
+)
 from policy_rlhf.feedback_collector import _load_store
 import json
 
@@ -53,6 +55,47 @@ def main():
         else:
             print()
             print("Qualitative comments: (none provided)")
+
+    # ── Adaptive policy update (LLM step) ────────────────────────────────────
+    print()
+    print("=" * 72)
+    print("Adaptive Policy Update  (GPT-4o-mini)")
+    print("=" * 72)
+
+    all_comments = signals.get("comments", []) if "status" not in signals else []
+    result = update_adaptive_policy(all_comments)
+
+    status = result["status"]
+    if status == "skipped":
+        print(f"SKIPPED — {result.get('reason', '')}")
+        print("  Need at least 2 low-rated comments (≤3★) with text to generate patterns.")
+    elif status == "llm_unavailable":
+        print(f"⚠  LLM call failed: {result.get('reason', '')}")
+        print("  Adaptive policy not updated.")
+        print("  Top up the API budget and re-run this script.")
+    else:
+        changelog = result.get("changelog", [])
+        if changelog:
+            for line in changelog:
+                print(line)
+        else:
+            print("  No new patterns detected in low-rated comments.")
+
+    # ── Current adaptive policy summary ──────────────────────────────────────
+    print()
+    print("=" * 72)
+    print("Active Adaptive Policy Entries")
+    print("=" * 72)
+    entries = _load_adaptive_policy()
+    active = [e for e in entries if e.get("active", True)]
+    if not active:
+        print("(none — policy file is empty)")
+    else:
+        for e in active:
+            src = e.get("source", "unknown")
+            print(f"  [{src}]  {e['id']}  (triggers: {e.get('trigger_count', 0)})")
+            print(f"    {e['instruction']}")
+            print()
 
 
 if __name__ == "__main__":

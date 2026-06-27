@@ -491,6 +491,7 @@ def _render_feedback_widget(idx: int, response_text: str) -> None:
     rating_val = 4 if thumb_idx == 1 else 2
     st.session_state.messages[idx]["feedback"] = {"rating": rating_val, "comment": ""}
     _post_feedback(idx, response_text, rating_val, feedback_type="per_turn")
+    agent.inject_feedback_signal(rating_val)
     st.session_state.pop(f"fb_thumb_{idx}", None)
     st.rerun()
 
@@ -1089,6 +1090,29 @@ with tab_rm:
                 st.success("✅  Feedback strong — no prompt adaptation needed.")
             elif adapt == "neutral":
                 st.info(fb_signal.get("action", "Ratings in acceptable range."))
+
+            # ── Adaptive policy entries ───────────────────────────────────────
+            policy_entries = fb_signal.get("adaptive_policy_entries", [])
+            active_entries = [e for e in policy_entries if e.get("active", True)]
+            st.markdown("**Adaptive Policy** (applied to every new session)")
+            if active_entries:
+                for e in active_entries:
+                    badge = "🤖 LLM" if e.get("source") == "llm_auto" else "✏️ Manual"
+                    with st.expander(f"{badge}  `{e['id']}`  — {e.get('trigger_count', 0)} trigger(s)"):
+                        st.markdown(f"**Instruction:** {e['instruction']}")
+                        if e.get("trigger_comments"):
+                            st.markdown("**Triggered by:**")
+                            for c in e["trigger_comments"]:
+                                st.caption(f"› {c}")
+                        st.caption(
+                            f"Created: {e.get('created', '—')[:10]}  |  "
+                            f"Updated: {e.get('last_updated', '—')[:10]}"
+                        )
+            else:
+                st.caption(
+                    "No adaptive policy entries yet. "
+                    "Run `python scripts/run_rlhf_pipeline.py` to generate them from feedback."
+                )
         else:
             st.caption(f"{len(fb_records)} record(s) collected — need 5 for RLHF signal.")
 

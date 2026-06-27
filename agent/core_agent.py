@@ -315,6 +315,7 @@ class LoanCopilotAgent:
         self._executor = None
         self._prompt_variant = prompt_variant
         self._system_prompt = PROMPT_VARIANTS.get(prompt_variant, SYSTEM_PROMPT)
+        self._session_signals: list[str] = []
 
         # Only wire LangChain memory for Phase 3+
         if phase >= 3:
@@ -375,16 +376,24 @@ class LoanCopilotAgent:
 
     def _executor_stream(self, user_input: str):
         """Stream Phase-5 ReAct agent response token-by-token."""
-        from langchain_core.messages import HumanMessage, AIMessageChunk
+        from langchain_core.messages import HumanMessage, AIMessageChunk, SystemMessage
 
         executor = self._get_executor()
         history = self.memory.chat_memory.messages if self.memory else []
+
+        # Inject any queued per-turn feedback signals as a SystemMessage so the
+        # LLM sees the correction without it becoming part of conversation memory.
+        messages = list(history)
+        if self._session_signals:
+            combined = "\n".join(f"- {s}" for s in self._session_signals)
+            messages.append(SystemMessage(content=f"[In-session feedback]\n{combined}"))
+        messages.append(HumanMessage(content=user_input))
 
         full_response = ""
         _api_error = False
         try:
             for msg, _meta in executor.stream(
-                {"messages": [*history, HumanMessage(content=user_input)]},
+                {"messages": messages},
                 config={"callbacks": self._get_callbacks()},
                 stream_mode="messages",
             ):
@@ -426,8 +435,34 @@ class LoanCopilotAgent:
     def reset(self) -> None:
         """Reset all session state (supports 'start over' command)."""
         self.state.reset()
+        self._session_signals = []
         if self.memory:
             self.memory.clear()
+
+    def inject_feedback_signal(self, rating: int, comment: str = "") -> None:
+        """Queue a per-turn correction so the agent adjusts on its very next response.
+
+        👎 (rating ≤ 2) — appends a correction note to _session_signals; these are
+          injected as a SystemMessage before every subsequent executor call so the LLM
+          sees them without the notes polluting conversation memory.
+        👍 (rating ≥ 4) — clears all active signals; agent was doing well, stop nudging.
+        3★ — neutral, no action.
+        """
+        if rating >= 4:
+            self._session_signals.clear()
+            return
+        if rating > 2:
+            return
+        note = "The customer indicated the previous response was not satisfactory."
+        if comment:
+            note += f" Their specific feedback: '{comment}'."
+        note += (
+            " For your next response: be more direct, avoid re-asking for information "
+            "already provided earlier in this conversation, and give a concrete answer "
+            "rather than redirecting to a branch or RM unless the requested amount "
+            "definitively exceeds the product ceiling."
+        )
+        self._session_signals.append(note)
 
     def inject_context(self, user_message: str, assistant_message: str) -> None:
         """Inject a pre-canned exchange into conversation memory without calling the LLM.
@@ -771,14 +806,20 @@ class LoanCopilotAgent:
           output → {"messages": [..., AIMessage(final_response)]}
         Memory is managed manually here after each turn.
         """
-        from langchain_core.messages import HumanMessage
+        from langchain_core.messages import HumanMessage, SystemMessage
 
         agent = self._get_executor()
         history = self.memory.chat_memory.messages if self.memory else []
 
+        messages = list(history)
+        if self._session_signals:
+            combined = "\n".join(f"- {s}" for s in self._session_signals)
+            messages.append(SystemMessage(content=f"[In-session feedback]\n{combined}"))
+        messages.append(HumanMessage(content=user_input))
+
         try:
             result = agent.invoke(
-                {"messages": [*history, HumanMessage(content=user_input)]},
+                {"messages": messages},
                 config={"callbacks": self._get_callbacks()},
             )
             # Last message in the output list is the final AI response
