@@ -931,6 +931,11 @@ class LoanCopilotAgent:
         from tools.tool_registry import get_all_tools, get_mcp_tools
 
         use_mcp = os.getenv("USE_MCP", "true").lower() == "true"
+        if use_mcp:
+            try:
+                import mcp  # noqa: F401
+            except ImportError:
+                use_mcp = False
         tools = get_mcp_tools() if use_mcp else get_all_tools()
         llm   = self._get_llm()
 

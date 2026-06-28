@@ -46,23 +46,14 @@ def get_mcp_tools() -> list:
     which exercises FastMCP's full schema-validation and serialisation path.
 
     Activated when USE_MCP=true in the environment.
-    Falls back to get_all_tools() if the mcp package is not installed.
+    Called only when the mcp package is confirmed importable (core_agent checks first).
     """
     import json as _json
     from typing import Optional
     from langchain_core.tools import StructuredTool
     from pydantic import create_model, Field
-    try:
-        from loan_mcp.client import call_tool_sync, list_tools_sync
-        mcp_tools = list_tools_sync()
-    except ImportError:
-        import logging
-        logging.getLogger(__name__).warning(
-            "USE_MCP=true but 'mcp' package not found — "
-            "falling back to direct tool imports. "
-            "Activate your venv or run: pip install mcp>=1.0.0"
-        )
-        return get_all_tools()
+    from loan_mcp.client import call_tool_sync, list_tools_sync
+    mcp_tools = list_tools_sync()
     lc_tools = []
 
     for t in mcp_tools:
