@@ -15,7 +15,7 @@
 **Talking points:**
 1. **Scenario context:** This is Scenario 2 — Banking — on Track A, using LangChain as the primary orchestration framework. The build was completed in 10 working days across 8 structured phases.
 2. **What I built:** A conversational agent that handles four loan products — Home, Personal, MSME, and New Car — covering eligibility assessment, EMI estimates, document checklists, policy Q&A, and escalation to a Relationship Manager.
-3. **Scale of the artefact:** The project includes 5 LangChain tools, 8 Jupyter phase notebooks, a Streamlit web application with an RM Dashboard, a self-hosted Langfuse observability stack, and 442 automated tests passing.
+3. **Scale of the artefact:** The project includes 5 LangChain tools, 8 Jupyter phase notebooks, a Streamlit web application with an RM Dashboard, a self-hosted Langfuse observability stack, and 424 automated tests passing.
 4. **Technology spine:** LangChain ReAct agent → GPT-4o → ChromaDB RAG → Langfuse observability — each chosen for a specific engineering reason I'll cover in slide 5.
 
 **Transition:** Let me start with the problem this system solves.
@@ -274,7 +274,7 @@
 5. **Two-layer RLHF is fast, auditable, and emergent:** The adaptation mechanism operates at two timescales — within-session SystemMessage injection for immediate correction, and cross-session LLM-generated `adaptive_policy.json` for patterns the designer never hardcoded. Neither requires model fine-tuning. Both are fully auditable: you can read the JSON file and see exactly what behavioural changes are active. For a prototype on a 10-day timeline, this is the right tradeoff. The infrastructure exists to upgrade to fine-tuning if production interaction volumes justify it.
 
 **Closing statement:**
-> "The project is live on GitHub at github.com/manojbansal-projects/IITM-LoanCopilot. All 442 tests pass, all 8 phase notebooks run end-to-end, and the Streamlit app is deployable from a single `streamlit run deployment/app.py` command. Thank you — I'm happy to take questions on any component."
+> "The project is live on GitHub at github.com/manojbansal-projects/IITM-LoanCopilot. All 424 tests pass, all 8 phase notebooks run end-to-end, and the Streamlit app is deployable from a single `streamlit run deployment/app.py` command. Thank you — I'm happy to take questions on any component."
 
 ---
 
