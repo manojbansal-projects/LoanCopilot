@@ -17,7 +17,7 @@ Follow these steps in order. Estimated time: 10 minutes.
 | Python | 3.10+ | Check: `python --version` |
 | pip | latest | Check: `pip --version` |
 | Git | any | To clone the repo |
-| OpenAI API key | GPT-4o / GPT-4o-mini access | Required for Phase 3+ |
+| API key | Vocareum or OpenAI — GPT-4o / GPT-4o-mini access | Required for Phase 3+ |
 | Langfuse account | cloud.langfuse.com free tier | For observability (optional for basic run) |
 
 > **No API key?** You can still run the rules-based Phase 2 agent (no LLM, no costs). See [Option B — CLI](#option-b--cli) and use `--phase 2`.
@@ -27,8 +27,8 @@ Follow these steps in order. Estimated time: 10 minutes.
 ### Step 2 — Clone the Repository
 
 ```bash
-git clone <repo-url>
-cd <repo-folder>
+git clone https://github.com/manojbansal-projects/IITM-LoanCopilot.git
+cd IITM-LoanCopilot
 ```
 
 ---
@@ -65,9 +65,11 @@ Open `.env` in any text editor and fill in the values:
 
 ```ini
 # --- Required for LLM agent (Phase 3+) ---
-OPENAI_API_KEY=sk-...          # Your OpenAI API key (starts with sk-)
-OPENAI_BASE_URL=               # Leave blank for standard OpenAI
-                               # Set to proxy URL if using Vocareum or similar
+OPENAI_API_KEY=<your-key>      # Vocareum key (does NOT start with sk-)
+                               # or standard OpenAI key (starts with sk-)
+OPENAI_BASE_URL=https://openai.vocareum.com/v1
+                               # Vocareum proxy URL (used in this project)
+                               # Leave blank if using standard OpenAI directly
 
 # --- Required for observability (optional for basic run) ---
 LANGFUSE_PUBLIC_KEY=pk-lf-...  # From cloud.langfuse.com → Settings → API keys
