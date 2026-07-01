@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Powered Loan Origination Copilot — Architecture Diagram</title>
+<style>
+  @media print {
+    body { background: #fff !important; padding: 8px !important; }
+    .no-print { display: none !important; }
+    .main-grid { grid-template-columns: 1fr 260px !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+  body { background: #f0f4f8; padding: 20px; font-size: 12px; }
+
+  /* Print / Save button */
+  .toolbar { text-align: right; margin-bottom: 14px; }
+  .btn-print {
+    background: #1565C0; color: white; border: none; padding: 8px 18px;
+    border-radius: 5px; font-size: 13px; font-weight: 600; cursor: pointer;
+    letter-spacing: 0.4px;
+  }
+  .btn-print:hover { background: #0D47A1; }
+
+  .title-block { text-align: center; margin-bottom: 16px; }
+  .title-block h1 { font-size: 18px; font-weight: 700; color: #1a2e4a; letter-spacing: 0.5px; }
+  .title-block h1 span { color: #1565C0; }
+  .title-block p { font-size: 11px; color: #5a6a7a; margin-top: 4px; }
+
+  .main-grid { display: grid; grid-template-columns: 1fr 285px; gap: 12px; }
+  .left-col { display: flex; flex-direction: column; gap: 10px; }
+
+  .layer { position: relative; border-radius: 8px; padding: 10px 12px; border: 2px solid; }
+  .layer-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+
+  .ui-layer { border-color: #90CAF9; background: #E3F2FD; }
+  .ui-layer .layer-label { color: #1565C0; }
+  .safety-layer { border-color: #EF9A9A; background: #FFEBEE; }
+  .safety-layer .layer-label { color: #C62828; }
+  .agent-layer { border-color: #A5D6A7; background: #E8F5E9; }
+  .agent-layer .layer-label { color: #1B5E20; }
+  .mcp-layer { border-color: #FFCC80; background: #FFF8E1; }
+  .mcp-layer .layer-label { color: #E65100; }
+  .rag-layer { border-color: #CE93D8; background: #F3E5F5; }
+  .rag-layer .layer-label { color: #6A1B9A; }
+  .obs-layer { border-color: #80CBC4; background: #E0F2F1; }
+  .obs-layer .layer-label { color: #004D40; }
+
+  .tools-inner { background: #fff; border: 1.5px solid #FFB74D; border-radius: 6px; padding: 8px; margin-top: 6px; }
+  .tools-inner .inner-label { font-size: 10px; font-weight: 600; color: #E65100; margin-bottom: 6px; text-align: center; }
+
+  .box-row { display: flex; gap: 8px; align-items: stretch; }
+  .box { border-radius: 6px; padding: 8px 10px; font-size: 11px; min-width: 80px; flex: 1; }
+  .box .box-title { font-weight: 700; font-size: 11px; margin-bottom: 3px; }
+  .box .box-sub { font-size: 10px; color: #555; line-height: 1.4; }
+
+  .ui-box { background: #BBDEFB; border: 1px solid #64B5F6; }
+  .ui-box .box-title { color: #0D47A1; }
+  .safety-box { background: #FFCDD2; border: 1px solid #EF9A9A; }
+  .safety-box .box-title { color: #B71C1C; }
+  .agent-box { background: #C8E6C9; border: 1px solid #81C784; }
+  .agent-box .box-title { color: #1B5E20; }
+  .mcp-box { background: #FFE0B2; border: 1px solid #FFCC80; }
+  .mcp-box .box-title { color: #BF360C; }
+  .tool-box { background: #FFF3E0; border: 1.5px solid #FFA726; border-radius: 5px; padding: 6px 8px; flex: 1; min-width: 75px; }
+  .tool-box .box-title { font-weight: 700; font-size: 10px; color: #E65100; margin-bottom: 2px; }
+  .tool-box .box-sub { font-size: 9.5px; color: #666; }
+  .rag-box { background: #E1BEE7; border: 1px solid #CE93D8; }
+  .rag-box .box-title { color: #4A148C; }
+  .obs-box { background: #B2DFDB; border: 1px solid #80CBC4; }
+  .obs-box .box-title { color: #004D40; }
+  .rlhf-box { background: #D7CCC8; border: 1px solid #A1887F; }
+  .rlhf-box .box-title { color: #3E2723; }
+
+  .user-block { display: flex; align-items: center; gap: 10px; background: #F8FAFD; border: 2px solid #90CAF9; border-radius: 8px; padding: 10px 14px; }
+  .user-icon { font-size: 28px; }
+  .user-info .box-title { font-weight: 700; color: #1565C0; font-size: 13px; }
+  .user-info .box-sub { font-size: 10.5px; color: #555; }
+
+  .arrow-row { display: flex; justify-content: center; align-items: center; color: #607D8B; font-size: 16px; height: 14px; }
+
+  .memory-badge { display: inline-block; background: #DCEDC8; border: 1px solid #AED581; border-radius: 12px; padding: 2px 8px; font-size: 10px; color: #33691E; font-weight: 600; margin: 3px 3px 0 0; }
+
+  .right-col { display: flex; flex-direction: column; gap: 10px; }
+  .sidebar-card { background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #ddd; }
+  .sidebar-card h3 { font-size: 11.5px; font-weight: 700; color: #1a2e4a; background: #E3F2FD; padding: 5px 8px; margin: -12px -12px 10px -12px; border-radius: 8px 8px 0 0; }
+  .sidebar-card.green h3 { background: #E8F5E9; color: #1B5E20; }
+  .sidebar-card.orange h3 { background: #FFF8E1; color: #E65100; }
+  .sidebar-card.purple h3 { background: #F3E5F5; color: #6A1B9A; }
+
+  .step-item { display: flex; gap: 8px; margin-bottom: 6px; align-items: flex-start; }
+  .step-num { min-width: 18px; height: 18px; border-radius: 50%; background: #1565C0; color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 10.5px; color: #333; line-height: 1.4; }
+
+  .benefit-item { display: flex; gap: 7px; margin-bottom: 6px; align-items: flex-start; }
+  .benefit-icon { font-size: 13px; min-width: 18px; }
+  .benefit-text { font-size: 10.5px; color: #333; line-height: 1.4; }
+
+  .small-badge { display: inline-block; padding: 1px 6px; border-radius: 10px; font-size: 9.5px; font-weight: 600; margin: 2px 2px 2px 0; }
+  .badge-purple { background: #E1BEE7; color: #6A1B9A; }
+
+  .bottom-banner { margin-top: 12px; background: #1a2e4a; color: #fff; border-radius: 8px; padding: 10px 16px; display: flex; gap: 24px; align-items: center; font-size: 10.5px; }
+  .bottom-banner strong { color: #90CAF9; }
+  .bottom-banner .key-fact { flex: 1; }
+  .bottom-banner .key-fact::before { content: "✔ "; color: #A5D6A7; }
+
+  footer { text-align: center; margin-top: 10px; font-size: 10px; color: #90a0b0; }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+</div>
+
+<div class="title-block">
+  <h1>AI-POWERED <span>LOAN ORIGINATION COPILOT</span> — ARCHITECTURE DIAGRAM <span style="font-size:14px">(WITH MCP &amp; RAG)</span></h1>
+  <p>ReAct Agent &nbsp;·&nbsp; FastMCP Tools &nbsp;·&nbsp; ChromaDB RAG &nbsp;·&nbsp; Langfuse Observability &nbsp;·&nbsp; RLHF Adaptive Learning &nbsp;·&nbsp; Safety Guardrails &nbsp;·&nbsp; IIT Madras Capstone — Scenario 2, Banking, Track A</p>
+</div>
+
+<div class="main-grid">
+  <div class="left-col">
+
+    <!-- User Block -->
+    <div class="user-block">
+      <div class="user-icon">👤</div>
+      <div class="user-info">
+        <div class="box-title">RETAIL BANK CUSTOMER</div>
+        <div class="box-sub">Enters query via Streamlit Web UI or CLI &nbsp;|&nbsp; Example: <em>"I want a ₹50L home loan, salary ₹80K/month"</em></div>
+      </div>
+    </div>
+
+    <div class="arrow-row">↓</div>
+
+    <!-- UI Layer -->
+    <div class="layer ui-layer">
+      <div class="layer-label">🖥️ Interface Layer</div>
+      <div class="box-row">
+        <div class="box ui-box">
+          <div class="box-title">Streamlit Web UI</div>
+          <div class="box-sub">deployment/app.py<br>Token-by-token streaming<br>session state, chat history</div>
+        </div>
+        <div class="box ui-box">
+          <div class="box-title">CLI Agent</div>
+          <div class="box-sub">scripts/run_agent.py<br>--phase 2|3|4|5<br>Terminal interaction</div>
+        </div>
+        <div class="box ui-box">
+          <div class="box-title">MCP Server Endpoint</div>
+          <div class="box-sub">scripts/start_mcp_server.py<br>stdio or HTTP transport<br>Claude Desktop / network</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-row">↓</div>
+
+    <!-- Safety Layer -->
+    <div class="layer safety-layer">
+      <div class="layer-label">🛡️ Safety &amp; Guardrails Layer</div>
+      <div class="box-row">
+        <div class="box safety-box">
+          <div class="box-title">Stage A — Keyword Filter</div>
+          <div class="box-sub">safety/guardrails.py<br>Blocks off-topic / harmful intents<br>Fast pre-LLM gate</div>
+        </div>
+        <div class="box safety-box">
+          <div class="box-title">Stage B — Intent Classifier</div>
+          <div class="box-sub">GPT-4o-mini classifier<br>Loan-domain relevance check<br>Low-cost secondary guardrail</div>
+        </div>
+        <div class="box safety-box">
+          <div class="box-title">PII Filter</div>
+          <div class="box-sub">safety/pii_filter.py<br>Regex masker: Aadhaar, PAN,<br>mobile, email, account nos.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-row">↓</div>
+
+    <!-- Agent Layer -->
+    <div class="layer agent-layer">
+      <div class="layer-label">🤖 Agent Layer — LoanCopilotAgent (ReAct)</div>
+      <div class="box-row">
+        <div class="box agent-box" style="flex:2">
+          <div class="box-title">AgentExecutor — LangChain ReAct</div>
+          <div class="box-sub">
+            agent/core_agent.py &nbsp;·&nbsp; LLM: OpenAI GPT-4o<br>
+            System Prompt V3: indicative rate ranges, escalation ceiling checks, disclaimer<br>
+            Silent MCP auto-detect: probes <code>import mcp</code> → uses MCP path or direct @tool fallback
+          </div>
+          <div style="margin-top:5px;">
+            <span class="memory-badge">🧠 ConversationBufferWindowMemory (k=10)</span>
+            <span class="memory-badge">📋 Profile Planner — next_question()</span>
+          </div>
+        </div>
+        <div class="box agent-box" style="flex:1">
+          <div class="box-title">Prompt System</div>
+          <div class="box-sub">agent/prompts.py<br>V1 / V2 / V3 variants<br>V3 default: rate ranges,<br>disclaimer, escalation rules</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-row">↓</div>
+
+    <!-- MCP Layer -->
+    <div class="layer mcp-layer">
+      <div class="layer-label">⚙️ MCP Layer — Model Context Protocol (FastMCP)</div>
+      <div class="box-row">
+        <div class="box mcp-box">
+          <div class="box-title">FastMCP Server</div>
+          <div class="box-sub">loan_mcp/server.py<br>All 5 tools registered<br>stdio / HTTP transport</div>
+        </div>
+        <div class="box mcp-box">
+          <div class="box-title">MCP Client</div>
+          <div class="box-sub">loan_mcp/client.py<br>call_tool_sync()<br>list_tools_sync()</div>
+        </div>
+        <div class="box mcp-box">
+          <div class="box-title">Tool Registry</div>
+          <div class="box-sub">tools/tool_registry.py<br>get_mcp_tools() or<br>get_all_tools() fallback</div>
+        </div>
+      </div>
+
+      <div class="tools-inner">
+        <div class="inner-label">🔧 5 LANGCHAIN TOOLS (identical surface on both paths)</div>
+        <div class="box-row">
+          <div class="tool-box">
+            <div class="box-title">check_eligibility</div>
+            <div class="box-sub">FOIR + credit score + amount / tenure limits</div>
+          </div>
+          <div class="tool-box">
+            <div class="box-title">calculate_emi</div>
+            <div class="box-sub">Reducing-balance formula, rate range</div>
+          </div>
+          <div class="tool-box">
+            <div class="box-title">get_document_checklist</div>
+            <div class="box-sub">Product × employment type lookup table</div>
+          </div>
+          <div class="tool-box">
+            <div class="box-title">query_loan_policy</div>
+            <div class="box-sub">RAG-backed policy FAQ search (ChromaDB)</div>
+          </div>
+          <div class="tool-box">
+            <div class="box-title">generate_escalation_summary</div>
+            <div class="box-sub">RM handoff packet — ceiling breach trigger</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-row">↕</div>
+
+    <!-- RAG + Obs row -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+
+      <div class="layer rag-layer">
+        <div class="layer-label">📚 Knowledge &amp; RAG Layer</div>
+        <div class="box-row" style="flex-direction:column; gap:6px;">
+          <div class="box rag-box">
+            <div class="box-title">ChromaDB (Persistent)</div>
+            <div class="box-sub">knowledge/chromadb/<br>Embeddings: OpenAI text-embedding-3-small<br>Semantic retrieval · top-k chunks</div>
+          </div>
+          <div class="box rag-box">
+            <div class="box-title">Policy Knowledge Base</div>
+            <div class="box-sub">
+              <span class="small-badge badge-purple">Home Loan</span>
+              <span class="small-badge badge-purple">Personal Loan</span>
+              <span class="small-badge badge-purple">MSME Loan</span>
+              <span class="small-badge badge-purple">New Car Loan</span><br>
+              knowledge/raw/ · synthetic policy documents
+            </div>
+          </div>
+          <div class="box rag-box">
+            <div class="box-title">Ingestion Pipeline</div>
+            <div class="box-sub">document_loader → chunker → embedder → chroma_store → retriever<br>(scripts/ingest_documents.py)</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="layer obs-layer" style="flex:1;">
+          <div class="layer-label">📊 Observability Layer</div>
+          <div class="box obs-box">
+            <div class="box-title">Langfuse (Self-hosted)</div>
+            <div class="box-sub">monitoring/langfuse_logger.py<br>get_langfuse_callback() · score_session()<br>Traces every agent run end-to-end<br><em>Only observability tool (LangSmith &amp; Arize Phoenix excluded)</em></div>
+          </div>
+        </div>
+        <div class="layer" style="border-color:#A1887F; background:#EFEBE9; flex:1;">
+          <div class="layer-label" style="color:#4E342E;">🔄 RLHF Adaptive Learning</div>
+          <div class="box rlhf-box">
+            <div class="box-title">Two-Layer RLHF</div>
+            <div class="box-sub">
+              <strong>Layer 1:</strong> Within-session feedback signal injection<br>
+              <strong>Layer 2:</strong> update_adaptive_policy() → adaptive_policy.json<br>
+              policy_rlhf/: feedback_collector, policy_checker, policy_updater<br>
+              16 adaptive test cases · cross-session improvement
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom banner -->
+    <div class="bottom-banner">
+      <div class="key-fact"><strong>424 Tests</strong> — 226 core + 182 coverage + 16 RLHF adaptive</div>
+      <div class="key-fact"><strong>4 Loan Products</strong> — Home, Personal, MSME, New Car</div>
+      <div class="key-fact"><strong>9 Phases</strong> complete — MCP exposure (Sub-bucket 4C) added</div>
+      <div class="key-fact"><strong>Streaming UI</strong> — agent.stream_response() + st.write_stream()</div>
+    </div>
+
+  </div>
+
+  <!-- Right sidebar -->
+  <div class="right-col">
+
+    <div class="sidebar-card">
+      <h3>📋 WHAT EACH STEP DOES</h3>
+      <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>User Input</strong> — Customer states loan need via Streamlit or CLI</div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Safety Gate</strong> — Keyword filter + GPT-4o-mini classifier blocks off-topic; PII masked before any logging</div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>Profile Collection</strong> — Planner drives next_question() sequence (income, tenure, amount, product)</div></div>
+      <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>ReAct Reasoning</strong> — GPT-4o agent runs Thought → Action → Observation loop to select tool(s)</div></div>
+      <div class="step-item"><div class="step-num">5</div><div class="step-text"><strong>Tool Execution</strong> — MCP or direct tools: eligibility, EMI, checklist, RAG policy, escalation</div></div>
+      <div class="step-item"><div class="step-num">6</div><div class="step-text"><strong>RAG Retrieval</strong> — query_loan_policy fetches relevant policy chunks from ChromaDB</div></div>
+      <div class="step-item"><div class="step-num">7</div><div class="step-text"><strong>Response Generation</strong> — Indicative rate range + EMI estimate + eligibility + checklist streamed to UI</div></div>
+      <div class="step-item"><div class="step-num">8</div><div class="step-text"><strong>Escalation (if ceiling breach)</strong> — generate_escalation_summary packages RM handoff automatically</div></div>
+      <div class="step-item"><div class="step-num">9</div><div class="step-text"><strong>Observability + RLHF</strong> — Langfuse traces run; user feedback updates adaptive_policy.json</div></div>
+    </div>
+
+    <div class="sidebar-card green">
+      <h3>🏦 LOAN PRODUCTS &amp; ESCALATION CEILINGS</h3>
+      <div class="benefit-item"><div class="benefit-icon">🏠</div><div class="benefit-text"><strong>Home Loan</strong> — up to ₹1.5 Cr (escalate above)</div></div>
+      <div class="benefit-item"><div class="benefit-icon">💳</div><div class="benefit-text"><strong>Personal Loan</strong> — product max ₹40 L</div></div>
+      <div class="benefit-item"><div class="benefit-icon">🏭</div><div class="benefit-text"><strong>MSME Loan</strong> — up to ₹2 Cr (escalate above)</div></div>
+      <div class="benefit-item"><div class="benefit-icon">🚗</div><div class="benefit-text"><strong>New Car Loan</strong> — product max ₹20 L</div></div>
+      <div style="margin-top:8px; padding-top:8px; border-top:1px solid #C8E6C9;">
+        <div class="benefit-item"><div class="benefit-icon">📏</div><div class="benefit-text"><strong>Eligibility:</strong> FOIR ≤ 50%, min credit score, product amount/tenure limits</div></div>
+        <div class="benefit-item"><div class="benefit-icon">💡</div><div class="benefit-text"><strong>Rates:</strong> INDICATIVE range only (e.g., 8.50%–9.25% p.a.) — never a single promised rate; disclaimer always added</div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-card orange">
+      <h3>✅ BENEFITS OF EACH LAYER</h3>
+      <div class="benefit-item"><div class="benefit-icon">🛡️</div><div class="benefit-text"><strong>Safety Layer</strong> — Two-stage gate prevents misuse; PII never logged raw</div></div>
+      <div class="benefit-item"><div class="benefit-icon">⚙️</div><div class="benefit-text"><strong>MCP Layer</strong> — Standardised tool protocol; swappable to remote MCP service with no agent changes</div></div>
+      <div class="benefit-item"><div class="benefit-icon">📚</div><div class="benefit-text"><strong>RAG Layer</strong> — Answers grounded in bank policy; eliminates hallucinated rates</div></div>
+      <div class="benefit-item"><div class="benefit-icon">🧠</div><div class="benefit-text"><strong>Memory (k=10)</strong> — Maintains context without overloading the context window</div></div>
+      <div class="benefit-item"><div class="benefit-icon">📊</div><div class="benefit-text"><strong>Langfuse</strong> — Full trace visibility; per-session score for RLHF feedback signal</div></div>
+      <div class="benefit-item"><div class="benefit-icon">🔄</div><div class="benefit-text"><strong>RLHF</strong> — Adaptive policy file improves agent behaviour cross-session</div></div>
+    </div>
+
+    <div class="sidebar-card purple">
+      <h3>🔑 KEY DESIGN DECISIONS</h3>
+      <div class="benefit-item"><div class="benefit-icon">🔀</div><div class="benefit-text"><strong>Dual tool path:</strong> FastMCP when mcp importable; direct @tool imports otherwise — identical 5-tool surface to agent</div></div>
+      <div class="benefit-item"><div class="benefit-icon">🤫</div><div class="benefit-text"><strong>Silent auto-detect:</strong> core_agent probes <code>import mcp</code> before choosing path — no warnings, no crashes</div></div>
+      <div class="benefit-item"><div class="benefit-icon">📡</div><div class="benefit-text"><strong>Langfuse only:</strong> LangSmith and Arize Phoenix excluded — single observability tool (see engineering_justification.md)</div></div>
+      <div class="benefit-item"><div class="benefit-icon">🌊</div><div class="benefit-text"><strong>Streaming UI:</strong> agent.stream_response() + st.write_stream() for real-time token output to Streamlit</div></div>
+      <div class="benefit-item"><div class="benefit-icon">🔒</div><div class="benefit-text"><strong>Never commit .env:</strong> all API keys via environment variables; PII masking before any log write</div></div>
+    </div>
+
+  </div>
+</div>
+
+<footer>IIT Madras AI Capstone · Scenario 2: Banking · Track A: LangChain · All 9 phases complete · MCP Sub-bucket 4C added</footer>
+
+</body>
+</html>
