@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkedIn Showcase | AI-Powered Loan Origination Copilot | Manoj Bansal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@media print {
+  body { margin: 0; }
+  .no-print { display: none !important; }
+  section { page-break-inside: avoid; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+:root {
+  --navy: #0F1E35;
+  --navy2: #1a2e4a;
+  --blue: #1565C0;
+  --blue2: #1976D2;
+  --teal: #028090;
+  --gold: #F59E0B;
+  --green: #10B981;
+  --red: #EF4444;
+  --purple: #7C3AED;
+  --white: #FFFFFF;
+  --offwhite: #F8FAFC;
+  --gray: #64748B;
+  --lightgray: #E2E8F0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', Arial, sans-serif; background: #F1F5F9; color: #1E293B; }
+
+/* ── TOOLBAR ── */
+.toolbar { background: #fff; border-bottom: 1px solid #E2E8F0; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.toolbar h2 { font-size: 13px; font-weight: 600; color: #64748B; }
+.btn { padding: 7px 16px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
+.btn-primary { background: var(--blue); color: white; }
+.btn-copy { background: var(--teal); color: white; }
+.btn-copy.copied { background: var(--green); }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #0F1E35 0%, #1a3a5c 50%, #0d2d4e 100%);
+  color: white; padding: 56px 40px 48px; text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -80px; right: -80px;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: rgba(21, 101, 192, 0.15); pointer-events: none;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -60px; left: -60px;
+  width: 240px; height: 240px; border-radius: 50%;
+  background: rgba(2, 128, 144, 0.12); pointer-events: none;
+}
+.hero-badge { display: inline-block; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #F59E0B; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+.hero h1 { font-size: 36px; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+.hero h1 span { color: #60A5FA; }
+.hero-sub { font-size: 14px; color: #94A3B8; margin-bottom: 10px; letter-spacing: 0.3px; }
+.hero-tagline { font-size: 18px; font-weight: 400; color: #CBD5E1; max-width: 680px; margin: 0 auto 32px; line-height: 1.6; }
+.hero-tagline em { color: #60A5FA; font-style: normal; font-weight: 600; }
+
+/* Metric pills */
+.metric-row { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+.metric-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 14px 24px; text-align: center; min-width: 100px; }
+.metric-pill .num { font-size: 34px; font-weight: 800; color: #60A5FA; line-height: 1; }
+.metric-pill .lbl { font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 4px; }
+
+/* CTA buttons */
+.hero-cta { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.cta-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 22px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; }
+.cta-github { background: #24292E; color: white; border: 1px solid #444; }
+.cta-linkedin { background: #0A66C2; color: white; }
+
+/* ── SECTION WRAPPER ── */
+.section { padding: 48px 40px; max-width: 1100px; margin: 0 auto; }
+.section-full { padding: 48px 40px; }
+.section-title { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
+.section-h2 { font-size: 26px; font-weight: 700; color: #0F172A; margin-bottom: 6px; }
+.section-desc { font-size: 14px; color: #475569; line-height: 1.7; max-width: 680px; margin-bottom: 32px; }
+
+/* ── PROBLEM ── */
+.problem-bg { background: white; }
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.compare-card { border-radius: 12px; padding: 24px; }
+.compare-card.old { background: #FEF2F2; border: 2px solid #FECACA; }
+.compare-card.new { background: #F0FDF4; border: 2px solid #BBF7D0; }
+.compare-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+.compare-card.old h3 { color: #DC2626; }
+.compare-card.new h3 { color: #16A34A; }
+.compare-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; font-size: 13px; color: #374151; line-height: 1.5; }
+.icon-x { color: #EF4444; font-size: 16px; min-width: 18px; }
+.icon-check { color: #10B981; font-size: 16px; min-width: 18px; }
+
+/* ── CAPABILITIES ── */
+.cap-bg { background: #F8FAFC; }
+.cap-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.cap-card { background: white; border-radius: 12px; padding: 20px 16px; text-align: center; border: 1px solid #E2E8F0; transition: box-shadow 0.2s; }
+.cap-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.cap-icon { font-size: 28px; margin-bottom: 10px; }
+.cap-card h3 { font-size: 12px; font-weight: 700; color: #1E293B; margin-bottom: 6px; }
+.cap-card p { font-size: 11px; color: #64748B; line-height: 1.5; }
+.cap-tag { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+
+/* ── METRICS DASHBOARD ── */
+.metrics-bg { background: linear-gradient(135deg, #0F1E35, #1a3a5c); }
+.metrics-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+.metric-card { text-align: center; padding: 20px 12px; }
+.metric-card .big-num { font-size: 48px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+.metric-card .big-lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #94A3B8; }
+.metric-card .big-sub { font-size: 10px; color: #64748B; margin-top: 3px; }
+
+/* ── TECH STACK ── */
+.tech-bg { background: white; }
+.tech-categories { display: flex; flex-direction: column; gap: 20px; }
+.tech-row { display: flex; align-items: flex-start; gap: 16px; }
+.tech-cat-label { min-width: 130px; font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.8px; padding-top: 6px; }
+.tech-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.tag-blue { background: #DBEAFE; color: #1D4ED8; }
+.tag-teal { background: #CCFBF1; color: #0F766E; }
+.tag-purple { background: #EDE9FE; color: #6D28D9; }
+.tag-green { background: #DCFCE7; color: #15803D; }
+.tag-orange { background: #FEF3C7; color: #B45309; }
+.tag-red { background: #FEE2E2; color: #B91C1C; }
+.tag-gray { background: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; }
+
+/* ── ARCHITECTURE MINI ── */
+.arch-bg { background: #F8FAFC; }
+.arch-flow { display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding: 8px 0; }
+.arch-block { flex: 1; min-width: 120px; }
+.arch-layer { border-radius: 8px; padding: 14px 10px; text-align: center; margin: 0 4px; height: 100%; }
+.arch-layer h4 { font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+.arch-layer p { font-size: 10px; line-height: 1.4; }
+.arch-arrow { display: flex; align-items: center; color: #94A3B8; font-size: 20px; padding: 0 2px; flex-shrink: 0; }
+.layer-ui { background: #DBEAFE; border: 1.5px solid #93C5FD; }
+.layer-ui h4 { color: #1D4ED8; }
+.layer-safe { background: #FEE2E2; border: 1.5px solid #FCA5A5; }
+.layer-safe h4 { color: #B91C1C; }
+.layer-agent { background: #DCFCE7; border: 1.5px solid #86EFAC; }
+.layer-agent h4 { color: #15803D; }
+.layer-mcp { background: #FEF3C7; border: 1.5px solid #FCD34D; }
+.layer-mcp h4 { color: #B45309; }
+.layer-rag { background: #EDE9FE; border: 1.5px solid #C4B5FD; }
+.layer-rag h4 { color: #6D28D9; }
+.layer-obs { background: #CCFBF1; border: 1.5px solid #5EEAD4; }
+.layer-obs h4 { color: #0F766E; }
+
+/* ── DIFFERENTIATORS ── */
+.diff-bg { background: white; }
+.diff-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.diff-card { border-radius: 12px; padding: 24px; border-left: 4px solid; background: #F8FAFC; }
+.diff-card.blue { border-color: #1565C0; }
+.diff-card.teal { border-color: #028090; }
+.diff-card.purple { border-color: #7C3AED; }
+.diff-card.green { border-color: #10B981; }
+.diff-card h3 { font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 8px; }
+.diff-card p { font-size: 13px; color: #475569; line-height: 1.6; }
+.diff-card .diff-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+
+/* ── TIMELINE ── */
+.timeline-bg { background: linear-gradient(135deg, #0F1E35, #1a3a5c); }
+.timeline { position: relative; }
+.timeline-track { display: flex; gap: 0; overflow-x: auto; padding-bottom: 12px; }
+.phase-item { flex: 1; min-width: 100px; text-align: center; position: relative; }
+.phase-item::after { content: ''; position: absolute; top: 20px; left: 50%; width: 100%; height: 2px; background: rgba(96, 165, 250, 0.3); z-index: 0; }
+.phase-item:last-child::after { display: none; }
+.phase-dot { width: 40px; height: 40px; border-radius: 50%; background: #1565C0; color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; position: relative; z-index: 1; border: 2px solid #60A5FA; }
+.phase-label { font-size: 10px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.phase-title { font-size: 11px; color: #E2E8F0; line-height: 1.4; }
+
+/* ── SKILLS ── */
+.skills-bg { background: #F8FAFC; }
+.skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.skill-group { background: white; border-radius: 10px; padding: 18px; border: 1px solid #E2E8F0; }
+.skill-group h3 { font-size: 12px; font-weight: 700; color: #0F172A; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.skill-tag { display: inline-block; margin: 3px; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 500; background: #F1F5F9; color: #334155; border: 1px solid #E2E8F0; }
+
+/* ── LINKEDIN TEXT ── */
+.linkedin-bg { background: white; }
+.post-box { border: 2px solid #E2E8F0; border-radius: 12px; overflow: hidden; }
+.post-header { background: #0A66C2; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+.post-header span { font-size: 13px; font-weight: 600; }
+.post-body { padding: 20px; background: #F8FAFC; font-size: 13px; line-height: 1.8; color: #1E293B; white-space: pre-wrap; font-family: inherit; max-height: 420px; overflow-y: auto; }
+.article-box { border: 2px solid #E2E8F0; border-radius: 12px; overflow: hidden; margin-top: 24px; }
+.article-header { background: #1a2e4a; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+.article-header span { font-size: 13px; font-weight: 600; }
+.article-body { padding: 24px 28px; font-size: 13px; line-height: 1.9; color: #1E293B; max-height: 500px; overflow-y: auto; }
+.article-body h2 { font-size: 16px; font-weight: 700; color: #0F172A; margin: 20px 0 8px; }
+.article-body p { margin-bottom: 12px; }
+.article-body ul { margin: 8px 0 12px 20px; }
+.article-body li { margin-bottom: 4px; }
+
+/* ── FOOTER ── */
+.footer { background: #0F1E35; color: #94A3B8; text-align: center; padding: 24px; font-size: 12px; }
+.footer a { color: #60A5FA; text-decoration: none; }
+
+hr.divider { border: none; border-top: 1px solid #E2E8F0; margin: 40px 0; }
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar no-print">
+  <h2>LinkedIn Showcase — AI-Powered Loan Origination Copilot | Manoj Bansal</h2>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-copy" onclick="copyPost()">Copy LinkedIn Post</button>
+    <button class="btn btn-primary" onclick="window.print()">Print / Save PDF</button>
+  </div>
+</div>
+
+<!-- ══════════ HERO ══════════ -->
+<section style="background:linear-gradient(135deg,#0F1E35 0%,#1a3a5c 50%,#0d2d4e 100%);color:white;padding:60px 40px 52px;text-align:center;position:relative;overflow:hidden;">
+  <div class="hero-badge">IIT Madras AI Program · Capstone Project · 2026</div>
+  <h1 style="font-size:38px;font-weight:800;line-height:1.2;margin-bottom:10px;">AI-Powered <span style="color:#60A5FA;">Loan Origination</span> Copilot</h1>
+  <p style="font-size:13px;color:#94A3B8;margin-bottom:16px;letter-spacing:0.5px;">Scenario 2: Banking · Track A: LangChain · Full-stack Conversational AI Agent</p>
+  <p style="font-size:17px;color:#CBD5E1;max-width:700px;margin:0 auto 36px;line-height:1.7;">
+    From <em style="color:#60A5FA;font-style:normal;font-weight:600;">"Can I get a home loan?"</em> to a complete eligibility assessment, EMI estimate, document checklist, and policy-grounded answer — <em style="color:#60A5FA;font-style:normal;font-weight:600;">in under 30 seconds.</em>
+  </p>
+
+  <!-- Metric pills -->
+  <div class="metric-row">
+    <div class="metric-pill"><div class="num">9</div><div class="lbl">Phases</div></div>
+    <div class="metric-pill"><div class="num">424</div><div class="lbl">Tests</div></div>
+    <div class="metric-pill"><div class="num">4</div><div class="lbl">Loan Products</div></div>
+    <div class="metric-pill"><div class="num">5</div><div class="lbl">AI Tools</div></div>
+    <div class="metric-pill"><div class="num">2</div><div class="lbl">Deploy Modes</div></div>
+    <div class="metric-pill"><div class="num">2</div><div class="lbl">RLHF Layers</div></div>
+  </div>
+
+  <!-- CTA -->
+  <div class="hero-cta">
+    <a href="https://github.com/manojbansal-projects/IITM-LoanCopilot" class="cta-btn cta-github" target="_blank">
+      &#128279; GitHub Repository
+    </a>
+    <a href="https://www.linkedin.com/in/manoj-bansal" class="cta-btn cta-linkedin" target="_blank">
+      &#128100; Connect on LinkedIn
+    </a>
+  </div>
+</section>
+
+<!-- ══════════ PROBLEM ══════════ -->
+<div class="problem-bg">
+  <div class="section">
+    <div class="section-title">The Problem</div>
+    <h2 class="section-h2">Retail Loan Origination is Broken</h2>
+    <p class="section-desc">A retail bank customer asking for a home loan waits 2–3 days just to know if they qualify. Branch visits, paperwork, and agent callbacks for answers that should take seconds. I set out to fix this with a conversational AI copilot.</p>
+
+    <div class="compare-grid">
+      <div class="compare-card old">
+        <h3>✗ Old Way — Branch Visit</h3>
+        <div class="compare-item"><span class="icon-x">✗</span>Days of waiting for eligibility answer</div>
+        <div class="compare-item"><span class="icon-x">✗</span>Multiple branch visits for document checklist</div>
+        <div class="compare-item"><span class="icon-x">✗</span>No EMI estimate until deep in process</div>
+        <div class="compare-item"><span class="icon-x">✗</span>Policy FAQs answered inconsistently by agents</div>
+        <div class="compare-item"><span class="icon-x">✗</span>No escalation path for complex cases</div>
+        <div class="compare-item"><span class="icon-x">✗</span>PII shared verbally, no audit trail</div>
+      </div>
+      <div class="compare-card new">
+        <h3>✓ New Way — AI Copilot</h3>
+        <div class="compare-item"><span class="icon-check">✓</span>Indicative eligibility in under 30 seconds</div>
+        <div class="compare-item"><span class="icon-check">✓</span>Instant document checklist by product + employment type</div>
+        <div class="compare-item"><span class="icon-check">✓</span>EMI calculator with rate range on first conversation</div>
+        <div class="compare-item"><span class="icon-check">✓</span>Policy FAQs from RAG-grounded knowledge base</div>
+        <div class="compare-item"><span class="icon-check">✓</span>Auto-escalation to Relationship Manager when ceiling breached</div>
+        <div class="compare-item"><span class="icon-check">✓</span>PII masked before any log write; two-stage safety gate</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CAPABILITIES ══════════ -->
+<div class="cap-bg">
+  <div class="section">
+    <div class="section-title">What I Built</div>
+    <h2 class="section-h2">5 Core Capabilities, Orchestrated by AI</h2>
+    <p class="section-desc">The agent uses a ReAct (Reason + Act) loop to select the right tool for each customer query — picking from 5 purpose-built tools exposed via Model Context Protocol (MCP).</p>
+
+    <div class="cap-grid">
+      <div class="cap-card">
+        <div class="cap-icon">📊</div>
+        <h3>Eligibility Assessment</h3>
+        <p>FOIR calculation, credit score checks, product-specific amount and tenure limits</p>
+        <span class="cap-tag" style="background:#DBEAFE;color:#1D4ED8;">check_eligibility</span>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">🧮</div>
+        <h3>EMI Calculator</h3>
+        <p>Reducing-balance formula with indicative rate range — never a single promised rate</p>
+        <span class="cap-tag" style="background:#CCFBF1;color:#0F766E;">calculate_emi</span>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">📋</div>
+        <h3>Document Checklist</h3>
+        <p>Product × employment-type lookup — salaried vs. self-employed, all 4 loan types</p>
+        <span class="cap-tag" style="background:#EDE9FE;color:#6D28D9;">get_doc_checklist</span>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">📚</div>
+        <h3>Policy FAQ (RAG)</h3>
+        <p>ChromaDB semantic search over 4 synthetic policy docs — grounded, not hallucinated</p>
+        <span class="cap-tag" style="background:#FEF3C7;color:#B45309;">query_loan_policy</span>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">🔼</div>
+        <h3>Auto-Escalation</h3>
+        <p>When ceiling is breached, generates a Relationship Manager handoff packet automatically</p>
+        <span class="cap-tag" style="background:#FEE2E2;color:#B91C1C;">generate_escalation</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ METRICS DASHBOARD ══════════ -->
+<div class="metrics-bg">
+  <div class="section">
+    <div class="section-title" style="color:#60A5FA;">By the Numbers</div>
+    <h2 class="section-h2" style="color:white;">Production-Scale Quality</h2>
+    <div class="metrics-grid" style="margin-top:32px;">
+      <div class="metric-card">
+        <div class="big-num" style="color:#60A5FA;">9</div>
+        <div class="big-lbl">Phases Complete</div>
+        <div class="big-sub">End-to-end build</div>
+      </div>
+      <div class="metric-card">
+        <div class="big-num" style="color:#34D399;">424</div>
+        <div class="big-lbl">Total Tests</div>
+        <div class="big-sub">Unit + integration + RLHF</div>
+      </div>
+      <div class="metric-card">
+        <div class="big-num" style="color:#F59E0B;">4</div>
+        <div class="big-lbl">Loan Products</div>
+        <div class="big-sub">Home · Personal · MSME · Car</div>
+      </div>
+      <div class="metric-card">
+        <div class="big-num" style="color:#A78BFA;">5</div>
+        <div class="big-lbl">AI Tools (MCP)</div>
+        <div class="big-sub">Eligibility · EMI · Docs · RAG · Escalate</div>
+      </div>
+      <div class="metric-card">
+        <div class="big-num" style="color:#FB923C;">2</div>
+        <div class="big-lbl">Safety Stages</div>
+        <div class="big-sub">Keyword filter + LLM classifier</div>
+      </div>
+      <div class="metric-card">
+        <div class="big-num" style="color:#38BDF8;">2</div>
+        <div class="big-lbl">RLHF Layers</div>
+        <div class="big-sub">Within-session + cross-session</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TECH STACK ══════════ -->
+<div class="tech-bg">
+  <div class="section">
+    <div class="section-title">Tech Stack</div>
+    <h2 class="section-h2">Modern, Production-Ready Stack</h2>
+    <p class="section-desc">Every technology chosen for a specific reason — no cargo-culting. The stack is documented in an engineering justification document.</p>
+
+    <div class="tech-categories">
+      <div class="tech-row">
+        <div class="tech-cat-label">Agent Framework</div>
+        <div class="tech-tags">
+          <span class="tag tag-blue">LangChain AgentExecutor</span>
+          <span class="tag tag-blue">ReAct (Reason+Act)</span>
+          <span class="tag tag-blue">OpenAI GPT-4o</span>
+          <span class="tag tag-blue">ConversationBufferWindowMemory</span>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-cat-label">Tool Transport</div>
+        <div class="tech-tags">
+          <span class="tag tag-orange">FastMCP (mcp v1.27.2)</span>
+          <span class="tag tag-orange">Model Context Protocol</span>
+          <span class="tag tag-orange">stdio + HTTP transport</span>
+          <span class="tag tag-orange">Silent auto-detection</span>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-cat-label">RAG / Knowledge</div>
+        <div class="tech-tags">
+          <span class="tag tag-purple">ChromaDB (persistent)</span>
+          <span class="tag tag-purple">text-embedding-3-small</span>
+          <span class="tag tag-purple">Semantic chunking</span>
+          <span class="tag tag-purple">Top-k retrieval</span>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-cat-label">Safety</div>
+        <div class="tech-tags">
+          <span class="tag tag-red">2-Stage Guardrails</span>
+          <span class="tag tag-red">GPT-4o-mini Classifier</span>
+          <span class="tag tag-red">PII Masking (Aadhaar, PAN, mobile)</span>
+          <span class="tag tag-red">Escalation Ceiling Enforcement</span>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-cat-label">Observability</div>
+        <div class="tech-tags">
+          <span class="tag tag-teal">Langfuse (self-hosted)</span>
+          <span class="tag tag-teal">Per-session scoring</span>
+          <span class="tag tag-teal">RLHF adaptive_policy.json</span>
+          <span class="tag tag-teal">Cross-session improvement</span>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-cat-label">Deployment</div>
+        <div class="tech-tags">
+          <span class="tag tag-green">Streamlit (streaming)</span>
+          <span class="tag tag-green">Claude Desktop (MCP)</span>
+          <span class="tag tag-green">Docker Compose</span>
+          <span class="tag tag-green">pytest (424 tests)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ARCHITECTURE ══════════ -->
+<div class="arch-bg" style="background:#F8FAFC;">
+  <div class="section">
+    <div class="section-title">Architecture</div>
+    <h2 class="section-h2">7-Layer Architecture at a Glance</h2>
+    <p class="section-desc">Each layer has a clear responsibility boundary. The MCP layer makes the tool surface swappable without touching the agent logic.</p>
+
+    <div class="arch-flow" style="align-items:stretch;">
+      <div class="arch-block"><div class="arch-layer layer-ui"><h4>Interface</h4><p>Streamlit UI + CLI + MCP Server</p></div></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-block"><div class="arch-layer layer-safe"><h4>Safety</h4><p>Keyword + LLM classifier + PII mask</p></div></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-block"><div class="arch-layer layer-agent"><h4>ReAct Agent</h4><p>GPT-4o + Memory (k=10) + Profile Planner</p></div></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-block"><div class="arch-layer layer-mcp"><h4>MCP Layer</h4><p>FastMCP server + auto-detect fallback</p></div></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-block"><div class="arch-layer layer-rag"><h4>RAG / KB</h4><p>ChromaDB + 4 policy docs</p></div></div>
+      <div class="arch-arrow">↕</div>
+      <div class="arch-block"><div class="arch-layer layer-obs"><h4>Observability</h4><p>Langfuse + RLHF 2-layer</p></div></div>
+    </div>
+
+    <!-- Loan product ceilings table -->
+    <div style="margin-top:28px;overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="background:#1a2e4a;color:white;">
+            <th style="padding:10px 16px;text-align:left;border-radius:8px 0 0 0;">Loan Product</th>
+            <th style="padding:10px 16px;text-align:center;">Escalation Ceiling</th>
+            <th style="padding:10px 16px;text-align:center;">Rate Range (Indicative)</th>
+            <th style="padding:10px 16px;text-align:left;border-radius:0 8px 0 0;">Employment Types</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#EFF6FF;border-bottom:1px solid #DBEAFE;">
+            <td style="padding:10px 16px;font-weight:600;">🏠 Home Loan</td>
+            <td style="padding:10px 16px;text-align:center;color:#DC2626;font-weight:700;">₹1.5 Crore</td>
+            <td style="padding:10px 16px;text-align:center;">8.50% – 9.50% p.a.</td>
+            <td style="padding:10px 16px;">Salaried, Self-employed</td>
+          </tr>
+          <tr style="background:#F0FDF4;border-bottom:1px solid #DCFCE7;">
+            <td style="padding:10px 16px;font-weight:600;">💳 Personal Loan</td>
+            <td style="padding:10px 16px;text-align:center;color:#DC2626;font-weight:700;">₹40 Lakhs</td>
+            <td style="padding:10px 16px;text-align:center;">10.50% – 14.00% p.a.</td>
+            <td style="padding:10px 16px;">Salaried, Self-employed</td>
+          </tr>
+          <tr style="background:#FFF7ED;border-bottom:1px solid #FED7AA;">
+            <td style="padding:10px 16px;font-weight:600;">🏭 MSME Loan</td>
+            <td style="padding:10px 16px;text-align:center;color:#DC2626;font-weight:700;">₹2 Crore</td>
+            <td style="padding:10px 16px;text-align:center;">9.00% – 12.00% p.a.</td>
+            <td style="padding:10px 16px;">Business owner, GST-registered</td>
+          </tr>
+          <tr style="background:#FDF4FF;">
+            <td style="padding:10px 16px;font-weight:600;">🚗 New Car Loan</td>
+            <td style="padding:10px 16px;text-align:center;color:#DC2626;font-weight:700;">₹20 Lakhs</td>
+            <td style="padding:10px 16px;text-align:center;">8.00% – 10.50% p.a.</td>
+            <td style="padding:10px 16px;">Salaried, Self-employed</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:10px;color:#94A3B8;margin-top:6px;">* All rates are indicative. Actual rate confirmed at loan sanction after credit appraisal.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ DIFFERENTIATORS ══════════ -->
+<div class="diff-bg">
+  <div class="section">
+    <div class="section-title">What Makes it Different</div>
+    <h2 class="section-h2">Production-Grade Design Decisions</h2>
+    <p class="section-desc">These aren't just notebook experiments. Each decision was made with real-world deployment constraints in mind.</p>
+
+    <div class="diff-grid">
+      <div class="diff-card blue">
+        <span class="diff-icon">⚙️</span>
+        <h3>MCP: Swappable Tool Transport</h3>
+        <p>The 5 tools are exposed via Model Context Protocol — when the <code>mcp</code> package is available, FastMCP handles tool calls. When absent (CI, system Python), it silently falls back to direct LangChain @tool imports. Same tool surface, zero manual configuration, zero warnings.</p>
+      </div>
+      <div class="diff-card teal">
+        <span class="diff-icon">🛡️</span>
+        <h3>Two-Stage Safety Guardrails</h3>
+        <p>Stage A keyword filter runs at microsecond speed to catch obvious misuse. Stage B uses GPT-4o-mini as a low-cost intent classifier for nuanced cases. PII (Aadhaar, PAN, mobile) is regex-masked before any log write. No raw PII ever reaches storage.</p>
+      </div>
+      <div class="diff-card purple">
+        <span class="diff-icon">🔄</span>
+        <h3>Two-Layer RLHF</h3>
+        <p>Layer 1 injects within-session feedback signals for immediate course correction. Layer 2 calls <code>update_adaptive_policy()</code> to persist learnings cross-session into <code>adaptive_policy.json</code> — the agent genuinely improves from real usage, not just one-shot tuning.</p>
+      </div>
+      <div class="diff-card green">
+        <span class="diff-icon">🔢</span>
+        <h3>424-Test Suite</h3>
+        <p>226 core tests covering all 5 tools + agent + safety + retrieval. 182 coverage tests for edge cases. 16 RLHF adaptive tests that verify the feedback loop actually changes agent behavior. pytest with conftest fixtures — no mock-the-database anti-patterns.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TIMELINE ══════════ -->
+<div class="timeline-bg">
+  <div class="section">
+    <div class="section-title" style="color:#60A5FA;">The Journey</div>
+    <h2 class="section-h2" style="color:white;margin-bottom:32px;">9 Phases, Built in 10 Days</h2>
+    <div class="timeline-track">
+      <div class="phase-item">
+        <div class="phase-dot">1</div>
+        <div class="phase-label">Phase 1</div>
+        <div class="phase-title">Problem Framing + Spec</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot">2</div>
+        <div class="phase-label">Phase 2</div>
+        <div class="phase-title">LangChain Exploration</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot">3</div>
+        <div class="phase-label">Phase 3</div>
+        <div class="phase-title">GPT-4o Integration</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot">4</div>
+        <div class="phase-label">Phase 4</div>
+        <div class="phase-title">RAG + ChromaDB</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot">5</div>
+        <div class="phase-label">Phase 5</div>
+        <div class="phase-title">5 Tools + ReAct</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot">6</div>
+        <div class="phase-label">Phase 6</div>
+        <div class="phase-title">Memory + Planner</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot">7</div>
+        <div class="phase-label">Phase 7</div>
+        <div class="phase-title">Safety + RLHF</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot">8</div>
+        <div class="phase-label">Phase 8</div>
+        <div class="phase-title">Streamlit + Langfuse</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot" style="background:#F59E0B;border-color:#FCD34D;">9</div>
+        <div class="phase-label">Phase 9</div>
+        <div class="phase-title">MCP Exposure + Eval</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SKILLS ══════════ -->
+<div class="skills-bg">
+  <div class="section">
+    <div class="section-title">Skills Demonstrated</div>
+    <h2 class="section-h2">What Employers Will See</h2>
+    <p class="section-desc">A single project that demonstrates the full AI engineering stack — from problem framing to production deployment with observability.</p>
+
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h3>🤖 LLM Engineering</h3>
+        <span class="skill-tag">Prompt Engineering</span>
+        <span class="skill-tag">ReAct Agents</span>
+        <span class="skill-tag">Tool Calling</span>
+        <span class="skill-tag">Streaming Responses</span>
+        <span class="skill-tag">Multi-turn Conversation</span>
+        <span class="skill-tag">System Prompts</span>
+      </div>
+      <div class="skill-group">
+        <h3>📚 RAG &amp; Retrieval</h3>
+        <span class="skill-tag">Vector Databases</span>
+        <span class="skill-tag">ChromaDB</span>
+        <span class="skill-tag">Semantic Search</span>
+        <span class="skill-tag">Embedding Models</span>
+        <span class="skill-tag">Document Chunking</span>
+        <span class="skill-tag">RAG Evaluation</span>
+      </div>
+      <div class="skill-group">
+        <h3>⚙️ Agent Architecture</h3>
+        <span class="skill-tag">LangChain</span>
+        <span class="skill-tag">MCP (FastMCP)</span>
+        <span class="skill-tag">AgentExecutor</span>
+        <span class="skill-tag">Tool Orchestration</span>
+        <span class="skill-tag">Memory Management</span>
+        <span class="skill-tag">Planner Design</span>
+      </div>
+      <div class="skill-group">
+        <h3>🛡️ Responsible AI</h3>
+        <span class="skill-tag">Safety Guardrails</span>
+        <span class="skill-tag">PII Protection</span>
+        <span class="skill-tag">Intent Classification</span>
+        <span class="skill-tag">Escalation Logic</span>
+        <span class="skill-tag">RLHF</span>
+        <span class="skill-tag">Adaptive Learning</span>
+      </div>
+      <div class="skill-group">
+        <h3>📊 MLOps &amp; Quality</h3>
+        <span class="skill-tag">pytest (424 tests)</span>
+        <span class="skill-tag">Langfuse Tracing</span>
+        <span class="skill-tag">Evaluation Harness</span>
+        <span class="skill-tag">Observability</span>
+        <span class="skill-tag">Docker</span>
+        <span class="skill-tag">CI-ready</span>
+      </div>
+      <div class="skill-group">
+        <h3>🚀 Product &amp; Delivery</h3>
+        <span class="skill-tag">Streamlit UI</span>
+        <span class="skill-tag">End-to-end Ownership</span>
+        <span class="skill-tag">Engineering Docs</span>
+        <span class="skill-tag">Architecture Design</span>
+        <span class="skill-tag">Spec Writing</span>
+        <span class="skill-tag">Domain: FinTech</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ LINKEDIN TEXT ══════════ -->
+<div class="linkedin-bg">
+  <div class="section">
+    <div class="section-title">Ready-to-Post</div>
+    <h2 class="section-h2">LinkedIn Content</h2>
+
+    <!-- SHORT POST -->
+    <div class="post-box">
+      <div class="post-header">
+        <span>LinkedIn Post (Short — For Feed) · ~1,100 characters</span>
+        <button class="btn btn-copy" onclick="copyPost()" style="padding:5px 12px;font-size:11px;">Copy</button>
+      </div>
+      <div class="post-body" id="linkedin-post">I just built an AI agent that answers "Can I get a home loan?" in under 30 seconds.
+
+For my IIT Madras AI Program capstone, I built a full-stack Loan Origination Copilot from scratch in 10 days — here's what it does and what I learned:
+
+What it does:
+✅ Checks eligibility (FOIR, credit score, product limits) in real-time
+✅ Calculates EMI with indicative rate ranges — never a hallucinated single rate
+✅ Generates document checklists by product + employment type instantly
+✅ Answers policy FAQs from a RAG-grounded ChromaDB knowledge base
+✅ Auto-escalates to Relationship Manager when a ceiling is breached
+
+The tech that made it possible:
+→ LangChain ReAct Agent + OpenAI GPT-4o
+→ FastMCP (Model Context Protocol) — 5 tools, swappable transport
+→ ChromaDB + text-embedding-3-small for RAG
+→ Two-stage safety guardrails + PII masking
+→ Langfuse observability + two-layer RLHF for cross-session improvement
+→ Streamlit UI with token-by-token streaming
+
+By the numbers: 9 phases · 424 tests · 4 loan products · 2 deployment modes
+
+The biggest insight? Safety and responsible AI aren't features you add at the end. They're architecture decisions made on Day 1 — and they're the hardest to retrofit later.
+
+Repo: github.com/manojbansal-projects/IITM-LoanCopilot
+
+If you're building AI agents for fintech or enterprise automation, I'd love to connect and compare notes.
+
+#AIEngineering #LangChain #RAG #GenAI #MCP #FinTech #OpenAI #IITMadras #LLM #ResponsibleAI</div>
+    </div>
+
+    <!-- LONG ARTICLE -->
+    <div class="article-box">
+      <div class="article-header">
+        <span>LinkedIn Article (Long-Form) — Full Version</span>
+        <button class="btn btn-copy" onclick="copyArticle()" style="padding:5px 12px;font-size:11px;background:#60A5FA;border:none;border-radius:4px;cursor:pointer;color:white;">Copy Article</button>
+      </div>
+      <div class="article-body" id="linkedin-article">
+        <h2>I Built an AI-Powered Loan Origination Copilot for My IIT Madras Capstone — Here's the Full Story</h2>
+
+        <p>When a retail bank customer walks into a branch and asks "Can I get a ₹50 lakh home loan?", they typically wait 2–3 days just to get a basic eligibility answer. That delay happens not because the answer is complicated — it's because the knowledge lives in policy documents, spreadsheets, and the heads of relationship managers who aren't always available.</p>
+
+        <p>For my IIT Madras AI Program capstone, I set out to fix this with a conversational AI agent. Not a chatbot that deflects to "please visit your branch." A real AI copilot that gives an indicative eligibility assessment, an EMI estimate, a document checklist, and policy-grounded answers — in a single conversation, in under 30 seconds.</p>
+
+        <h2>What the Copilot Does</h2>
+
+        <p>The agent covers four loan products (Home, Personal, MSME, New Car Loan) and handles the full early-stage origination conversation through five purpose-built AI tools:</p>
+
+        <ul>
+          <li><strong>Eligibility Assessment</strong> — calculates Fixed Obligation to Income Ratio (FOIR), checks credit score thresholds, and validates amount and tenure against product-specific limits.</li>
+          <li><strong>EMI Calculator</strong> — uses a reducing-balance formula with an indicative rate range. A hard constraint: it never gives a single promised rate — always a range (e.g., "8.50%–9.25% p.a.") with a disclaimer that the actual rate is confirmed at sanction.</li>
+          <li><strong>Document Checklist</strong> — a product × employment-type lookup (salaried vs. self-employed, across all four products).</li>
+          <li><strong>Policy FAQ via RAG</strong> — semantic search over a ChromaDB vector database built from synthetic policy documents. Answers are grounded in actual retrieved chunks, not hallucinated.</li>
+          <li><strong>Auto-Escalation</strong> — when a customer's loan requirement exceeds the escalation ceiling (₹1.5 Cr for home loans, ₹2 Cr for MSME, etc.), the agent automatically generates a Relationship Manager handoff packet.</li>
+        </ul>
+
+        <h2>The Architecture: 7 Layers with Clear Boundaries</h2>
+
+        <p>The system is built in seven layers — each with a specific responsibility and a clean interface to the layers above and below:</p>
+
+        <ul>
+          <li><strong>Interface Layer</strong> — Streamlit web UI (token-by-token streaming) + CLI + MCP Server endpoint for Claude Desktop.</li>
+          <li><strong>Safety Layer</strong> — Two-stage guardrails: a fast keyword filter (Stage A) followed by a GPT-4o-mini intent classifier (Stage B). PII (Aadhaar numbers, PAN cards, mobile numbers) is regex-masked before any log write.</li>
+          <li><strong>Agent Layer</strong> — LangChain AgentExecutor running a ReAct (Reason + Act) loop with GPT-4o. A conversation window memory (k=10) maintains context. A profile planner drives structured question collection.</li>
+          <li><strong>MCP Layer</strong> — FastMCP server exposing all five tools via Model Context Protocol. Silent auto-detection: if the mcp package is importable, it uses the MCP path; otherwise it falls back to direct LangChain @tool imports with zero warnings and zero crashes.</li>
+          <li><strong>Tool Layer</strong> — The five tools described above, each with its own module and unit tests.</li>
+          <li><strong>RAG / Knowledge Layer</strong> — ChromaDB with persistent storage, OpenAI text-embedding-3-small embeddings, and an ingestion pipeline (loader → chunker → embedder → store → retriever).</li>
+          <li><strong>Observability + RLHF</strong> — Langfuse (self-hosted) traces every agent run. A two-layer RLHF system: Layer 1 injects within-session feedback signals; Layer 2 persists learnings cross-session into adaptive_policy.json.</li>
+        </ul>
+
+        <h2>What Makes it Production-Grade</h2>
+
+        <p><strong>424 tests.</strong> 226 core tests covering all five tools, the agent, safety, and retrieval pipeline. 182 coverage tests for edge cases. 16 RLHF adaptive tests that verify the feedback loop actually changes agent behavior. I hit a wall early — mock-heavy tests were passing while real behavior was wrong. The fix was to test against real ChromaDB instances, not mocked ones. Painful lesson, worth internalizing.</p>
+
+        <p><strong>MCP as a swappable transport.</strong> The Model Context Protocol layer means that if tomorrow you want these tools running as a remote microservice instead of an in-process FastMCP server, you change one line in the config. The agent doesn't know or care. This is the kind of boundary that makes systems actually maintainable.</p>
+
+        <p><strong>Safety as Day 1 architecture.</strong> The two-stage guardrail (keyword filter + LLM classifier) and the PII masking regex are not afterthoughts — they were designed in Phase 1 and informed every subsequent decision. No raw PII ever reaches a log file. No response ever promises a rate. Every escalation ceiling breach triggers the handoff tool automatically. These constraints are enforced in code, not just in documentation.</p>
+
+        <h2>The Biggest Lessons</h2>
+
+        <p><strong>RAG quality is dominated by chunking strategy, not model choice.</strong> Switching embedding models gave me marginal improvement. Fixing my chunking strategy to respect policy section boundaries gave me a 40%+ improvement in retrieval precision.</p>
+
+        <p><strong>Observability from day one, not day nine.</strong> I integrated Langfuse in Phase 8. I should have done it in Phase 3. Having traces from the start would have cut debugging time in half.</p>
+
+        <p><strong>MCP is worth learning now.</strong> Model Context Protocol is becoming the standard for how AI agents connect to tools. Building with it — even for a capstone project — gives you hands-on experience with what enterprise AI deployments will look like in 18 months.</p>
+
+        <h2>What's Next</h2>
+
+        <p>The project is open-source on GitHub. I'm looking for opportunities in AI engineering, LLM application development, or fintech AI — particularly roles where I can work on production AI systems, not just prototypes.</p>
+
+        <p>If you're building in this space and want to compare notes, I'd genuinely love to connect.</p>
+
+        <p>GitHub: github.com/manojbansal-projects/IITM-LoanCopilot</p>
+
+        <p>#AIEngineering #LangChain #RAG #GenAI #MCP #FinTech #OpenAI #IITMadras #LLM #ResponsibleAI #Capstone</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>Manoj Bansal &nbsp;·&nbsp; IIT Madras AI Program Capstone 2026 &nbsp;·&nbsp; <a href="https://github.com/manojbansal-projects/IITM-LoanCopilot">github.com/manojbansal-projects/IITM-LoanCopilot</a></p>
+</div>
+
+<script>
+function copyPost() {
+  const text = document.getElementById('linkedin-post').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btns = document.querySelectorAll('.btn-copy');
+    btns.forEach(b => { b.textContent = '✓ Copied!'; b.classList.add('copied'); });
+    setTimeout(() => btns.forEach(b => { b.textContent = 'Copy LinkedIn Post'; b.classList.remove('copied'); }), 2000);
+  });
+}
+function copyArticle() {
+  const el = document.getElementById('linkedin-article');
+  // Get plain text from the article body
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    event.target.textContent = '✓ Copied!';
+    setTimeout(() => event.target.textContent = 'Copy Article', 2000);
+  });
+}
+</script>
+
+</body>
+</html>
